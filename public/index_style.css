@@ -1,0 +1,103 @@
+/* Kode til login */
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Sikrer, at padding og border inkluderes i elementets samlede bredde og højde */
+  font-family: 'Poppins', sans-serif; /* Anvender Poppins-skrifttypen til alle elementer */
+}
+html,body{
+  display: grid; /* Bruger CSS Grid Layout */
+  height: 100%; /* Sætter højden til 100% af viewporten */
+  width: 100%; /* Sætter bredden til 100% af viewporten */
+  place-items: center; /* Centrerer indholdet både horisontalt og vertikalt */
+  background: #141413; /* Sætter baggrundsfarven til mørk grå */
+}
+.wrapper{
+  width: 380px; /* Sætter bredden på wrapperen */
+  background: white; /* Sætter baggrundsfarven til hvid */
+  border-radius: 15px; /* Afrunder hjørnerne */
+  box-shadow: 0px 15px 20px rgba(0,0,0,0.1); /* Tilføjer en skyggeeffekt */
+  border: 2px solid #4158d0; /* Tilføjer en blå kant */
+}
+.wrapper .title{
+  font-size: 35px; /* Sætter skriftstørrelsen */
+  font-weight: 600; /* Sætter skriftvægten */
+  text-align: center; /* Centrerer teksten */
+  line-height: 100px; /* Sætter linjehøjden */
+  color: white; /* Sætter tekstfarven til hvid */
+  border-radius: 15px 15px 0 0; /* Afrunder de øverste hjørner */
+  background: linear-gradient(-135deg, #c850c0, #4158d0); /* Tilføjer en gradient baggrund */
+}
+.wrapper form{
+  padding: 10px 30px 50px 30px; /* Tilføjer indvendig afstand */
+}
+.wrapper form .field{
+  margin-top: 20px; /* Tilføjer topmargen */
+}
+.wrapper form .field label{
+  display: block; /* Gør labelen til et blok-element */
+  margin-bottom: 5px; /* Tilføjer bundmargen */
+  color: grey; /* Sætter tekstfarven til grå */
+  font-weight: 400; /* Sætter skriftvægten */
+  font-size: 17px; /* Sætter skriftstørrelsen */
+  
+}
+.wrapper form .field input{
+  height: 50px; /* Sætter højden */
+  width: 100%; /* Sætter bredden til 100% */ 
+  font-size: 17px; /* Sætter skriftstørrelsen */
+  padding-left: 20px; /* Tilføjer venstre indrykning */
+  border: 1px solid lightgrey; /* Tilføjer en lys grå kant */
+  border-radius: 25px; /* Afrunder hjørnerne */
+  transition: all 0.3s ease; /* Tilføjer en overgangseffekt */
+}
+.wrapper form .field input:focus,
+form .field input:valid{
+  border-color: #4158d0; /* Ændrer kantfarven ved fokus eller gyldig input */
+}
+form .field input[type="submit"]{
+  color: white; /* Sætter tekstfarven til hvid */
+  border: none; /* Fjerner kanten */
+  padding-left: 0; /* Fjerner venstre indrykning */
+  margin-top: -10px; /* Tilføjer negativ topmargen */
+  font-size: 20px; /* Sætter skriftstørrelsen */
+  font-weight: 500; /* Sætter skriftvægten */
+  cursor: pointer; /* Ændrer cursoren til en pointer */
+  background: linear-gradient(-135deg, #c850c0, #4158d0); /* Tilføjer en gradient baggrund */
+  transition: all 0.3s ease; /* Tilføjer en overgangseffekt */
+}
+form .field input[type="submit"]:active{
+  transform: scale(0.95); /* Skalerer knappen ned ved klik */
+}
+form .signup-link{
+  color: #262626; /* Sætter tekstfarven */
+  margin-top: 20px; /* Tilføjer topmargen */
+  text-align: center; /* Centrerer teksten */
+}
+form .signup-link a{
+  color: #4158d0; /* Sætter linkfarven */
+  text-decoration: none; /* Fjerner understregning */
+}
+form .signup-link a:hover{
+  text-decoration: underline; /* Tilføjer understregning ved hover */
+}
+
+/*/kode til overskriften */
+h1 {
+  font-size: 40px; /* Sætter skriftstørrelsen */
+  color: white; /* Sætter tekstfarven til hvid */
+  text-align: left; /* Centrerer teksten */
+  width: 90%; /* Sætter bredden til 100% */
+  margin: 0;
+  padding: 0; 
+}
+
+h3 {
+  font-size: 20px; /* Sætter skriftstørrelsen */
+  color: white; /* Sætter tekstfarven til hvid */
+  text-align: left; /* Centrerer teksten */
+  width: 90%; /* Sætter bredden til 100% */
+  margin: 0; /* Tilføjer topmargen */
+  padding: 0; /* Tilføjer indvendig afstand */
+}
