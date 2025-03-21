@@ -10,7 +10,7 @@ app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/dashboard", (req, res) => {
-  res.render("dashboard"); // Renderer "views/dashboard.ejs"
+  res.render("dashboard"); // den henter dashboard.ejs
 });
 
 app.listen(PORT, () => {
