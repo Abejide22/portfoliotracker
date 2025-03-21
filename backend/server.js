@@ -13,6 +13,10 @@ app.get("/dashboard", (req, res) => {
   res.render("dashboard"); // Renderer "views/dashboard.ejs"
 });
 
+app.get("/index", (req, res) => {
+  res.render("index"); // Renderer 
+});
+
 app.listen(PORT, () => {
   console.log(`Serveren kører på http://localhost:${PORT}`);
 });
