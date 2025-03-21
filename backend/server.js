@@ -27,3 +27,4 @@ app.get("/test", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Serveren kører på http://localhost:${PORT}`);
 });
+
