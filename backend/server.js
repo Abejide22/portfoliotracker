@@ -17,6 +17,11 @@ app.get("/index", (req, res) => {
   res.render("index"); // Renderer 
 });
 
+app.get("/portfolios", (req, res) => {
+  res.render("portfolios"); // den henter portfolios.ejs
+});
+
+
 app.listen(PORT, () => {
   console.log(`Serveren kører på http://localhost:${PORT}`);
 });
