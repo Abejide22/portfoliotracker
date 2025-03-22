@@ -1,3 +1,45 @@
 body{
-    background-color: black;
+    background-color: #141413;
+    margin: 0;
 }
+h1{
+    display: block;
+    background-color: #5F45A0;
+    color: white;
+    margin: 0;
+    font-family: Bahnschrift;
+    padding: 0.8%;
+    font-weight: normal;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    background-color: #7F7F7F;
+    margin: 1%;
+    display: inline-block;
+    border-radius: 8px;
+    margin-top: 2.5%;
+  }
+  
+  li a 
+  {
+    text-decoration: none;
+    display: block;
+  }
+  li a span{
+    font-size: 100px;
+    display: block;
+    color: lightgray;
+    font-size: 200% !important;
+    padding-top: 22px;
+    padding-bottom: 22px;
+    padding-left: 13px;
+    padding-right: 13px;
+  }
+  
+  li a span:hover 
+  {
+    
+    color: white;
+  }

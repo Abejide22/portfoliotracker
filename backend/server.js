@@ -10,7 +10,7 @@ app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-app.use(express.static("public")); // Gør CSS brugbar
+app.use(express.static(__dirname + '/public')); // Gør CSS brugbar
 
 app.get("/dashboard", (req, res) => {
   res.render("dashboard"); // den henter dashboard.ejs
