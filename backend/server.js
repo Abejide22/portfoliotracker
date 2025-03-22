@@ -16,13 +16,19 @@ app.get("/dashboard", (req, res) => {
   res.render("dashboard"); // den henter dashboard.ejs
 });
 
-app.get("/index", (req, res) => {
-  res.render("index"); // Renderer 
+app.get("/index.ejs", (req, res) => {
+  res.render("index"); // henter index.ejs 
 });
 
-app.get("/portfolios", (req, res) => {
-  res.render("portfolios"); // henter portfolios.js
+app.get("/signup.ejs", (req, res) => {
+  res.render("signup"); // henter signup.ejs
 });
+
+
+app.get("/portfolios", (req, res) => {
+  res.render("portfolios"); // henter portfolios.ejs
+});
+
 
 
 app.listen(PORT, () => {
