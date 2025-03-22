@@ -17,9 +17,9 @@ ul {
     padding: 0;
     background-color: #7F7F7F;
     margin: 1%;
-    display: inline-block;
     border-radius: 8px;
     margin-top: 2.5%;
+    float: left;
   }
   
   li a 
@@ -42,4 +42,44 @@ ul {
   {
     
     color: white;
+  }
+  #realiseret_gevinst_box_id
+  {
+    background-color: #7F7F7F;
+    display: inline-block;
+    border-radius: 8px;
+    font-family: bahnschrift;
+    color: lightgray;
+    margin-top: 2.5%;
+    width: 500px;
+  }
+  #fem_værdifulde_værdipapirer_box
+  {
+    background-color: #7F7F7F;
+    display: inline-block;
+    border-radius: 8px;
+    font-family: bahnschrift;
+    color: lightgray;
+    margin-top: 2.5%;
+    width: 500px;
+  }
+  #urealiseret_gevinst_box_id
+  {
+    background-color: #7F7F7F;
+    display: inline-block;
+    border-radius: 8px;
+    font-family: bahnschrift;
+    color: lightgray;
+    margin-top: 2.5%;
+    width: 500px;
+  }
+  #fem_værdifulde_værdipapirer_urealiseret_box
+  {
+    background-color: #7F7F7F;
+    display: inline-block;
+    border-radius: 8px;
+    font-family: bahnschrift;
+    color: lightgray;
+    margin-top: 2.5%;
+    width: 500px;
   }
