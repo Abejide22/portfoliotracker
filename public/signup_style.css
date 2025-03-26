@@ -2,14 +2,19 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Poppins', sans-serif; /* Anvender Poppins-skrifttypen til alle elementer */
 }
-body{
-  min-height: 100vh;
+
+html,body{
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #141413;
+  height: 100%; /* Sætter højden til 100% af viewporten */
+  width: 100%; /* Sætter bredden til 100% af viewporten */
+  background-image: url('https://img.freepik.com/free-vector/gradient-style-abstract-wireframe-background_23-2148993321.jpg?t=st=1743001241~exp=1743004841~hmac=347197935c5050d2dd9d2fb8e7d460670b004d6834e97430b51e53e9e0665ee9&w=2000'); /* Sætter baggrundsbilledet */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 .wrapper{
   position: relative;
@@ -18,7 +23,6 @@ body{
   background: #fff;
   padding: 34px;
   border-radius: 6px;
-  box-shadow: 0 5px 10px rgba(0,0,0,0.2);
 }
 .wrapper h2{
   position: relative;
@@ -50,10 +54,6 @@ form .input-box input{
 .input-box input:valid{
   border-color: #4070f4;
 }
-form .policy{
-  display: flex;
-  align-items: center;
-}
 form h3{
   color: #707070;
   font-size: 14px;
@@ -71,14 +71,14 @@ form h3{
   background: #0e4bf1;
 }
 form .text h3{
- color: #333;
- width: 100%;
- text-align: center;
-}
-form .text h3 a{
-  color: #4070f4;
-  text-decoration: none;
-}
+  color: #333;
+  width: 100%;
+  text-align: center;
+ }
+ form .text h3 a{
+   color: #4070f4;
+   text-decoration: none;
+ }
 form .text h3 a:hover{
   text-decoration: underline;
 }
