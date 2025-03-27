@@ -38,6 +38,21 @@ app.get("/portfolios", (req, res) => {
   res.render("portfolios"); // henter portfolios.ejs
 });
 
+app.post("/signup", (req, res) => { // POST request gør, at vi modtager data fra formen
+  const { username, email, password, confirmPassword } = req.body;
+
+  // Tjek at kodeord matcher
+  if (password !== confirmPassword) {
+    return res.render("signup", { error: "Kodeordene matcher ikke." }); // Hvis kodeordene ikke matcher, så vises en fejlbesked
+  }
+
+  // TODO: Gem data i databasen
+  console.log("Formular-data modtaget:", { username, email, password });
+
+  // Midlertidigt: send brugeren videre til login
+  res.redirect("/login");
+});
+
 
 
 
