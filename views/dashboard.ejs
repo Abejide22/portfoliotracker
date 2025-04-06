@@ -9,29 +9,78 @@
 </head>
 
 <body>
-    <div>
+    <div id="topBar_id">
         <h1>PORTFOLIOTRACKER</h1>
+        <span class="material-symbols-outlined" id="topBar_goBack_id">home</span>
     </div>
 
     <ul>
-        <li><a href="#home"><span class="material-symbols-outlined">dashboard</span></a></li>
-        <li><a href="#news"><span class="material-symbols-outlined">folder_open</span></a></li>
+        <li><a href="/dashboard"><span class="material-symbols-outlined">dashboard</span></a></li>
+        <li><a href="/portfolios"><span class="material-symbols-outlined">folder_open</span></a></li>
         <li><a href="#contact"><span class="material-symbols-outlined">query_stats</span></a></li>
-        <li><a href="#about"><span class="material-symbols-outlined">account_balance_wallet</span></a></li>
+        <li><a href="/accounts"><span class="material-symbols-outlined">account_balance_wallet</span></a></li>
         <li><a href="#about"><span class="material-symbols-outlined">person</span></a></li>
       </ul>
 
       <div id="realiseret_gevinst_box_id">
-        <font>realiseret gevinst</font>
+        <font>Realiseret gevinst</font>
+        <br>
+        <hr>
+        <span>1000 kr.</span>
       </div>
       <div id="fem_værdifulde_værdipapirer_box">
         <font>5 mest værdifulde værdipapirer på tværs af porteføljer</font>
+        <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
       </div>
       <div id="urealiseret_gevinst_box_id">
-        <font>urealiseret gevinst</font>
+        <font>Urealiseret gevinst</font>
+        <br>
+        <hr>
+        <span>1000 kr.</span>
       </div>
       <div id="fem_værdifulde_værdipapirer_urealiseret_box">
         <font>5 mest urealiseret værdifulde værdipapirer på tværs af porteføljer</font>
+        <canvas id="myChart2" style="width:100%;max-width:600px"></canvas>
       </div>
 </body>
 </html>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+<script>
+  const xValues = [100,200,300,400,500,600,700,800,900,1000];
+  
+  new Chart("myChart", 
+  {
+    type: "line",
+    data: {
+      labels: xValues,
+      datasets: [{
+        data: [100,121,99,143,130,132,129,154,76,100],
+        borderColor: "blue",
+        fill: false
+      }]
+    },
+    options: 
+    {
+      legend: {display: false}
+    }
+  });
+
+  new Chart("myChart2", 
+  {
+    type: "line",
+    data: {
+      labels: xValues,
+      datasets: [{
+        data: [110,91,109,83,90,72,89,110,130,99],
+        borderColor: "blue",
+        fill: false
+      }]
+    },
+    options: 
+    {
+      legend: {display: false}
+    }
+  });
+  </script>

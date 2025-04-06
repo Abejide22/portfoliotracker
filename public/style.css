@@ -1,9 +1,16 @@
 body{
-    background-color: #141413;
+  background-color: black;
+    /* background-color: #141413;*/
     margin: 0;
 }
+#topBar_id{
+  width: 100%;
+  background-color: #5F45A0;
+  display: block;
+  position: relative;
+}
 h1{
-    display: block;
+    display: inline-block;
     background-color: #5F45A0;
     color: white;
     margin: 0;
@@ -11,11 +18,20 @@ h1{
     padding: 0.8%;
     font-weight: normal;
 }
+#topBar_goBack_id{
+  display: inline;
+  color: white;
+  position: absolute;
+    top: 50%;
+    right: 0; /* Placerer elementet til højre */
+    transform: translateY(-50%);
+    font-size: 200%;
+}
 
 ul {
     list-style-type: none;
     padding: 0;
-    background-color: #7F7F7F;
+    background-color: #252525;
     margin: 1%;
     border-radius: 8px;
     margin-top: 2.5%;
@@ -45,17 +61,19 @@ ul {
   }
   #realiseret_gevinst_box_id
   {
-    background-color: #7F7F7F;
+    background-color: #252525;
     display: inline-block;
     border-radius: 8px;
     font-family: bahnschrift;
     color: lightgray;
     margin-top: 2.5%;
     width: 500px;
+    padding: 10px;
   }
   #fem_værdifulde_værdipapirer_box
   {
-    background-color: #7F7F7F;
+    padding: 10px;
+    background-color: #252525;
     display: inline-block;
     border-radius: 8px;
     font-family: bahnschrift;
@@ -65,7 +83,8 @@ ul {
   }
   #urealiseret_gevinst_box_id
   {
-    background-color: #7F7F7F;
+    padding: 10px;
+    background-color: #252525;
     display: inline-block;
     border-radius: 8px;
     font-family: bahnschrift;
@@ -75,7 +94,8 @@ ul {
   }
   #fem_værdifulde_værdipapirer_urealiseret_box
   {
-    background-color: #7F7F7F;
+    padding: 10px;
+    background-color: #252525;
     display: inline-block;
     border-radius: 8px;
     font-family: bahnschrift;

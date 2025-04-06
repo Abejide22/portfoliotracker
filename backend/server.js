@@ -20,6 +20,7 @@ app.get("/dashboard", (req, res) => {
   res.render("dashboard"); // den henter dashboard.ejs
 });
 
+
 app.get("/index", (req, res) => {
   res.render("index"); // henter index.ejs
 });
@@ -30,6 +31,10 @@ app.get("/login", (req, res) => {
 
 app.get("/signup", (req, res) => {
   res.render("signup"); // henter signup.ejs
+});
+
+app.get("/accounts", (req, res) => {
+  res.render("accounts"); // henter signup.ejs
 });
 
 app.get("/portfolios", (req, res) => {
