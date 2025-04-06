@@ -15,32 +15,43 @@
     </div>
 
     <ul>
-        <li><a href="/dashboard"><span class="material-symbols-outlined">dashboard</span></a></li>
+        <li><a href="/dashboard"><span class="material-symbols-outlined" style="color: gray;">dashboard</span></a></li>
         <li><a href="/portfolios"><span class="material-symbols-outlined">folder_open</span></a></li>
-        <li><a href="#contact"><span class="material-symbols-outlined">query_stats</span></a></li>
+        <li><a href="/trade"><span class="material-symbols-outlined">query_stats</span></a></li>
         <li><a href="/accounts"><span class="material-symbols-outlined">account_balance_wallet</span></a></li>
         <li><a href="#about"><span class="material-symbols-outlined">person</span></a></li>
       </ul>
-
+      
+      <div id="container">
       <div id="realiseret_gevinst_box_id">
         <font>Realiseret gevinst</font>
         <br>
         <hr>
         <span>1000 kr.</span>
+        <br><br>
+        <font>Urealiseret gevinst</font>
+        <hr>
+        <span>500 kr.</span>
       </div>
+
       <div id="fem_værdifulde_værdipapirer_box">
         <font>5 mest værdifulde værdipapirer på tværs af porteføljer</font>
+        <hr>
         <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
       </div>
+
       <div id="urealiseret_gevinst_box_id">
-        <font>Urealiseret gevinst</font>
+        <font>Fordeling af aktier</font>
         <br>
         <hr>
-        <span>1000 kr.</span>
+        <canvas id="myChart_pie" style="width:100%;max-width:600px"></canvas>
       </div>
+
       <div id="fem_værdifulde_værdipapirer_urealiseret_box">
         <font>5 mest urealiseret værdifulde værdipapirer på tværs af porteføljer</font>
+        <hr>
         <canvas id="myChart2" style="width:100%;max-width:600px"></canvas>
+      </div>
       </div>
 </body>
 </html>
@@ -83,4 +94,45 @@
       legend: {display: false}
     }
   });
+
+
+
+
+
+
+
+  var xValues_pie = ["AAPL", "GOOG", "AMZN", "IBM", "boi", "e", "a", "b", "p", "g", "ss", "br", "gh", "peach"];
+var yValues_pie = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10];
+var barColors = [
+  "purple",
+  "green",
+  "dodgerblue",
+  "red",
+  "darkgreen",
+  "orange",
+  "yellow",
+  "darkblue",
+  "hotpink",
+  "white",
+  "black",
+  "brown",
+  "gray",
+  "peach"
+];
+
+new Chart("myChart_pie", {
+  type: "pie",
+  data: {
+    labels: xValues_pie,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues_pie
+    }]
+  },
+  options: {
+    title: {
+      display: false
+    }
+  }
+});
   </script>

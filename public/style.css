@@ -59,47 +59,64 @@ ul {
     
     color: white;
   }
+
+  #container{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    margin: auto;
+    padding: 0;
+    gap: 10px;
+    width: 50%;
+    float: left;
+    margin-top:2.5%;
+  }
+
   #realiseret_gevinst_box_id
   {
     background-color: #252525;
-    display: inline-block;
+    line-height: 1;
     border-radius: 8px;
     font-family: bahnschrift;
     color: lightgray;
-    margin-top: 2.5%;
-    width: 500px;
+    width: 300px;
     padding: 10px;
   }
   #fem_værdifulde_værdipapirer_box
   {
     padding: 10px;
     background-color: #252525;
-    display: inline-block;
+    line-height: 1;
     border-radius: 8px;
     font-family: bahnschrift;
     color: lightgray;
-    margin-top: 2.5%;
+    
     width: 500px;
+    
   }
   #urealiseret_gevinst_box_id
   {
     padding: 10px;
     background-color: #252525;
-    display: inline-block;
+    line-height: 1;
     border-radius: 8px;
     font-family: bahnschrift;
     color: lightgray;
-    margin-top: 2.5%;
-    width: 500px;
+    width: 300px;
+    
   }
   #fem_værdifulde_værdipapirer_urealiseret_box
   {
     padding: 10px;
     background-color: #252525;
-    display: inline-block;
+    line-height: 1;
     border-radius: 8px;
     font-family: bahnschrift;
     color: lightgray;
-    margin-top: 2.5%;
     width: 500px;
+    
+  }
+  hr{
+    background-color: darkslategray;
+    border: none;
+    height: 1px;
   }

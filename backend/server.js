@@ -10,6 +10,7 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
 app.use(express.static(__dirname + "/public")); // Gør CSS brugbar
 
 app.get("/", (req, res) => {
@@ -34,11 +35,15 @@ app.get("/signup", (req, res) => {
 });
 
 app.get("/accounts", (req, res) => {
-  res.render("accounts"); // henter signup.ejs
+  res.render("accounts"); // henter accounts.ejs
 });
 
 app.get("/portfolios", (req, res) => {
   res.render("portfolios"); // henter portfolios.ejs
+});
+
+app.get("/trade", (req, res) => {
+  res.render("trade"); // henter trade.ejs
 });
 
 app.post("/signup", async (req, res) => {
@@ -99,3 +104,4 @@ app.post("/create-account", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Serveren kører på http://localhost:${PORT}`);
 });
+
