@@ -54,8 +54,6 @@ app.post("/signup", (req, res) => { // POST request gør, at vi modtager data fr
 });
 
 
-
-
 app.listen(PORT, () => {
   console.log(`Serveren kører på http://localhost:${PORT}`);
 });
