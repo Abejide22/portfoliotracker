@@ -9,7 +9,7 @@ const PORT = 3000;
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.set("views", path.join(__dirname, "../views"));
 
 app.use(express.static(__dirname + "/public")); // Gør CSS brugbar
 
@@ -20,7 +20,6 @@ app.get("/", (req, res) => {
 app.get("/dashboard", (req, res) => {
   res.render("dashboard"); // den henter dashboard.ejs
 });
-
 
 app.get("/index", (req, res) => {
   res.render("index"); // henter index.ejs
@@ -49,7 +48,13 @@ app.get("/trade", (req, res) => {
 app.post("/signup", async (req, res) => {
   const { username, email, password, confirmPassword } = req.body;
 
+  if (password !== confirmPassword) {
+    return res.status(400).send("Passwords do not match");
+  }
+
+  res.send("User signed up successfully");
+});
+
 app.listen(PORT, () => {
   console.log(`Serveren kører på http://localhost:${PORT}`);
 });
-
