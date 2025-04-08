@@ -13,6 +13,6 @@ CREATE TABLE Accounts (
   currency NVARCHAR(10) NOT NULL, -- valuta på konto, må ikke være NULL
   balance DECIMAL(18,2) DEFAULT 0, -- balancen, default er 0
   created_at DATETIME DEFAULT GETDATE(), -- oprettelsesdato, default er nuværende tidspunkt 
-  bank NVARCHAR(100),  -- bankens navn, som kontoen er tilknyttet til
+  bank NVARCHAR(100), -- bankens navn, som kontoen er tilknyttet til
   FOREIGN KEY (user_id) REFERENCES Users(id) -- refererer til Users, user_id skal være en gyldig id fra Users
 );
