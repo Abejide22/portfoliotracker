@@ -1,0 +1,79 @@
+body{
+    background-color: black;
+      /* background-color: #141413;*/
+      margin: 0;
+  }
+  #topBar_id{
+    width: 100%;
+    background-color: #5F45A0;
+    display: block;
+    position: relative;
+  }
+  h1{
+      display: inline-block;
+      background-color: #5F45A0;
+      color: white;
+      margin: 0;
+      font-family: Bahnschrift;
+      padding: 0.8%;
+      font-weight: normal;
+  }
+  #topBar_goBack_id{
+    display: inline;
+    color: white;
+    position: absolute;
+      top: 50%;
+      right: 0; /* Placerer elementet til højre */
+      transform: translateY(-50%);
+      font-size: 200%;
+  }
+  
+  ul {
+      list-style-type: none;
+      padding: 0;
+      background-color: #252525;
+      margin: 1%;
+      border-radius: 8px;
+      margin-top: 2.5%;
+      float: left;
+    }
+    
+    li a 
+    {
+      text-decoration: none;
+      display: block;
+    }
+    li a span{
+      font-size: 100px;
+      display: block;
+      color: lightgray;
+      font-size: 200% !important;
+      padding-top: 22px;
+      padding-bottom: 22px;
+      padding-left: 13px;
+      padding-right: 13px;
+    }
+    
+    li a span:hover 
+    {
+      
+      color: white;
+    }
+    #stockBox_id{
+        width: 37%;
+        border: 2px solid lightgray;
+        display: inline-block;
+        margin-top: 2.7%;
+        padding: 0px;
+        
+    }
+    input{
+        border: none;
+        font-family: Bahnschrift;
+        outline: 0;
+        width: 99.3%;
+        background-color: lightgray;
+        border: 1px solid lightgray;
+        font-size: 115%;
+        padding: 8px;
+    }

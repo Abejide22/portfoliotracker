@@ -49,6 +49,8 @@ app.get("/trade", (req, res) => {
 app.post("/signup", async (req, res) => {
   const { username, email, password, confirmPassword } = req.body;
 
+  
+
 app.listen(PORT, () => {
   console.log(`Serveren kører på http://localhost:${PORT}`);
 });
