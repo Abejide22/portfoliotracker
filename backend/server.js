@@ -46,6 +46,7 @@ app.get("/trade", (req, res) => {
 app.post("/signup", async (req, res) => {
   const { username, email, password, confirmPassword } = req.body;
 
+  
   if (password !== confirmPassword) {
     return res.status(400).send("Passwords do not match");
   }
@@ -86,3 +87,4 @@ app.post("/signup", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Serveren kører på http://localhost:${PORT}`);
 });
+
