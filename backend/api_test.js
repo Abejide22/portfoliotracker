@@ -12,3 +12,6 @@ async function retrieveStockData() {
 }
 
 module.exports = retrieveStockData; // eksporter funktionen
+
+"hej"
+
