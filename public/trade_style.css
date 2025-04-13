@@ -1,5 +1,5 @@
 body{
-    background-color: black;
+    background-color: #121212;
       /* background-color: #141413;*/
       margin: 0;
   }
@@ -68,9 +68,10 @@ body{
     
   }
 
-  li a:hover{
-    color: gray;
-  }
+  li a:hover, 
+li a:hover span {
+  color: gray;
+}
     #stockBox_id{
         width: 37%;
         border: 2px solid lightgray;

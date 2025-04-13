@@ -1,5 +1,5 @@
 body{
-  background-color: black;
+  background-color: #121212;
     /* background-color: #141413;*/
     margin: 0;
 }
@@ -65,10 +65,10 @@ ul {
     
   }
 
-  li a:hover{
-    color: gray;
-  }
-
+  li a:hover, 
+li a:hover span {
+  color: gray;
+}
 
 
   #container_værdier_id{
@@ -86,7 +86,10 @@ ul {
     border-radius: 9px;
     font-family: normalSkrift;
     color: lightgray;
-    padding: 10px;
+    padding: 12px;
+  }
+  #totalVærdi_box_id span{
+    font-size: 93%;
   }
 
   #totalRealiseretVærdi_box_id{
@@ -94,7 +97,12 @@ ul {
     border-radius: 9px;
     font-family: normalSkrift;
     color: lightgray;
-    padding: 10px;
+    padding: 12px;
+  }
+
+  #totalRealiseretVærdi_box_id span
+  {
+    font-size: 93%;
   }
 
   #totalUrealiseretVærdi_box_id{
@@ -102,7 +110,11 @@ ul {
     border-radius: 9px;
     font-family: normalSkrift;
     color: lightgray;
-    padding: 10px;
+    padding: 12px;
+  }
+
+  #totalUrealiseretVærdi_box_id span{
+    font-size: 93%;
   }
 
   #samletVærdi_boks_id{
@@ -115,6 +127,9 @@ ul {
     color: lightgray;
     font-family: normalSkrift;
     display: grid;
+  }
+  canvas{
+    height: 300px !important;
   }
 
   #top5_boks_id{
@@ -132,14 +147,14 @@ ul {
     border-radius: 10px;
     color: lightgray;
     font-family: normalSkrift;
-    padding: 10px;
+    padding: 15px;
   }
   #top5Værdipapirer_urealiseret_id{
     background-color: #252525;
     border-radius: 10px;
     color: lightgray;
     font-family: normalSkrift;
-    padding: 10px;
+    padding: 15px;
   }
 
   .material-symbols-outlined {
@@ -151,4 +166,18 @@ ul {
     background-color: darkslategray;
     border: none;
     height: 1px;
+  }
+
+
+  table {
+    font-family: normalSkrift;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  td, th {
+    border-bottom: 1px solid gray;
+    text-align: left;
+    padding: 10px;
+    font-size: 73%;
   }
