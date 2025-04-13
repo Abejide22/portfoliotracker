@@ -3,6 +3,12 @@ body{
     /* background-color: #141413;*/
     margin: 0;
 }
+
+@font-face {
+  font-family: normalSkrift;
+  src: url(/fonts/Bierstadt.ttf);
+}
+
 #topBar_id{
   width: 100%;
   background-color: #5F45A0;
@@ -36,84 +42,111 @@ ul {
     border-radius: 8px;
     margin-top: 2.5%;
     float: left;
+    padding-left: 15px;
+    padding-right: 15px;
   }
   
   li a 
   {
     text-decoration: none;
     display: block;
+    font-family: normalSkrift;
+    color: lightgray;
   }
   li a span{
     font-size: 100px;
     display: block;
     color: lightgray;
     font-size: 200% !important;
-    padding-top: 22px;
-    padding-bottom: 22px;
-    padding-left: 13px;
-    padding-right: 13px;
-  }
-  
-  li a span:hover 
-  {
     
-    color: white;
+    padding-right: 15px;
+    padding-top: 17px;
+    padding-bottom: 17px;
+    
   }
 
-  #container{
+  li a:hover{
+    color: gray;
+  }
+
+
+
+  #container_værdier_id{
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
     margin: auto;
     padding: 0;
-    gap: 25px;
-    width: 50%;
-    float: left;
-    margin-top:2.5%;
+    gap: 2%;
+    width: 68%;
+    margin-top: 2.5%;
   }
 
-  #realiseret_gevinst_box_id
-  {
+  #totalVærdi_box_id{
     background-color: #252525;
-    line-height: 1;
-    border-radius: 8px;
-    font-family: bahnschrift;
+    border-radius: 9px;
+    font-family: normalSkrift;
     color: lightgray;
-    width: 300px;
     padding: 10px;
   }
-  #fem_værdifulde_værdipapirer_box
-  {
-    padding: 10px;
+
+  #totalRealiseretVærdi_box_id{
     background-color: #252525;
-    line-height: 1;
-    border-radius: 8px;
-    font-family: bahnschrift;
+    border-radius: 9px;
+    font-family: normalSkrift;
     color: lightgray;
-    width: 650px;
+    padding: 10px;
+  }
+
+  #totalUrealiseretVærdi_box_id{
+    background-color: #252525;
+    border-radius: 9px;
+    font-family: normalSkrift;
+    color: lightgray;
+    padding: 10px;
+  }
+
+  #samletVærdi_boks_id{
+    background-color: #252525;
+    border-radius: 9px;
+    width: 66%;
+    margin: auto;
+    margin-top: 2%;
+    padding: 10px;
+    color: lightgray;
+    font-family: normalSkrift;
+    display: grid;
+  }
+
+  #top5_boks_id{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 67.5%;
+    gap: 2%;
     
+    margin-top: 2%;
+    margin-left: 23.5%;
   }
-  #urealiseret_gevinst_box_id
-  {
-    padding: 10px;
+
+  #top5Værdipapirer_tværsAfPorteføljer_id{
     background-color: #252525;
-    line-height: 1;
-    border-radius: 8px;
-    font-family: bahnschrift;
+    border-radius: 10px;
     color: lightgray;
-    width: 300px;
-    
-  }
-  #fem_værdifulde_værdipapirer_urealiseret_box
-  {
+    font-family: normalSkrift;
     padding: 10px;
-    background-color: #252525;
-    line-height: 1;
-    border-radius: 8px;
-    font-family: bahnschrift;
-    color: lightgray;
-    width: 650px;
-    
   }
+  #top5Værdipapirer_urealiseret_id{
+    background-color: #252525;
+    border-radius: 10px;
+    color: lightgray;
+    font-family: normalSkrift;
+    padding: 10px;
+  }
+
+  .material-symbols-outlined {
+    vertical-align: middle;
+}
+
+  
   hr{
     background-color: darkslategray;
     border: none;

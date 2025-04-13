@@ -15,43 +15,55 @@
     </div>
 
     <ul>
-        <li><a href="/dashboard"><span class="material-symbols-outlined" style="color: gray;">dashboard</span></a></li>
-        <li><a href="/portfolios"><span class="material-symbols-outlined">folder_open</span></a></li>
-        <li><a href="/trade"><span class="material-symbols-outlined">query_stats</span></a></li>
-        <li><a href="/accounts"><span class="material-symbols-outlined">account_balance_wallet</span></a></li>
-        <li><a href="#about"><span class="material-symbols-outlined">person</span></a></li>
+        <li><a href="/dashboard" style="color: gray;"><span class="material-symbols-outlined" style="color: gray;">dashboard</span>Dashboard</a></li>
+        <li><a href="/portfolios"><span class="material-symbols-outlined">folder_open</span>Portfolios</a></li>
+        <li><a href="/trade"><span class="material-symbols-outlined">query_stats</span>Market</a></li>
+        <li><a href="/accounts"><span class="material-symbols-outlined">account_balance_wallet</span>Accounts</a></li>
+        <li><a href="#about"><span class="material-symbols-outlined">person</span>Profile</a></li>
       </ul>
       
-      <div id="container">
-      <div id="realiseret_gevinst_box_id">
-        <font>Realiseret gevinst</font>
-        <br>
-        <hr>
-        <span>1000 kr.</span>
-        <br><br>
-        <font>Urealiseret gevinst</font>
-        <hr>
-        <span>500 kr.</span>
+      <div id="bodyIndholdContainer_id">
+        <div id="container_værdier_id">
+          <div id="totalVærdi_box_id">
+            <span>Total værdi</span>
+            <hr>
+            <span>1000 kr.</span>
+          
+          </div>
+          
+          <div id="totalRealiseretVærdi_box_id">
+            <span>Total realiseret værdi</span>
+            <hr>
+            <span>500 kr.</span>
+          </div>
+          
+          <div id="totalUrealiseretVærdi_box_id">
+            <span>Total urealiseret værdi</span>
+            <hr>
+            <span>500 kr.</span>
+          </div>
+        </div>
       </div>
 
-      <div id="fem_værdifulde_værdipapirer_box">
-        <font>5 mest værdifulde værdipapirer på tværs af porteføljer</font>
+      <!-- Graf over samlet værdi -->
+      <div id="samletVærdi_boks_id">
+        <span>Samlet værdi</span>
         <hr>
-        <canvas id="myChart" style="width:100%; height: 250px;"></canvas>
+        <canvas id="myChart" style=""></canvas>
       </div>
 
-      <div id="urealiseret_gevinst_box_id">
-        <font>Fordeling af aktier</font>
-        <br>
-        <hr>
-        <canvas id="myChart_pie" style="width:100%;max-width:600px;"></canvas>
-      </div>
-
-      <div id="fem_værdifulde_værdipapirer_urealiseret_box">
-        <font>5 mest urealiseret værdifulde værdipapirer på tværs af porteføljer</font>
-        <hr>
-        <canvas id="myChart2" style="width:100%; height: 250px;"></canvas>
-      </div>
+      <!-- Top 5 værdipapirer -->
+      <div id="top5_boks_id">
+        <div id="top5Værdipapirer_tværsAfPorteføljer_id">
+          <span>Top 5 værdipapirer på tværs af porteføljer</span>
+          <hr>
+          <font>Sushi</font>
+        </div>
+        <div id="top5Værdipapirer_urealiseret_id">
+          <span>Top 5 værdipapirer på tværs af porteføljer</span>
+          <hr>
+          <font>Hamburger</font>
+        </div>
       </div>
 </body>
 </html>
