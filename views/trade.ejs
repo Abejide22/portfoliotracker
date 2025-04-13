@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Portfoliotracker - Trade</title>
+        <title>Portfoliotracker - Market</title>
         <link href="trade_style.css" rel="stylesheet">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     </head>
@@ -24,14 +24,14 @@
       </ul>
 
       <div id="stockBox_id">
-        <input placeholder="Search stock..." autofocus>
+        <input placeholder="Search stock..." autofocus id="searchStocks_input_id">
         <div id="boi" style="color: white"></div>
       </div>
 
       <div id="viewStock_id">
         <center><p>Pick a stock from the list</p></center>
-        
       </div>
+      <button>Buy</button>
 </body>
 
 <style>
@@ -64,12 +64,16 @@
         font-family: bahnschrift;
         float: right;
         margin-top: 3%;
-        width: 54%;
-        height: 450px;
-        border-radius: 20px;
+        width: 46%;
+        margin-right: 1%;
+        height: 420px;
+        border-radius: 13px;
     }
     #viewStock_id:hover{
         background-color: #303030;
+    }
+    #viewStock_id p{
+        font-family: normalskrift;
     }
 </style>
 
@@ -77,19 +81,19 @@
 <script>
     const stocks = [
         "Apple Inc. (AAPL)",   // Apple Inc.
-"Microsoft Corporation, Inc (MSFT)",   // Microsoft Corporation
-  "Amazon.com, Inc. (AMZN)",   // Amazon.com, Inc.
-  "Alphabet, Inc. (GOOG)",   // Alphabet Inc. (Class C)
-  "Meta Platforms, Inc. (META)",   // Meta Platforms, Inc.
-  "Nvidia Corporation (NVDA)",   // NVIDIA Corporation
-  "Tesla, Inc. (TSLA)",   // Tesla, Inc.
-  "Intel Corporation (INTC)",   // Intel Corporation
-  "Adobe, Inc. (ADBE)",   // Adobe Inc.
-  "Netflix, Inc. (NFLX)",   // Netflix, Inc.
-  "PayPal Holdings, Inc. (PYPL)",   // PayPal Holdings, Inc.
-  "Cisco Systems, Inc. (CSCO)",   // Cisco Systems, Inc.
-  "PepsiCo, Inc. (PEP)",    // PepsiCo, Inc.
-  "Costco Wholesale Corporation (COST)",   // Costco Wholesale Corporation
+        "Microsoft Corporation, Inc (MSFT)",   // Microsoft Corporation
+        "Amazon.com, Inc. (AMZN)",   // Amazon.com, Inc.
+        "Alphabet, Inc. (GOOG)",   // Alphabet Inc. (Class C)
+        "Meta Platforms, Inc. (META)",   // Meta Platforms, Inc.
+        "Nvidia Corporation (NVDA)",   // NVIDIA Corporation
+        "Tesla, Inc. (TSLA)",   // Tesla, Inc.
+        "Intel Corporation (INTC)",   // Intel Corporation
+        "Adobe, Inc. (ADBE)",   // Adobe Inc.
+        "Netflix, Inc. (NFLX)",   // Netflix, Inc.
+        "PayPal Holdings, Inc. (PYPL)",   // PayPal Holdings, Inc.
+        "Cisco Systems, Inc. (CSCO)",   // Cisco Systems, Inc.
+        "PepsiCo, Inc. (PEP)",    // PepsiCo, Inc.
+        "Costco Wholesale Corporation (COST)",   // Costco Wholesale Corporation
 ];
 
 
@@ -101,11 +105,34 @@ for(let i = 0; i < stocks.length; i++){
     const element = document.getElementById("boi");
     element.appendChild(para);
 }
-
-
-const retrieveStockData = import('./portfoliotracker/backend/api_test.js'); // Replace with the actual path
+// const retrieveStockData = import('./portfoliotracker/backend/api_test.js'); // Replace with the actual path
 
 // Call the function
-retrieveStockData();
+//retrieveStockData();
+
+
+
+
+// Search stocks //
+let userInput_SearchStocks = "";
+
+function searchStocks(event) {
+  userInput_SearchStocks = document.getElementById("searchStocks_input_id").value.toLowerCase();
+
+  const buttons = document.querySelectorAll("#boi button");
+
+  buttons.forEach(button => {
+    const text = button.textContent.toLowerCase();
+    if (text.includes(userInput_SearchStocks)) {
+      button.style.display = "inline-block"; // or "block", depending on your layout
+    } else {
+      button.style.display = "none";
+    }
+  });
+}
+
+document.getElementById("searchStocks_input_id").addEventListener("keyup", searchStocks);
+
+    
 
 </script>
