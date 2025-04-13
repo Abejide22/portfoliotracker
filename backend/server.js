@@ -46,13 +46,45 @@ app.get("/trade", (req, res) => {
 app.post("/signup", async (req, res) => {
   const { username, email, password, confirmPassword } = req.body;
 
+  
   if (password !== confirmPassword) {
     return res.status(400).send("Passwords do not match");
   }
 
-  res.send("User signed up successfully");
+  try {
+    const pool = await sql.connect(config);
+
+    // Tjek om brugernavn eller email allerede findes
+    const checkResult = await pool
+      .request()
+      .input("username", sql.NVarChar, username)
+      .input("email", sql.NVarChar, email).query(`
+        SELECT * FROM Users WHERE username = @username OR email = @email
+      `);
+
+    if (checkResult.recordset.length > 0) { // Denne kode tjekker, om der er nogen brugere med det samme brugernavn eller email
+      return res.status(400).send("Brugernavn eller email findes allerede"); 
+    }
+
+    // Indsæt brugeren i databasen
+    await pool
+      .request()
+      .input("username", sql.NVarChar, username)
+      .input("email", sql.NVarChar, email)
+      .input("password", sql.NVarChar, password) // 
+      .query(`
+        INSERT INTO Users (username, email, password)
+        VALUES (@username, @email, @password)
+      `);
+
+    res.redirect("/login");
+  } catch (err) {
+    console.error("Fejl ved brugeroprettelse:", err);
+    res.status(500).send("Noget gik galt.");
+  }
 });
 
 app.listen(PORT, () => {
   console.log(`Serveren kører på http://localhost:${PORT}`);
 });
+

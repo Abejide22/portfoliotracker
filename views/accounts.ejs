@@ -1,1 +1,42 @@
-no
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="accounts_style.css">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+</head>
+
+<header>
+  <div id="topBar_id">
+    <h1>PORTFOLIOTRACKER</h1>
+  </div>
+</header>
+
+<body>
+  <ul>
+    <li><a href="/dashboard"><span class="material-symbols-outlined">dashboard</span></a></li>
+    <li><a href="/portfolios"><span class="material-symbols-outlined">folder_open</span></a></li>
+    <li><a href="/trade"><span class="material-symbols-outlined">query_stats</span></a></li>
+    <li><a href="/accounts"><span class="material-symbols-outlined"
+          style="color: gray;">account_balance_wallet</span></a></li>
+    <li><a href="#about"><span class="material-symbols-outlined">person</span></a></li>
+  </ul>
+  <script>
+    document.getElementById("userId").value = localStorage.getItem("userId");
+  </script>
+</body>
+
+</html>
+
+<h2>Opret ny konto</h2>
+<form action="/create-account" method="POST">
+  <label>Kontonavn:</label>
+  <input type="text" name="name" required>
+  <label>Valuta:</label>
+  <input type="text" name="currency" placeholder="DKK, USD, EUR..." required>
+  <label>Banknavn:</label>
+  <input type="text" name="bank" required>
+  <button type="submit">Opret Konto</button>
+</form>

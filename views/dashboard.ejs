@@ -1,17 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfoliotracker - Dashboard</title>
-    <link href="style.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfoliotracker - Dashboard</title>
+  <link href="style.css" rel="stylesheet">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 </head>
 
 <body>
-    <div id="topBar_id">
-        <h1>PORTFOLIOTRACKER</h1>
-        <span class="material-symbols-outlined" id="topBar_goBack_id">home</span>
+  <div id="topBar_id">
+    <h1>PORTFOLIOTRACKER</h1>
+    <span class="material-symbols-outlined" id="topBar_goBack_id">home</span>
+  </div>
+
+  <ul>
+    <li><a href="/dashboard"><span class="material-symbols-outlined" style="color: gray;">dashboard</span></a></li>
+    <li><a href="/portfolios"><span class="material-symbols-outlined">folder_open</span></a></li>
+    <li><a href="/trade"><span class="material-symbols-outlined">query_stats</span></a></li>
+    <li><a href="/accounts"><span class="material-symbols-outlined">account_balance_wallet</span></a></li>
+    <li><a href="#about"><span class="material-symbols-outlined">person</span></a></li>
+  </ul>
+
+  <div id="container">
+    <div id="realiseret_gevinst_box_id">
+      <font>Realiseret gevinst</font>
+      <br>
+      <hr>
+      <span>1000 kr.</span>
+      <br><br>
+      <font>Urealiseret gevinst</font>
+      <hr>
+      <span>500 kr.</span>
     </div>
 
     <ul>
@@ -66,6 +88,7 @@
         </div>
       </div>
 </body>
+
 </html>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
@@ -73,60 +96,61 @@
 <script>
 
 
-// Get the current date
-const currentDate = new Date();
+  // Get the current date
+  const currentDate = new Date();
 
-// Create an array to hold the dates
-const datesArray = [];
+  // Create an array to hold the dates
+  const datesArray = [];
 
-// Loop from 30 days ago up to the current date
-for (let i = 0; i <= 30; i++) {
+  // Loop from 30 days ago up to the current date
+  for (let i = 0; i <= 30; i++) {
     const tempDate = new Date();
     tempDate.setDate(currentDate.getDate() - i); // Set the date to be `i` days before today
     datesArray.push(tempDate.toISOString().split('T')[0]); // Add the date to the array in YYYY-MM-DD format
-}
-console.log(datesArray);
+  }
+  console.log(datesArray);
 
-const flippedArray = datesArray.reverse();
+  const flippedArray = datesArray.reverse();
 
   const xValues = flippedArray;
-  
-  new Chart("myChart", 
-  {
-    type: "line",
-    data: {
-      labels: xValues,
-      datasets: [{
-        data: [100,121,99,143,130,132,129,154,76,100,121,99,143,130,132,129,154,76,100,121,99,143,130,132,129,154,76,100,129,154,76],
-        borderColor: "blue",
-        fill: false
-      }]
-    },
-    options: 
-    {
-      legend: {display: false,
-        maintainAspectRatio: false
-      }
-      
-    }
-  });
 
-  new Chart("myChart2", 
-  {
-    type: "line",
-    data: {
-      labels: xValues,
-      datasets: [{
-        data: [110,91,109,83,90,72,89,110,130,99],
-        borderColor: "blue",
-        fill: false
-      }]
-    },
-    options: 
+  new Chart("myChart",
     {
-      legend: {display: false}
-    }
-  });
+      type: "line",
+      data: {
+        labels: xValues,
+        datasets: [{
+          data: [100, 121, 99, 143, 130, 132, 129, 154, 76, 100, 121, 99, 143, 130, 132, 129, 154, 76, 100, 121, 99, 143, 130, 132, 129, 154, 76, 100, 129, 154, 76],
+          borderColor: "blue",
+          fill: false
+        }]
+      },
+      options:
+      {
+        legend: {
+          display: false,
+          maintainAspectRatio: false
+        }
+
+      }
+    });
+
+  new Chart("myChart2",
+    {
+      type: "line",
+      data: {
+        labels: xValues,
+        datasets: [{
+          data: [110, 91, 109, 83, 90, 72, 89, 110, 130, 99],
+          borderColor: "blue",
+          fill: false
+        }]
+      },
+      options:
+      {
+        legend: { display: false }
+      }
+    });
 
 
 
@@ -135,40 +159,40 @@ const flippedArray = datesArray.reverse();
 
 
   var xValues_pie = ["AAPL", "GOOG", "AMZN", "IBM", "boi", "e", "a", "b", "p", "g", "ss", "br", "gh", "peach"];
-var yValues_pie = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10];
-var barColors = [
-  "purple",
-  "green",
-  "dodgerblue",
-  "red",
-  "darkgreen",
-  "orange",
-  "yellow",
-  "darkblue",
-  "hotpink",
-  "white",
-  "black",
-  "brown",
-  "gray",
-  "peach"
-];
+  var yValues_pie = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10];
+  var barColors = [
+    "purple",
+    "green",
+    "dodgerblue",
+    "red",
+    "darkgreen",
+    "orange",
+    "yellow",
+    "darkblue",
+    "hotpink",
+    "white",
+    "black",
+    "brown",
+    "gray",
+    "peach"
+  ];
 
-new Chart("myChart_pie", {
-  type: "pie",
-  data: {
-    labels: xValues_pie,
-    datasets: [{
-      backgroundColor: barColors,
-      data: yValues_pie
-    }]
-  },
-  options: {
-    title: {
-      display: false
+  new Chart("myChart_pie", {
+    type: "pie",
+    data: {
+      labels: xValues_pie,
+      datasets: [{
+        backgroundColor: barColors,
+        data: yValues_pie
+      }]
+    },
+    options: {
+      title: {
+        display: false
+      }
     }
-  }
-});
-  </script>
+  });
+</script>
 
 
 
