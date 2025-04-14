@@ -39,10 +39,6 @@ app.get("/portfolios", (req, res) => {
   res.render("portfolios"); // henter portfolios.ejs
 });
 
-app.get("/trade", (req, res) => {
-  res.render("trade"); // henter trade.ejs
-});
-
 app.post("/signup", async (req, res) => {
   const { username, email, password, confirmPassword } = req.body;
 
@@ -83,6 +79,42 @@ app.post("/signup", async (req, res) => {
     res.status(500).send("Noget gik galt.");
   }
 });
+
+
+
+// ------------------------------------------------------- //
+// Market - GET aktie data
+// ------------------------------------------------------- //
+
+const { getDataByKey } = require('./api_test');
+
+// Route til at vise trade-siden
+app.get('/trade', (req, res) => {
+  res.render('trade'); // Du kan evt. sende en default variabel her
+});
+
+// API Route to fetch stock data
+app.get('/api/data', async (req, res) => {
+  const key = req.query.key;  // Get the ticker symbol from the query string
+
+  try {
+      // Call the function to fetch stock data for the given ticker symbol
+      const stockData = await getDataByKey(key);
+
+      if (stockData.length === 0) {
+          return res.json({ error: 'No data found for the given ticker.' });
+      }
+
+      // Return the stock data as JSON
+      return res.json(stockData);
+  } catch (error) {
+      console.error('Error fetching data:', error);
+      return res.json({ error: 'An error occurred while fetching stock data.' });
+  }
+});
+
+
+
 
 app.listen(PORT, () => {
   console.log(`Serveren kører på http://localhost:${PORT}`);

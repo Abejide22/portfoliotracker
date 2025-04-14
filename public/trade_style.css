@@ -47,6 +47,7 @@ body{
   
   .material-symbols-outlined {
     vertical-align: middle;
+    
 }
 
   li a 
@@ -80,7 +81,7 @@ li a:hover span {
         padding: 0px;
         
     }
-    input{
+    #searchStocks_input_id{
         border: none;
         font-family: Bahnschrift;
         outline: 0;
@@ -93,4 +94,7 @@ li a:hover span {
     #boi
     {
       height: 420px;
+    }
+    #myChart{
+      max-width: 100%;
     }
