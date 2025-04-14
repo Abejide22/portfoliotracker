@@ -25,6 +25,17 @@ h1{
     padding-bottom: 0.85%;
     font-weight: normal;
 }
+h2{
+  font-family: normalskrift;
+  color: lightgray;
+  display: block;
+  margin-left:300px;
+  margin-top: 50px;
+  line-height: 0px;
+  
+  font-size: 200%;
+  
+}
 #topBar_goBack_id{
   display: inline;
   color: white;

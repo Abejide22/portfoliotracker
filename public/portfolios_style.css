@@ -1,11 +1,81 @@
-body {
-    background-color: #121212; /* Baggrundsfarve for hele siden */
-    color: white; /* tekstfarve for hele siden */
-    font-family: Arial, sans-serif; /* skrifttype for hele siden  */
-    margin: 0; /* */
-    padding: 0; /* */
-    display: flex; /* */
+body{
+    background-color: #121212;
+      /* background-color: #141413;*/
+      margin: 0;
+  }
+
+
+  @font-face {
+    font-family: normalSkrift;
+    src: url(/fonts/Bierstadt.ttf);
+  }
+  #topBar_id{
+    width: 100%;
+    background-color: #5F45A0;
+    display: block;
+    position: relative;
+  }
+  h1{
+      display: inline-block;
+      background-color: #5F45A0;
+      color: white;
+      margin: 0;
+      font-family: Bahnschrift;
+      padding: 0.8%;
+      font-weight: normal;
+  }
+
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+    background-color: #252525;
+    margin: 1%;
+    border-radius: 8px;
+    margin-top: 2.5%;
+    float: left;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  .material-symbols-outlined {
+    vertical-align: middle;
+    
 }
+
+  li a 
+  {
+    text-decoration: none;
+    display: block;
+    font-family: normalSkrift;
+    color: lightgray;
+  }
+  li a span{
+    font-size: 100px;
+    display: block;
+    color: lightgray;
+    font-size: 200% !important;
+    
+    padding-right: 15px;
+    padding-top: 17px;
+    padding-bottom: 17px;
+    
+  }
+
+  li a:hover, 
+li a:hover span {
+  color: gray;
+}
+    #stockBox_id{
+        width: 37%;
+        border: 2px solid lightgray;
+        display: inline-block;
+        margin-top: 2.7%;
+        padding: 0px;
+        
+    }
+
+
 .sidebar {
     width: 180px;
     height: 100vh;

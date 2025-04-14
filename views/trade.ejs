@@ -33,10 +33,10 @@
           
           <canvas id="myChart"></canvas>
         </div>
-       
-        <br>
-        <input id="NumberOfStocks_id" type="number" max="99999" min="1" placeholder="1">
-        <button id="BuyStockButton_id">Buy</button>
+        <div id="StockPurchaseInfo_id">
+          <input id="NumberOfStocks_id" type="number" max="99999" min="1" placeholder="1">
+          <button id="BuyStockButton_id">Purchase</button>
+        </div>
       </div>
 </body>
 
@@ -71,34 +71,33 @@
         float: right;
         padding:10px;
         width: 100%;
-      
-        height: 420px;
+        height: 395px;
         border-radius: 13px;
     }
     #viewStock_id p{
         font-family: normalskrift;
     }
     #ViewBuystockBox_id{
-      display: block;
+     
       float: right;
       width: 46%;
       margin-top: 3%;
     }
     #BuyStockButton_id{
       background-color: green;
-      color: lightgray;
+      color: white;
       font-family: normalskrift;
       outline: none;
       border: none;
-      padding: 7px 30px 7px 30px;
+      padding: 7px 20px 7px 20px;
       margin-top: 1%;
       font-size: 15px;
-
       border-bottom-right-radius: 7px;
       border-top-right-radius: 7px;
     }
     #BuyStockButton_id:hover{
       cursor: pointer;
+      background-color: darkgreen;
     }
     #NumberOfStocks_id{
       width: 20%;
@@ -110,8 +109,10 @@
       border: none;
       outline: none;
       background-color: lightgray;
+     
+      
     }
-  
+    
 </style>
 
 

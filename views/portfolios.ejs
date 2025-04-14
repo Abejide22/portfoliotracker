@@ -6,19 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio Overview</title>
     <link rel="stylesheet" href="portfolios_style.css"> 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 </head>
 
 <body>
-    <div class="sidebar">
-        <h2>Portfoliotracker</h2>
-        <p>Dashboard</p>
-        <p>Accounts</p>
-        <p>Portfolios</p>
+
+    <div id="topBar_id">
+        <h1>PORTFOLIOTRACKER</h1>
+        
     </div>
+
+    <ul>
+        <li><a href="/dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
+        <li><a href="/portfolios" style="color: gray;"><span class="material-symbols-outlined" style="color: gray;">folder_open</span>Portfolios</a></li>
+        <li><a href="/trade"><span class="material-symbols-outlined">query_stats</span>Market</a></li>
+        <li><a href="/accounts"><span class="material-symbols-outlined">account_balance_wallet</span>Accounts</a></li>
+        <li><a href="#about"><span class="material-symbols-outlined">person</span>Profile</a></li>
+      </ul>
 
     <div class="container">
         <div class="header">
-            <h1>Portefølje oversigt</h1>
+            <h2>Portefølje oversigt</h2>
             <button style="background: #333; color: white; padding: 10px; border: none; border-radius: 5px;">Tilføj
                 Portefølje</button>
         </div>
