@@ -30,6 +30,7 @@
       
       <div id="ViewBuystockBox_id">
         <div id="viewStock_id">
+          <span id="aktieNavn_id"></span>
           
           <canvas id="myChart"></canvas>
         </div>
@@ -113,6 +114,12 @@
       
     }
     
+    .white-text{
+      color: white;
+    }
+    .blue-text{
+      color: blue;
+    }
 </style>
 
 
@@ -121,24 +128,111 @@
 
 <script>
     const stocks = [
-        "Apple Inc. (AAPL)",   // Apple Inc.
-        "Microsoft Corporation, Inc (MSFT)",   // Microsoft Corporation
-        "Amazon.com, Inc. (AMZN)",   // Amazon.com, Inc.
-        "Alphabet, Inc. (GOOG)",   // Alphabet Inc. (Class C)
-        "Meta Platforms, Inc. (META)",   // Meta Platforms, Inc.
-        "Nvidia Corporation (NVDA)",   // NVIDIA Corporation
-        "Tesla, Inc. (TSLA)",   // Tesla, Inc.
-        "Intel Corporation (INTC)",   // Intel Corporation
-        "Adobe, Inc. (ADBE)",   // Adobe Inc.
-        "Netflix, Inc. (NFLX)",   // Netflix, Inc.
-        "PayPal Holdings, Inc. (PYPL)",   // PayPal Holdings, Inc.
-        "Cisco Systems, Inc. (CSCO)",   // Cisco Systems, Inc.
-        "PepsiCo, Inc. (PEP)",    // PepsiCo, Inc.
-        "Costco Wholesale Corporation (COST)",   // Costco Wholesale Corporation
+  "Apple Inc. (AAPL)",
+  "Microsoft Corporation (MSFT)",
+  "Amazon.com, Inc. (AMZN)",
+  "Alphabet Inc. Class C (GOOG)",
+  "Alphabet Inc. Class A (GOOGL)",
+  "Meta Platforms, Inc. (META)",
+  "NVIDIA Corporation (NVDA)",
+  "Tesla, Inc. (TSLA)",
+  "Intel Corporation (INTC)",
+  "Adobe Inc. (ADBE)",
+  "Netflix, Inc. (NFLX)",
+  "PayPal Holdings, Inc. (PYPL)",
+  "Cisco Systems, Inc. (CSCO)",
+  "PepsiCo, Inc. (PEP)",
+  "Costco Wholesale Corporation (COST)",
+  "Broadcom Inc. (AVGO)",
+  "Advanced Micro Devices, Inc. (AMD)",
+  "Qualcomm Incorporated (QCOM)",
+  "Intuit Inc. (INTU)",
+  "ASML Holding N.V. (ASML)",
+  "Palantir Technologies Inc. (PLTR)",
+  "T-Mobile US, Inc. (TMUS)",
+  "PDD Holdings Inc. (PDD)",
+  "Amgen Inc. (AMGN)",
+  "Booking Holdings Inc. (BKNG)",
+  "MicroStrategy Incorporated (MSTR)",
+  "Axon Enterprise, Inc. (AXON)",
+  "Airbnb, Inc. (ABNB)",
+  "American Electric Power Company, Inc. (AEP)",
+  "Analog Devices, Inc. (ADI)",
+  "Ansys, Inc. (ANSS)",
+  "Applied Materials, Inc. (AMAT)",
+  "AppLovin Corporation (APP)",
+  "Arm Holdings plc (ARM)",
+  "AstraZeneca PLC (AZN)",
+  "Atlassian Corporation Plc (TEAM)",
+  "Autodesk, Inc. (ADSK)",
+  "Automatic Data Processing, Inc. (ADP)",
+  "Baker Hughes Company (BKR)",
+  "Biogen Inc. (BIIB)",
+  "Cadence Design Systems, Inc. (CDNS)",
+  "CDW Corporation (CDW)",
+  "Charter Communications, Inc. (CHTR)",
+  "Cintas Corporation (CTAS)",
+  "Coca-Cola Europacific Partners PLC (CCEP)",
+  "Cognizant Technology Solutions Corporation (CTSH)",
+  "Comcast Corporation (CMCSA)",
+  "Constellation Energy Corporation (CEG)",
+  "Copart, Inc. (CPRT)",
+  "CoStar Group, Inc. (CSGP)",
+  "CrowdStrike Holdings, Inc. (CRWD)",
+  "CSX Corporation (CSX)",
+  "Datadog, Inc. (DDOG)",
+  "DexCom, Inc. (DXCM)",
+  "Diamondback Energy, Inc. (FANG)",
+  "DoorDash, Inc. (DASH)",
+  "Electronic Arts Inc. (EA)",
+  "Exelon Corporation (EXC)",
+  "Fastenal Company (FAST)",
+  "Fortinet, Inc. (FTNT)",
+  "GE HealthCare Technologies Inc. (GEHC)",
+  "Gilead Sciences, Inc. (GILD)",
+  "GlobalFoundries Inc. (GFS)",
+  "Honeywell International Inc. (HON)",
+  "IDEXX Laboratories, Inc. (IDXX)",
+  "Intuitive Surgical, Inc. (ISRG)",
+  "Keurig Dr Pepper Inc. (KDP)",
+  "KLA Corporation (KLAC)",
+  "The Kraft Heinz Company (KHC)",
+  "Lam Research Corporation (LRCX)",
+  "Linde plc (LIN)",
+  "Lululemon Athletica Inc. (LULU)",
+  "Marriott International, Inc. (MAR)",
+  "Marvell Technology, Inc. (MRVL)",
+  "MercadoLibre, Inc. (MELI)",
+  "Microchip Technology Incorporated (MCHP)",
+  "Micron Technology, Inc. (MU)",
+  "MongoDB, Inc. (MDB)",
+  "Mondelez International, Inc. (MDLZ)",
+  "Monster Beverage Corporation (MNST)",
+  "NXP Semiconductors N.V. (NXPI)",
+  "O'Reilly Automotive, Inc. (ORLY)",
+  "Old Dominion Freight Line, Inc. (ODFL)",
+  "ON Semiconductor Corporation (ON)",
+  "PACCAR Inc (PCAR)",
+  "Palo Alto Networks, Inc. (PANW)",
+  "Paychex, Inc. (PAYX)",
+  "Regeneron Pharmaceuticals, Inc. (REGN)",
+  "Roper Technologies, Inc. (ROP)",
+  "Ross Stores, Inc. (ROST)",
 ];
+
 const stocksTicker = [
-  "AAPL", "MSFT", "AMZN", "GOOG", "META", "NVDA", "TSLA", "INTC", "ADBE", "NFLX", "PYPL", "CSCO", "PEP", "COST"
-];
+  "AAPL", "MSFT", "AMZN", "GOOG", "GOOGL", "META", "NVDA", "TSLA", "INTC", "ADBE",
+  "NFLX", "PYPL", "CSCO", "PEP", "COST", "AVGO", "AMD", "QCOM", "INTU", "ASML",
+  "PLTR", "TMUS", "PDD", "AMGN", "BKNG", "MSTR", "AXON", "ABNB", "AEP", "ADI",
+  "ANSS", "AMAT", "APP", "ARM", "AZN", "TEAM", "ADSK", "ADP", "BKR", "BIIB",
+  "CDNS", "CDW", "CHTR", "CTAS", "CCEP", "CTSH", "CMCSA", "CEG", "CPRT", "CSGP",
+  "CRWD", "CSX", "DDOG", "DXCM", "FANG", "DASH", "EA", "EXC", "FAST", "FTNT",
+  "GEHC", "GILD", "GFS", "HON", "IDXX", "ISRG", "KDP", "KLAC", "KHC", "LRCX",
+  "LIN", "LULU", "MAR", "MRVL", "MELI", "MCHP", "MU", "MDB", "MDLZ", "MNST",
+  "NXPI", "ORLY", "ODFL", "ON", "PCAR", "PANW", "PAYX", "REGN", "ROP", "ROST"];
+
+
+  let stockName = "";
 
 for (let i = 0; i < stocks.length; i++) {
     const para = document.createElement("button");
@@ -151,6 +245,15 @@ for (let i = 0; i < stocks.length; i++) {
     
     para.addEventListener("click", function(event) {
         let ticker = event.currentTarget.dataset.ticker;
+        stockName = event.currentTarget.textContent;
+        
+        document.querySelectorAll('button').forEach(el => {
+          el.classList.remove('active'); // Reset all
+});
+
+event.currentTarget.classList.add('active'); // Set current one to blue
+
+        
         console.log("Ticker clicked:", ticker); // For debugging
         retrieveStockTicker(ticker);
     });
@@ -216,6 +319,9 @@ function retrieveStockTicker(ticker) {
       .catch(error => {
         console.error('Error fetching data:', error);
       });
+
+      // Viser aktie navn når der trykkes på aktie //
+      document.getElementById("aktieNavn_id").innerHTML = stockName;
 }
 
 

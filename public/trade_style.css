@@ -95,6 +95,10 @@ li a:hover span {
     {
       height: 420px;
     }
-    #myChart{
-      max-width: 100%;
-    }
+    
+  
+  /* When clicked */
+  button.active {
+      color: dodgerblue !important;
+      font-weight: bold;
+  }
