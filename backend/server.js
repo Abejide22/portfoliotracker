@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
-const { pool, poolConnect, sql } = require('./database/database');
+const { pool, poolConnect, sql } = require("./database/database");
 
 const app = express();
 const PORT = 3000;
@@ -25,6 +25,31 @@ app.get("/index", (req, res) => {
 
 app.get("/login", (req, res) => {
   res.render("login"); // henter login.ejs
+});
+
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    await poolConnect;
+
+    const result = await pool
+      .request()
+      .input("username", sql.NVarChar, username)
+      .input("password", sql.NVarChar, password).query(`
+        SELECT * FROM Users WHERE username = @username AND password = @password
+      `);
+
+    if (result.recordset.length > 0) {
+      // Login successful
+      res.redirect("/dashboard");
+    } else {
+      res.status(401).send("Forkert brugernavn eller adgangskode.");
+    }
+  } catch (err) {
+    console.error("Fejl under login:", err);
+    res.status(500).send("Noget gik galt under login.");
+  }
 });
 
 app.get("/signup", (req, res) => {
