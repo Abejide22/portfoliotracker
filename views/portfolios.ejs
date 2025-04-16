@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Overview</title>
+    <link rel="stylesheet" href="portfolios_style.css"> 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+</head>
+
+<body>
+
+    <div id="topBar_id">
+        <h1>PORTFOLIOTRACKER</h1>
+        
+    </div>
+
+    <ul>
+        <li><a href="/dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
+        <li><a href="/portfolios" style="color: gray;"><span class="material-symbols-outlined" style="color: gray;">folder_open</span>Portfolios</a></li>
+        <li><a href="/trade"><span class="material-symbols-outlined">query_stats</span>Market</a></li>
+        <li><a href="/accounts"><span class="material-symbols-outlined">account_balance_wallet</span>Accounts</a></li>
+        <li><a href="#about"><span class="material-symbols-outlined">person</span>Profile</a></li>
+      </ul>
+
+    <div class="container">
+        <div class="header">
+            <h2>Portefølje oversigt</h2>
+            <button style="background: #333; color: white; padding: 10px; border: none; border-radius: 5px;">Tilføj
+                Portefølje</button>
+        </div>
+
+        <div class="grid-3">
+            <div class="stacked">
+                <div class="card">
+                    <h3>Total værdi i DKK</h3>
+                    <h2>224.543 DKK</h2>
+                </div>
+                <div class="card">
+                    <h3>Ændring</h3>
+                    <p>24 Timer: <span class="positive">+1.4%</span></p>
+                    <p>7 dage: <span class="negative">-1.7%</span></p>
+                    <p>30 dage: <span class="positive">+2.4%</span></p>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Fordeling af værdi i porteføljer</h3>
+                <p>Chart Placeholder</p>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Portefølje Navn</th>
+                        <th>Bank Account</th>
+                        <th>24h Change</th>
+                        <th>Sidste Handel</th>
+                        <th>Total Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Growth Tech</td>
+                        <td>Nordea DK</td>
+                        <td class="positive">+1.27%</td>
+                        <td>01/02/2024 12:54</td>
+                        <td>35.201 DKK</td>
+                    </tr>
+                    <tr>
+                        <td>Tech Leaders</td>
+                        <td>Nordea DK</td>
+                        <td class="negative">-1.21%</td>
+                        <td>25/04/2024 14:14</td>
+                        <td>11.000 DKK</td>
+                    </tr>
+                    <tr>
+                        <td>ETF +</td>
+                        <td>Danske Invest 2</td>
+                        <td class="negative">-2.13%</td>
+                        <td>23/04/2024 12:11</td>
+                        <td>7.584 DKK</td>
+                    </tr>
+                    <tr>
+                        <td>Space & Defence</td>
+                        <td>Danske Invest 2</td>
+                        <td class="positive">+0.10%</td>
+                        <td>27/03/2024 20:14</td>
+                        <td>6.842 DKK</td>
+                    </tr>
+                    <tr>
+                        <td>E-Com</td>
+                        <td>Danske Invest 3</td>
+                        <td class="positive">+0.32%</td>
+                        <td>02/03/2024 12:51</td>
+                        <td>6.500 DKK</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

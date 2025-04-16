@@ -1,0 +1,107 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif; /* Anvender Poppins-skrifttypen til alle elementer */
+  }
+  
+  html, body {
+    
+    height: 100%; /* Sætter højden til 100% af viewporten */
+    width: 100%; /* Sætter bredden til 100% af viewporten */
+    background-image: url('https://img.freepik.com/free-vector/gradient-style-abstract-wireframe-background_23-2148993321.jpg?t=st=1743001241~exp=1743004841~hmac=347197935c5050d2dd9d2fb8e7d460670b004d6834e97430b51e53e9e0665ee9&w=2000'); /* Sætter baggrundsbilledet */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  
+  h1 {
+    font-size: 40px; /* Sætter skriftstørrelsen */
+    color: white; /* Sætter tekstfarven til hvid */
+    text-align: center; /* Centrerer teksten horisontalt */
+    margin: 20px 0; /* Tilføjer afstand fra toppen */
+  }
+  
+  .wrapper {
+    position: absolute;
+    top: 50%; /* Placerer wrapperen 50% fra toppen */
+    left: 50%; /* Placerer wrapperen 50% fra venstre */
+    transform: translate(-50%, -50%); /* Justerer wrapperen til at være centreret */
+    max-width: 430px;
+    width: 100%;
+    background: #fff; /* Sætter baggrundsfarven til hvid */
+    padding: 34px;
+    border-radius: 6px; /* Afrunder hjørnerne */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Tilføjer en let skygge */
+  }
+  
+  .wrapper h2 {
+    position: relative;
+    font-size: 22px;
+    font-weight: 600;
+    color: #333; /* Sætter overskriftens farve */
+    text-align: left;
+  }
+  
+  .wrapper form {
+    margin-top: 30px;
+  }
+  
+  .wrapper form .field {
+    margin: 18px 0;
+  }
+  
+  .wrapper form .field label {
+    display: block;
+    margin-bottom: 5px;
+    color: grey;
+    font-weight: 400;
+    font-size: 17px;
+  }
+  
+  .wrapper form .field input {
+    height: 50px;
+    width: 100%;
+    padding: 0 15px;
+    font-size: 17px;
+    font-weight: 400;
+    color: #333;
+    border: 1.5px solid #C7BEBE;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+  
+  .wrapper form .field input:focus {
+    border-color: #4158d0; /* Ændrer kantfarven ved fokus */
+  }
+  
+  .wrapper form .field input[type="submit"] {
+    height: 50px;
+    width: 100%;
+    color: #fff;
+    background: #4158d0;
+    border: none;
+    font-size: 17px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .wrapper form .field input[type="submit"]:hover {
+    background: #2a3b8f; /* Ændrer baggrundsfarven ved hover */
+  }
+  
+  form .signup-link {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  form .signup-link a {
+    color: #4158d0;
+    text-decoration: none;
+  }
+  
+  form .signup-link a:hover {
+    text-decoration: underline;
+  }

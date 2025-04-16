@@ -1,0 +1,27 @@
+{
+  "name": "portfoliotracker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@azure/logger": "^1.1.4",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "mssql": "^11.0.1",
+    "request": "^2.88.2",
+    "require": "^2.4.20",
+    "swagger-ui-express": "^5.0.1",
+    "yahoo-finance2": "^2.13.3",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
