@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
+const { pool, poolConnect, sql } = require('./database/database');
 
 const app = express();
 const PORT = 3000;
@@ -42,17 +43,15 @@ app.get("/profile", (req, res) => {
   res.render("profile"); // henter profile.ejs
 });
 
-
 app.post("/signup", async (req, res) => {
   const { username, email, password, confirmPassword } = req.body;
 
-  
   if (password !== confirmPassword) {
     return res.status(400).send("Passwords do not match");
   }
 
   try {
-    const pool = await sql.connect(config);
+    await poolConnect; // Sørg for at forbindelsen til databasen er oprettet
 
     // Tjek om brugernavn eller email allerede findes
     const checkResult = await pool
@@ -62,8 +61,9 @@ app.post("/signup", async (req, res) => {
         SELECT * FROM Users WHERE username = @username OR email = @email
       `);
 
-    if (checkResult.recordset.length > 0) { // Denne kode tjekker, om der er nogen brugere med det samme brugernavn eller email
-      return res.status(400).send("Brugernavn eller email findes allerede"); 
+    if (checkResult.recordset.length > 0) {
+      // Denne kode tjekker, om der er nogen brugere med det samme brugernavn eller email
+      return res.status(400).send("Brugernavn eller email findes allerede");
     }
 
     // Indsæt brugeren i databasen
@@ -71,7 +71,7 @@ app.post("/signup", async (req, res) => {
       .request()
       .input("username", sql.NVarChar, username)
       .input("email", sql.NVarChar, email)
-      .input("password", sql.NVarChar, password) // 
+      .input("password", sql.NVarChar, password) //
       .query(`
         INSERT INTO Users (username, email, password)
         VALUES (@username, @email, @password)
@@ -84,53 +84,37 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-
-
 // ------------------------------------------------------- //
 // Market - GET aktie data
 // ------------------------------------------------------- //
 
-const { getDataByKey } = require('./api_test');
+const { getDataByKey } = require("./api_test");
 
 // Route til at vise trade-siden
-app.get('/trade', (req, res) => {
-  res.render('trade'); // Du kan evt. sende en default variabel her
+app.get("/trade", (req, res) => {
+  res.render("trade"); // Du kan evt. sende en default variabel her
 });
 
 // API Route to fetch stock data
-app.get('/api/data', async (req, res) => {
-  const key = req.query.key;  // Get the ticker symbol from the query string
+app.get("/api/data", async (req, res) => {
+  const key = req.query.key; // Get the ticker symbol from the query string
 
   try {
-      // Call the function to fetch stock data for the given ticker symbol
-      const stockData = await getDataByKey(key);
+    // Call the function to fetch stock data for the given ticker symbol
+    const stockData = await getDataByKey(key);
 
-      if (stockData.length === 0) {
-          return res.json({ error: 'No data found for the given ticker.' });
-      }
+    if (stockData.length === 0) {
+      return res.json({ error: "No data found for the given ticker." });
+    }
 
-      // Return the stock data as JSON
-      return res.json(stockData);
+    // Return the stock data as JSON
+    return res.json(stockData);
   } catch (error) {
-      console.error('Error fetching data:', error);
-      return res.json({ error: 'An error occurred while fetching stock data.' });
+    console.error("Error fetching data:", error);
+    return res.json({ error: "An error occurred while fetching stock data." });
   }
 });
-
-
-
-
-
-
-
-
-
-const { pool, poolConnect, sql } = require('./database/database');
-
-
-
 
 app.listen(PORT, () => {
   console.log(`Serveren kører på http://localhost:${PORT}`);
 });
-

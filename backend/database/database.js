@@ -1,9 +1,9 @@
 
 // database.js
 const sql = require('mssql');
-const config = require('./config');
+const { config } = require('./config');
 
-const pool = new sql.ConnectionPool(config.config);
+const pool = new sql.ConnectionPool(config);
 const poolConnect = pool.connect();
 
 pool.on('error', err => {
