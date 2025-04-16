@@ -38,6 +38,11 @@ app.get("/portfolios", (req, res) => {
   res.render("portfolios"); // henter portfolios.ejs
 });
 
+app.get("/profile", (req, res) => {
+  res.render("profile"); // henter profile.ejs
+});
+
+
 app.post("/signup", async (req, res) => {
   const { username, email, password, confirmPassword } = req.body;
 
