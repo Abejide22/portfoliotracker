@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
+const { sql, config } = require("./database/config");
 
 const app = express();
 const PORT = 1433;
