@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 
 const app = express();
-const PORT = 1433;
+const PORT = 3000;
 
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "../public")));
@@ -120,25 +120,7 @@ app.get('/api/data', async (req, res) => {
 
 
 
-const { pool, poolConnect, sql } = require('C:/Users/andre/OneDrive/Dokumenter/GitHub/portfoliotracker/backend/database/database.js');
-/*
-app.get('/', async (req, res) => {
-  try {
-    await poolConnect;
-    const request = pool.request();
-    const result = await request.query('SELECT * FROM Brugere');
-
-    // Udskriv data i konsollen
-    console.log("Resultater fra databasen:", result.recordset);
-
-    res.send('Tjek konsollen for data 😎');
-  } catch (err) {
-    console.error('Fejl ved SQL-forespørgsel:', err);
-    res.status(500).send('Fejl: ' + err.message);
-  }
-});
-*/
-
+const { pool, poolConnect, sql } = require('./database/database');
 
 
 

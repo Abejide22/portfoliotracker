@@ -1,9 +1,9 @@
-/*
+
 // database.js
 const sql = require('mssql');
 const config = require('./config');
 
-const pool = new sql.ConnectionPool(config.db);
+const pool = new sql.ConnectionPool(config.config);
 const poolConnect = pool.connect();
 
 pool.on('error', err => {
@@ -15,4 +15,3 @@ module.exports = {
   pool,
   poolConnect
 };
-*/
