@@ -23,6 +23,7 @@ body{
       padding: 0.8%;
       font-weight: normal;
   }
+
   #topBar_goBack_id{
     display: inline;
     color: white;
@@ -73,33 +74,31 @@ body{
 li a:hover span {
   color: gray;
 }
-    #stockBox_id{
-        width: 37%;
-        border: 2px solid lightgray;
-        display: inline-block;
-        margin-top: 2.7%;
-        padding: 0px;
-        
-    }
-    #searchStocks_input_id{
-        border: none;
-        font-family: Bahnschrift;
-        outline: 0;
-        width: 99.3%;
-        background-color: lightgray;
-        border: 1px solid lightgray;
-        font-size: 115%;
-        padding: 8px;
-    }
-    #boi
-    {
-      height: 420px;
-    }
-    
-  
-  /* When clicked */
-  button.active {
-      color: dodgerblue !important;
-      font-weight: bold;
-  }
-  
+
+#profileBox_id{
+    background-color: #252525;
+    display: inline-block;
+    border-radius: 10px;
+    margin-top: 2.5%;
+}
+#profileBox_id h2{
+    margin: 10px;
+}
+#fornavn_efternavn_id{
+    font-family: normalskrift;
+    color: lightgray;
+}
+#profileBox_id input {
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid lightgray;
+    outline: none;
+    color: lightgray;
+    font-family: normalskrift;
+    margin: 15px;
+    width: 150px;
+}
+#profileBox_id hr{
+    margin-left: 15px;
+    margin-right: 15px;
+}
