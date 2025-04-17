@@ -102,3 +102,17 @@ li a:hover span {
     margin-left: 15px;
     margin-right: 15px;
 }
+#gemÆndringer_id{
+  font-family: normalskrift;
+  outline: none;
+  border: none;
+  background-color: green;
+  color: white;
+  border-radius: 5px;
+  padding: 6px;
+  margin-top: 10px;
+}
+#gemÆndringer_id:hover{
+  cursor: pointer;
+  background-color: darkgreen;
+}
