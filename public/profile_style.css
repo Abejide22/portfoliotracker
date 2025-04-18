@@ -76,6 +76,7 @@ li a:hover span {
 }
 
 #profileBox_id{
+  padding: 10px;
     background-color: #252525;
     display: inline-block;
     border-radius: 10px;
@@ -85,8 +86,10 @@ li a:hover span {
     margin: 10px;
 }
 #fornavn_efternavn_id{
+  
     font-family: normalskrift;
     color: lightgray;
+    margin-left: 15px;
 }
 #profileBox_id input {
     background-color: transparent;
@@ -95,12 +98,14 @@ li a:hover span {
     outline: none;
     color: lightgray;
     font-family: normalskrift;
-    margin: 15px;
+    margin-left: 10px;
     width: 150px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 #profileBox_id hr{
-    margin-left: 15px;
-    margin-right: 15px;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 #gemÆndringer_id{
   font-family: normalskrift;
