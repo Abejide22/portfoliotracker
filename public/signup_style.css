@@ -1,11 +1,11 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif; /* Anvender Poppins-skrifttypen til alle elementer */
 }
 
-html,body{
+html, body {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,69 +13,83 @@ html,body{
   width: 100%; /* Sætter bredden til 100% af viewporten */
   background-color: #333;
 }
-.wrapper{
+
+.wrapper {
   position: relative;
   max-width: 430px;
   width: 100%;
-  background: #fff;
+  background: #333; /* Ændrer baggrundsfarven til mørkegrå */
   padding: 34px;
   border-radius: 6px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6); /* Tilføjer en sort skygge */
 }
-.wrapper h2{
+
+.wrapper h2 {
   position: relative;
   font-size: 22px;
   font-weight: 600;
-  color: #333;
+  color: white; /* Ændrer overskriftens farve til hvid */
 }
-.wrapper form{
+
+.wrapper form {
   margin-top: 30px;
 }
-.wrapper form .input-box{
+
+.wrapper form .input-box {
   height: 52px;
   margin: 18px 0;
 }
-form .input-box input{
+
+form .input-box input {
   height: 100%;
   width: 100%;
   outline: none;
   padding: 0 15px;
   font-size: 17px;
   font-weight: 400;
-  color: #333;
-  border: 1.5px solid #C7BEBE;
+  color: white; /* Ændrer teksten i inputfelterne til hvid */
+  background-color: #444; /* Ændrer baggrundsfarven i inputfelterne til mørkegrå */
+  border: 1.5px solid #C7BEBE; /* Lys grå kant */
   border-bottom-width: 2.5px;
   border-radius: 6px;
   transition: all 0.3s ease;
 }
+
 .input-box input:focus,
-.input-box input:valid{
-  border-color: #4070f4;
+.input-box input:valid {
+  border-color: #4070f4; /* Ændrer kantfarven ved fokus */
 }
-form h3{
-  color: #707070;
+
+form h3 {
+  color: white; /* Ændrer teksten til hvid */
   font-size: 14px;
   font-weight: 500;
   margin-left: 10px;
 }
-.input-box.button input{
-  color: #fff;
+
+.input-box.button input {
+  color: white; /* Ændrer teksten i knappen til hvid */
   letter-spacing: 1px;
   border: none;
-  background: #4070f4;
+  background: #4070f4; /* Sætter baggrundsfarven til blå */
   cursor: pointer;
 }
-.input-box.button input:hover{
-  background: #0e4bf1;
+
+.input-box.button input:hover {
+  background: #0e4bf1; /* Ændrer baggrundsfarven ved hover */
 }
-form .text h3{
-  color: #333;
+
+form .text h3 {
+  color: white; /* Ændrer teksten til hvid */
   width: 100%;
   text-align: center;
- }
- form .text h3 a{
-   color: #4070f4;
-   text-decoration: none;
- }
-form .text h3 a:hover{
-  text-decoration: underline;
+}
+
+form .text h3 a {
+  color: #4070f4; /* Ændrer linkfarven til blå */
+  text-decoration: none;
+}
+
+form .text h3 a:hover {
+  text-decoration: underline; /* Understreger linket ved hover */
 }

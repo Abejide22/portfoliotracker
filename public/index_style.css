@@ -87,6 +87,7 @@ h3 {
   font-size: 17px;
   font-weight: 400;
   color: white;
+  background-color: #333;  /* Ændrer baggrundsfarven til mørkegrå */
   border: 1.5px solid #C7BEBE;
   border-radius: 6px;
   transition: all 0.3s ease;
