@@ -10,7 +10,7 @@ html,body{
   background-image: url('https://cdn.pixabay.com/photo/2021/08/06/00/37/stock-trading-6525081_1280.jpg'); /* Sætter baggrundsbilledet */
   background-size: 66% 100%;
   background-repeat: no-repeat;
-  background-color: #333;
+  background-color: #333; /* Sætter en baggrundsfarve */;
 }
 
 h3 {
@@ -51,6 +51,9 @@ h3 {
   right: 5%;  /* Placerer wrapperen 10% fra højre side af skærmen */
   transform: translateY(-50%); /* Justerer wrapperen, så den er centreret vertikalt */
   padding: 34px; /* Tilføjer indvendig afstand */
+  background-color: #333; /* mørk baggrund med gennemsigtighed */
+  border-radius: 10px; /* Afrunder hjørnerne */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6); /* Tilføjer skyggeeffekt */
 }
 
 .wrapper h2 {
