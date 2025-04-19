@@ -23,11 +23,7 @@ app.get("/index", (req, res) => {
   res.render("index"); // henter index.ejs
 });
 
-app.get("/login", (req, res) => {
-  res.render("login"); // henter login.ejs
-});
-
-app.post("/login", async (req, res) => {
+app.post("/index", async (req, res) => {
   const { username, password } = req.body;
 
   try {

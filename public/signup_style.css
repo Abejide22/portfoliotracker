@@ -11,10 +11,7 @@ html,body{
   justify-content: center;
   height: 100%; /* Sætter højden til 100% af viewporten */
   width: 100%; /* Sætter bredden til 100% af viewporten */
-  background-image: url('https://img.freepik.com/free-vector/gradient-style-abstract-wireframe-background_23-2148993321.jpg?t=st=1743001241~exp=1743004841~hmac=347197935c5050d2dd9d2fb8e7d460670b004d6834e97430b51e53e9e0665ee9&w=2000'); /* Sætter baggrundsbilledet */
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
+  background-color: #333;
 }
 .wrapper{
   position: relative;
