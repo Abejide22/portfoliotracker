@@ -3,7 +3,7 @@ body {
   margin: 0;
   background-color: #121212;
   color: lightgray;
-  font-family: Arial, sans-serif;
+  font-family: normalSkrift, Arial, sans-serif;
 }
 
 @font-face {
@@ -42,7 +42,6 @@ h1 {
 /* Side Navigation */
 ul {
   list-style-type: none;
-  padding: 0;
   background-color: #252525;
   margin: 1%;
   border-radius: 8px;
@@ -54,14 +53,16 @@ ul {
 
 li a {
   text-decoration: none;
-  display: block;
+  display: flex; /* Gør <a> til en flex container */
+  align-items: center; /* Vertikal centrering */
+  
   font-family: normalSkrift;
   color: lightgray;
 }
 
 li a span {
   font-size: 100px;
-  display: block;
+  
   color: lightgray;
   font-size: 200% !important;
   padding-right: 15px;
