@@ -193,3 +193,10 @@ li a:hover span {
     padding: 10px;
     font-size: 73%;
   }
+
+  .apexcharts-tooltip {
+    background: black !important;
+    color: lightgray !important;
+    border: none !important;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3) !important;
+  }
