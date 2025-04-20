@@ -10,7 +10,7 @@ async function getDataByKey(key) {
     const symbol = key;
     const endDate = new Date();
     const startDate = new Date();
-    startDate.setDate(endDate.getDate() - 30);  // Set start date to 30 days ago
+    startDate.setDate(endDate.getDate() - 14);  // Set start date to 30 days ago
 
     try {
         const historicalData = await yahooFinance.historical(symbol, {
@@ -24,6 +24,8 @@ async function getDataByKey(key) {
 
         // Return the prices array
         return data;
+
+        
     } catch (error) {
         console.error('Error fetching data:', error);
     }
