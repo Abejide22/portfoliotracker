@@ -73,7 +73,10 @@
                     <input type="hidden" name="accountId" value="<%= account.id %>">
                     <button type="submit" class="close-account">Luk Konto</button>
                   </form>
-                  <button class="reopen-account">Genåbn Konto</button>
+                  <form action="/reopen-account" method="POST" style="display:inline;">
+                  <input type="hidden" name="accountId" value="<%= account.id %>">
+                  <button type="submit" class="reopen-account">Genåbn Konto</button>
+                </form>
             </div>
             <% }) %>
               <% } %>

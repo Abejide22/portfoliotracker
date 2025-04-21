@@ -204,6 +204,22 @@ app.post("/close-account", async (req, res) => {
   }
 });
 
+app.post("/reopen-account", async (req, res) => {
+  const { accountId } = req.body;
+  try {
+    await poolConnect;
+    await pool.request().input("accountId", sql.Int, accountId).query(`
+      UPDATE Accounts
+      SET closed_at = NULL
+      WHERE id = @accountId
+      `);
+    res.redirect("/accounts");
+  } catch (err) {
+    console.error("Fejl ved genåbning af konto:", err);
+    res.status(500).send("Noget gik galt ved genåbning af konto.");
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Serveren kører på http://localhost:${PORT}`);
 });
