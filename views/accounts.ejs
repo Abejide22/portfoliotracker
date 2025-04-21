@@ -24,7 +24,8 @@
     <li><a href="/dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
     <li><a href="/portfolios"><span class="material-symbols-outlined">folder_open</span>Portfolios</a></li>
     <li><a href="/trade"><span class="material-symbols-outlined">query_stats</span>Market</a></li>
-    <li><a href="/accounts" style="color: gray;"><span class="material-symbols-outlined" style="color: gray;">account_balance_wallet</span>Accounts</a></li>
+    <li><a href="/accounts" style="color: gray;"><span class="material-symbols-outlined"
+          style="color: gray;">account_balance_wallet</span>Accounts</a></li>
     <li><a href="/profile"><span class="material-symbols-outlined">person</span>Profile</a></li>
   </ul>
 
@@ -33,28 +34,39 @@
     <!-- Kontooversigt -->
     <div id="accountsContainer">
       <h2>Kontooversigt</h2>
-      <div class="account">
-        <h3>Konto Navn: Opsparing</h3>
-        <p>Valuta: DKK</p>
-        <p>Saldo: 10,000 DKK</p>
-        <p>Oprettet: 2025-04-01</p>
-        <p>Bank: Danske Bank</p>
-        <button class="deposit-account">Indbetaling</button>
-        <button class="withdraw-account">Udbetaling</button>
-        <button class="close-account">Luk Konto</button>
-        <button class="reopen-account">Genåbn Konto</button>
-      </div>
-      <div class="account">
-        <h3>Konto Navn: Rejse</h3>
-        <p>Valuta: EUR</p>
-        <p>Saldo: 2,000 EUR</p>
-        <p>Oprettet: 2025-03-15</p>
-        <p>Bank: Nordea</p>
-        <button class="deposit-account">Indbetaling</button>
-        <button class="withdraw-account">Udbetaling</button>
-        <button class="close-account">Luk Konto</button>
-        <button class="reopen-account">Genåbn Konto</button>
-      </div>
+      <% if (accounts.length===0) { %>
+        <div class="account">
+          <h3>Konto Navn: Opsparing</h3>
+          <p>Valuta: DKK</p>
+          <p>Saldo: 10.000 DKK</p>
+          <p>Oprettet: 2025-04-01</p>
+          <p>Bank: Danske Bank</p>
+          <button class="deposit-account">Indbetal</button>
+          <button class="withdraw-account">Udbetal</button>
+          <button class="close-account">Luk Konto</button>
+          <button class="reopen-account">Genåbn Konto</button>
+        </div>
+        <% } else { %>
+          <% accounts.forEach(account=> { %>
+            <div class="account">
+              <h3>Konto Navn: <%= account.name %>
+              </h3>
+              <p>Valuta: <%= account.currency %>
+              </p>
+              <p>Saldo: <%= account.balance %>
+                  <%= account.currency %>
+              </p>
+              <p>Oprettet: <%= account.created_at.toISOString().split('T')[0] %>
+              </p>
+              <p>Bank: <%= account.bank %>
+              </p>
+              <button class="deposit-account">Indbetal</button>
+              <button class="withdraw-account">Udbetal</button>
+              <button class="close-account">Luk Konto</button>
+              <button class="reopen-account">Genåbn Konto</button>
+            </div>
+            <% }) %>
+              <% } %>
     </div>
 
     <!-- Opret ny konto -->

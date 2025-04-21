@@ -23,37 +23,25 @@ app.get("/index", (req, res) => {
   res.render("index"); // henter index.ejs
 });
 
-app.post("/index", async (req, res) => {
-  const { username, password } = req.body;
-
-  try {
-    await poolConnect;
-
-    const result = await pool
-      .request()
-      .input("username", sql.NVarChar, username)
-      .input("password", sql.NVarChar, password).query(`
-        SELECT * FROM Users WHERE username = @username AND password = @password
-      `);
-
-    if (result.recordset.length > 0) {
-      // Login successful
-      res.redirect("/dashboard");
-    } else {
-      res.status(401).send("Forkert brugernavn eller adgangskode.");
-    }
-  } catch (err) {
-    console.error("Fejl under login:", err);
-    res.status(500).send("Noget gik galt under login.");
-  }
-});
-
 app.get("/signup", (req, res) => {
   res.render("signup"); // henter signup.ejs
 });
 
-app.get("/accounts", (req, res) => {
-  res.render("accounts"); // henter accounts.ejs
+app.get("/accounts", async (req, res) => {
+  try {
+    await poolConnect;
+
+    const result = await pool.request().query(`
+      SELECT * FROM Accounts
+    `);
+
+    const accounts = result.recordset;
+
+    res.render("accounts", { accounts });
+  } catch (err) {
+    console.error("Fejl ved hentning af konti:", err);
+    res.status(500).send("Noget gik galt ved hentning af konti.");
+  }
 });
 
 app.get("/portfolios", (req, res) => {
@@ -133,6 +121,56 @@ app.get("/api/data", async (req, res) => {
   } catch (error) {
     console.error("Error fetching data:", error);
     return res.json({ error: "An error occurred while fetching stock data." });
+  }
+});
+
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    await poolConnect;
+
+    const result = await pool
+      .request()
+      .input("username", sql.NVarChar, username)
+      .input("password", sql.NVarChar, password).query(`
+        SELECT * FROM Users WHERE username = @username AND password = @password
+      `);
+
+    if (result.recordset.length > 0) {
+      // Login successful
+      res.redirect("/dashboard");
+    } else {
+      res.status(401).send("Forkert brugernavn eller adgangskode.");
+    }
+  } catch (err) {
+    console.error("Fejl under login:", err);
+    res.status(500).send("Noget gik galt under login.");
+  }
+});
+
+app.post("/create-account", async (req, res) => {
+  const { name, currency, bank } = req.body;
+
+  try {
+    await poolConnect;
+
+    const userId = 2; // Vi antager, at brugeren er logget ind og har ID 1. Det skal ændres til den rigtige bruger-ID.
+
+    await pool
+      .request()
+      .input("userId", sql.Int, userId)
+      .input("name", sql.NVarChar, name)
+      .input("currency", sql.NVarChar, currency)
+      .input("balance", sql.Decimal(18, 2), 0).query(`
+        INSERT INTO Accounts (user_id, name, currency, balance)
+        VALUES (@userId, @name, @currency, @balance)
+      `); // Vi indsætter en ny konto i databasen med de angivne oplysninger.
+
+    res.redirect("/accounts");
+  } catch (err) {
+    console.error("Fejl ved oprettelse af konto:", err);
+    res.status(500).send("Noget gik galt ved oprettelse af konto.");
   }
 });
 
