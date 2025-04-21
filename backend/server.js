@@ -97,23 +97,22 @@ app.post("/signup", async (req, res) => {
 // Market - GET aktie data
 // ------------------------------------------------------- //
 
-const fs = require('fs'); // importer fs modul for at læse fil
+const fs = require("fs"); // importer fs modul for at læse fil
 
 const { getDataByKey } = require("./api_test");
 
 // Route til at vise trade-siden
 app.get("/trade", (req, res) => {
-  fs.readFile('./backend/nasdaq_stocks.json', 'utf8', (err, fileData) => {
+  fs.readFile("./backend/nasdaq_stocks.json", "utf8", (err, fileData) => {
     if (err) {
       console.log(err);
-      return res.status(500).send('Kunne ikke læse filen');
+      return res.status(500).send("Kunne ikke læse filen");
     }
-    
+
     const jsonData = JSON.parse(fileData);
     // Stringify data og send den til EJS
-    res.render('trade', { data: jsonData });
+    res.render("trade", { data: jsonData });
   });
-
 });
 
 // API Route to fetch stock data
@@ -183,6 +182,25 @@ app.post("/create-account", async (req, res) => {
   } catch (err) {
     console.error("Fejl ved oprettelse af konto:", err);
     res.status(500).send("Noget gik galt ved oprettelse af konto.");
+  }
+});
+
+app.post("/close-account", async (req, res) => {
+  const { accountId } = req.body;
+
+  try {
+    await poolConnect;
+
+    await pool.request().input("accountId", sql.Int, accountId).query(`
+        UPDATE Accounts
+        SET closed_at = GETDATE()
+        WHERE id = @accountId
+      `);
+
+    res.redirect("/accounts");
+  } catch (err) {
+    console.error("Fejl ved lukning af konto:", err);
+    res.status(500).send("Noget gik galt ved lukning af konto.");
   }
 });
 

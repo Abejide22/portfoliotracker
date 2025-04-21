@@ -43,7 +43,10 @@
           <p>Bank: Danske Bank</p>
           <button class="deposit-account">Indbetal</button>
           <button class="withdraw-account">Udbetal</button>
-          <button class="close-account">Luk Konto</button>
+          <form action="/close-account" method="POST" style="display:inline;">
+            <input type="hidden" name="accountId" value="<%= account.id %>">
+            <button type="submit" class="close-account">Luk Konto</button>
+          </form>
           <button class="reopen-account">Genåbn Konto</button>
         </div>
         <% } else { %>
@@ -60,10 +63,17 @@
               </p>
               <p>Bank: <%= account.bank %>
               </p>
-              <button class="deposit-account">Indbetal</button>
-              <button class="withdraw-account">Udbetal</button>
-              <button class="close-account">Luk Konto</button>
-              <button class="reopen-account">Genåbn Konto</button>
+              <% if (account.closed_at) { %>
+                <p style="color:red;">Kontoen er lukket den <%= account.closed_at.toISOString().split("T")[0] %>
+                </p>
+                <% } %>
+                  <button class="deposit-account">Indbetal</button>
+                  <button class="withdraw-account">Udbetal</button>
+                  <form action="/close-account" method="POST" style="display:inline;">
+                    <input type="hidden" name="accountId" value="<%= account.id %>">
+                    <button type="submit" class="close-account">Luk Konto</button>
+                  </form>
+                  <button class="reopen-account">Genåbn Konto</button>
             </div>
             <% }) %>
               <% } %>
