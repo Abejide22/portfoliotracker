@@ -109,11 +109,23 @@ app.post("/signup", async (req, res) => {
 // Market - GET aktie data
 // ------------------------------------------------------- //
 
+const fs = require('fs'); // importer fs modul for at læse fil
+
 const { getDataByKey } = require("./api_test");
 
 // Route til at vise trade-siden
 app.get("/trade", (req, res) => {
-  res.render("trade"); // Du kan evt. sende en default variabel her
+  fs.readFile('./backend/nasdaq_stocks.json', 'utf8', (err, fileData) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send('Kunne ikke læse filen');
+    }
+    
+    const jsonData = JSON.parse(fileData);
+    // Stringify data og send den til EJS
+    res.render('trade', { data: jsonData });
+  });
+
 });
 
 // API Route to fetch stock data

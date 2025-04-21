@@ -120,3 +120,85 @@ li a:hover span {
   #vælgMarked_id button:hover{
     cursor:pointer;
   }
+
+  #stockBox_id{
+    background-color: #252525;
+    max-height: 450px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin-top: 0px;
+}
+#stockBox_id button{
+    border: 1px solid lightgray;
+    font-family: 'Franklin Gothic Book';
+    margin: 0;
+    padding: 9px;
+    display: block;
+    width: 100%;
+    background-color: transparent;
+    outline: none;
+    color: lightgray;
+    text-align: left;
+}
+#stockBox_id button:hover{
+    cursor: pointer;
+    color: dodgerblue;
+}
+#viewStock_id{
+    display: block;
+    background-color: #252525;
+    color: lightgray;
+    font-family: bahnschrift;
+    float: right;
+    padding:10px;
+    width: 97%;
+    height: 395px;
+    border-radius: 13px;
+    margin-top: -40px;
+    margin-right: 3%;
+}
+#viewStock_id p{
+    font-family: normalskrift;
+}
+#ViewBuystockBox_id{
+ 
+  float: right;
+  width: 46%;
+  margin-top: 3%;
+}
+#BuyStockButton_id{
+  background-color: green;
+  color: white;
+  font-family: normalskrift;
+  outline: none;
+  border: none;
+  padding: 7px 20px 7px 20px;
+  margin-top: 1%;
+  font-size: 15px;
+  border-bottom-right-radius: 7px;
+  border-top-right-radius: 7px;
+}
+#BuyStockButton_id:hover{
+  cursor: pointer;
+  background-color: darkgreen;
+}
+#NumberOfStocks_id{
+  width: 20%;
+  font-family: normalskrift;
+  border-bottom-left-radius: 7px;
+  border-top-left-radius: 7px;
+  padding: 7px;
+  font-size: 15px;
+  border: none;
+  outline: none;
+  background-color: lightgray;
+ 
+  
+}
+
+.white-text{
+  color: white;
+}
+.blue-text{
+  color: blue;
+}
