@@ -141,7 +141,7 @@ router.post("/create-account", async (req, res) => {
         `INSERT INTO Accounts (user_id, name, currency, bank) VALUES (@user_id, @name, @currency, @bank)`
       );
 
-    res.redirect("/accounts");
+    res.redirect(`/accounts?userId=${userId}`);
   } catch (err) {
     console.error("Fejl ved oprettelse af konto:", err);
     res.status(500).send("Noget gik galt ved oprettelse af konto.");
@@ -157,7 +157,7 @@ router.post("/close-account", async (req, res) => {
       .request()
       .input("accountId", sql.Int, accountId)
       .query("UPDATE Accounts SET closed_at = GETDATE() WHERE id = @accountId");
-      res.redirect(`/accounts?userId=${userId}`); // Man bliver sendt tilbage til accounts-siden. Siden bliver opdateret.
+    res.redirect(`/accounts?userId=${userId}`); // Man bliver sendt tilbage til accounts-siden. Siden bliver opdateret.
   } catch (err) {
     console.error("Fejl ved lukning af konto:", err);
     res.status(500).send("Noget gik galt ved lukning af konto.");
@@ -173,7 +173,7 @@ router.post("/reopen-account", async (req, res) => {
       .request()
       .input("accountId", sql.Int, accountId)
       .query("UPDATE Accounts SET closed_at = NULL WHERE id = @accountId");
-      res.redirect(`/accounts?userId=${userId}`); // / Man bliver sendt tilbage til accounts-siden. Siden bliver opdateret.
+    res.redirect(`/accounts?userId=${userId}`); // / Man bliver sendt tilbage til accounts-siden. Siden bliver opdateret.
   } catch (err) {
     console.error("Fejl ved genåbning af konto:", err);
     res.status(500).send("Noget gik galt ved genåbning af konto.");
