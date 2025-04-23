@@ -12,10 +12,16 @@
 </head>
 
 <body>
-
     <div id="topBar_id">
         <h1>PORTFOLIOTRACKER</h1>
-    </div>
+        <form action="/logout" method="POST" style="display: inline;">
+          <button type="submit" id="logoutButton" title="Log ud">
+            <span class="material-symbols-outlined">
+              account_circle_off
+            </span>
+          </button>
+        </form> 
+      </div>
 
     <ul>
         <li><a href="/dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
