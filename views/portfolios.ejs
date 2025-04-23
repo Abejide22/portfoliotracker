@@ -12,7 +12,7 @@
 </head>
 
 <body>
-      <!-- Top Bar og logout knap -->
+    <!-- Top Bar og logout knap -->
     <div id="topBar_id">
         <h1>PORTFOLIOTRACKER</h1>
         <form action="/logout" method="POST" style="display: inline;">
@@ -24,7 +24,7 @@
         </form>
     </div>
 
-     <!-- Side navigation -->
+    <!-- Side navigation -->
     <ul>
         <li><a href="/dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
         <li><a href="/portfolios" style="color: gray;"><span class="material-symbols-outlined"
@@ -37,9 +37,11 @@
     <div class="container">
         <div class="header">
             <h2>Portfolios</h2>
-            <button style="background: #333; color: white; padding: 10px; border: none; border-radius: 5px;">Tilføj
-                Portefølje</button>
+            <button id="addPortfolioBtn" class="primary-btn">
+                <span class="material-symbols-outlined">add</span>Tilføj Portefølje
+            </button>
         </div>
+
 
         <div class="grid-3">
             <div class="stacked">
@@ -108,6 +110,7 @@
 </html>
 
 <script>
+    // Runde Diagram 
     const options = {
         chart: {
             type: 'pie',
@@ -139,4 +142,5 @@
 
     const chart = new ApexCharts(document.querySelector("#chart"), options);
     chart.render();
+
 </script>
