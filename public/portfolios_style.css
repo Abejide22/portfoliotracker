@@ -155,3 +155,9 @@ th {
 .negative {
   color: #ff4444;
 }
+
+#chart {
+  max-width: 65%;
+  margin: auto;
+}
+
