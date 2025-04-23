@@ -20,17 +20,19 @@
           account_circle_off
         </span>
       </button>
-    </form> 
+    </form>
   </div>
 
   <!-- Side Navigation -->
   <ul>
-    <li><a href="/dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
-    <li><a href="/portfolios"><span class="material-symbols-outlined">folder_open</span>Portfolios</a></li>
-    <li><a href="/trade"><span class="material-symbols-outlined">query_stats</span>Market</a></li>
-    <li><a href="/accounts" style="color: gray;"><span class="material-symbols-outlined"
+    <li><a href="/dashboard?userId=<%= userId %>"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
+    </li>
+    <li><a href="/portfolios?userId=<%= userId %>"><span
+          class="material-symbols-outlined">folder_open</span>Portfolios</a></li>
+    <li><a href="/trade?userId=<%= userId %>"><span class="material-symbols-outlined">query_stats</span>Market</a></li>
+    <li><a href="/accounts?userId=<%= userId %>" style="color: gray;"><span class="material-symbols-outlined"
           style="color: gray;">account_balance_wallet</span>Accounts</a></li>
-    <li><a href="/profile"><span class="material-symbols-outlined">person</span>Profile</a></li>
+    <li><a href="/profile?userId=<%= userId %>"><span class="material-symbols-outlined">person</span>Profile</a></li>
   </ul>
 
   <!-- Main Content -->
@@ -47,10 +49,6 @@
           <p>Bank: Danske Bank</p>
           <button class="deposit-account">Indbetal</button>
           <button class="withdraw-account">Udbetal</button>
-          <form action="/close-account" method="POST" style="display:inline;">
-            <input type="hidden" name="accountId" value="<%= account.id %>">
-            <button type="submit" class="close-account">Luk Konto</button>
-          </form>
           <button class="reopen-account">Genåbn Konto</button>
         </div>
         <% } else { %>
@@ -91,7 +89,8 @@
     <!-- Opret ny konto -->
     <div id="createAccountContainer">
       <h2>Opret ny konto</h2>
-      <form action="/create-account" method="POST">
+      <form action="/create-account?userId=<%= userId %>" method="POST">
+        <input type="hidden" name="userId" value="<%= userId %>">
         <label>Kontonavn:</label>
         <input type="text" name="name" required>
         <label>Valuta:</label>
