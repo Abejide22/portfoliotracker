@@ -14,9 +14,13 @@
   <!-- Top Bar -->
   <div id="topBar_id">
     <h1>PORTFOLIOTRACKER</h1>
-    <a href="/dashboard" id="topBar_goBack_id">
-      <span class="material-symbols-outlined">home</span>
-    </a>
+    <form action="/logout" method="POST" style="display: inline;">
+      <button type="submit" id="logoutButton" title="Log ud">
+        <span class="material-symbols-outlined">
+          account_circle_off
+        </span>
+      </button>
+    </form> 
   </div>
 
   <!-- Side Navigation -->
