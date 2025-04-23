@@ -73,11 +73,11 @@
                     <button class="deposit-account">Indbetal</button>
                     <button class="withdraw-account">Udbetal</button>
                     <% } %>
-                      <form action="/close-account" method="POST" style="display:inline;">
+                      <form action="/close-account?userId=<%= userId %>" method="POST" style="display:inline;">
                         <input type="hidden" name="accountId" value="<%= account.id %>">
                         <button type="submit" class="close-account">Luk Konto</button>
                       </form>
-                      <form action="/reopen-account" method="POST" style="display:inline;">
+                      <form action="/reopen-account?userId=<%= userId %>" method="POST" style="display:inline;">
                         <input type="hidden" name="accountId" value="<%= account.id %>">
                         <button type="submit" class="reopen-account">Genåbn Konto</button>
                       </form>

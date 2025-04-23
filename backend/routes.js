@@ -46,7 +46,8 @@ router.get("/accounts", async (req, res) => {
   try {
     await poolConnect;
 
-    const result = await pool.request()
+    const result = await pool
+      .request()
       .input("userId", sql.Int, userId)
       .query("SELECT * FROM Accounts WHERE user_id = @userId");
 
@@ -149,13 +150,14 @@ router.post("/create-account", async (req, res) => {
 
 router.post("/close-account", async (req, res) => {
   const { accountId } = req.body;
+  const userId = parseInt(req.query.userId); // Hent userId fra forespørgslen, altså fra URL'en.
   try {
     await poolConnect;
     await pool
       .request()
       .input("accountId", sql.Int, accountId)
       .query("UPDATE Accounts SET closed_at = GETDATE() WHERE id = @accountId");
-    res.redirect("/accounts");
+      res.redirect(`/accounts?userId=${userId}`); // Man bliver sendt tilbage til accounts-siden. Siden bliver opdateret.
   } catch (err) {
     console.error("Fejl ved lukning af konto:", err);
     res.status(500).send("Noget gik galt ved lukning af konto.");
@@ -164,13 +166,14 @@ router.post("/close-account", async (req, res) => {
 
 router.post("/reopen-account", async (req, res) => {
   const { accountId } = req.body;
+  const userId = parseInt(req.query.userId); // Hent userId fra forespørgslen, altså fra URL'en.
   try {
     await poolConnect;
     await pool
       .request()
       .input("accountId", sql.Int, accountId)
       .query("UPDATE Accounts SET closed_at = NULL WHERE id = @accountId");
-    res.redirect("/accounts");
+      res.redirect(`/accounts?userId=${userId}`); // / Man bliver sendt tilbage til accounts-siden. Siden bliver opdateret.
   } catch (err) {
     console.error("Fejl ved genåbning af konto:", err);
     res.status(500).send("Noget gik galt ved genåbning af konto.");
