@@ -96,7 +96,7 @@ router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    await poolConnect;
+    await poolConnect; // poolConnect er en slags "promise" for at sikre, at forbindelsen er oprettet
 
     const result = await pool
       .request()
