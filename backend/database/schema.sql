@@ -17,7 +17,7 @@ CREATE TABLE Accounts (
   FOREIGN KEY (user_id) REFERENCES Users(id) -- refererer til Users, user_id skal være en gyldig id fra Users
 );
 
-CREATE TABLE Portfølier (
+CREATE TABLE Portfolios (
   id INT PRIMARY KEY IDENTITY(1,1),
   user_id INT NOT NULL, -- refererer til Users
   name NVARCHAR(100) NOT NULL UNIQUE, -- navn på portefølje, må ikke være NULL
@@ -25,7 +25,7 @@ CREATE TABLE Portfølier (
   FOREIGN KEY (user_id) REFERENCES Users(id) -- refererer til Users, user_id skal være en gyldig id fra Users
 );
 
-CREATE TABLE Værdipapirer (
+CREATE TABLE Stocks (
   id INT PRIMARY KEY IDENTITY(1,1),
   user_id INT NOT NULL, -- refererer til Users
   name NVARCHAR(100) NOT NULL, -- navn på værdipapiret, må ikke være NULL
