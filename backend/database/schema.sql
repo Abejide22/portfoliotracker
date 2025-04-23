@@ -17,23 +17,25 @@ CREATE TABLE Accounts (
   FOREIGN KEY (user_id) REFERENCES Users(id) -- refererer til Users, user_id skal være en gyldig id fra Users
 );
 
-CREATE TABLE Portfølier (
+CREATE TABLE Portfolios (
   id INT PRIMARY KEY IDENTITY(1,1),
   user_id INT NOT NULL, -- refererer til Users
-  name NVARCHAR(100) NOT NULL, -- navn på portefølje, må ikke være NULL
+  name NVARCHAR(100) NOT NULL UNIQUE, -- navn på portefølje, må ikke være NULL
   created_at DATETIME DEFAULT GETDATE(), -- oprettelsesdato, default er nuværende tidspunkt 
   FOREIGN KEY (user_id) REFERENCES Users(id) -- refererer til Users, user_id skal være en gyldig id fra Users
 );
 
-CREATE TABLE Værdipapirer (
+CREATE TABLE Stocks (
   id INT PRIMARY KEY IDENTITY(1,1),
   user_id INT NOT NULL, -- refererer til Users
+  portfolio_id INT NOT NULL, -- refererer til Portfolios
   name NVARCHAR(100) NOT NULL, -- navn på værdipapiret, må ikke være NULL
   type NVARCHAR(50) CHECK (type IN ('aktie', 'obligation', 'fond')), -- type af værdipapir, må ikke være NULL og skal være enten 'aktie', 'obligation' eller 'fond'
   quantity INT NOT NULL CHECK (quantity >= 0), -- antal værdipapirer, må ikke være NULL og skal være >= 0
   price DECIMAL(18,2) NOT NULL CHECK (price >= 0), -- pris pr. værdipapir, må ikke være NULL og skal være >= 0
   created_at DATETIME DEFAULT GETDATE(), -- oprettelsesdato, default er nuværende tidspunkt 
-  FOREIGN KEY (user_id) REFERENCES Users(id) -- refererer til Users, user_id skal være en gyldig id fra Users
+  FOREIGN KEY (user_id) REFERENCES Users(id), -- refererer til Users, user_id skal være en gyldig id fra Users
+  FOREIGN KEY (portfolio_id) REFERENCES Portfolios(id) -- refererer til Portfolios, portfolio_id skal være en gyldig id fra Portfolios
 );
 
 
@@ -45,4 +47,16 @@ CREATE TABLE Transactions (
   description NVARCHAR(255), -- beskrivelse af transaktionen
   created_at DATETIME DEFAULT GETDATE(), -- oprettelsesdato, default er nuværende tidspunkt 
   FOREIGN KEY (account_id) REFERENCES Accounts(id) -- refererer til Accounts, account_id skal være en gyldig id fra Accounts
+);
+
+CREATE TABLE Trades (
+  id INT PRIMARY KEY IDENTITY(1,1),
+  stock_id INT NOT NULL, -- refererer til Stocks
+  buy_price DECIMAL(18,2) NOT NULL CHECK (buy_price >= 0), -- købspris pr. værdipapir, må ikke være NULL og skal være >= 0
+  sell_price DECIMAL(18,2) CHECK (sell_price >= 0), -- salgspris pr. værdipapir, må være NULL eller >= 0
+  quantity_bought INT NOT NULL CHECK (quantity_bought >= 0), -- antal købte værdipapirer, må ikke være NULL og skal være >= 0
+  quantity_sold INT CHECK (quantity_sold >= 0), -- antal solgte værdipapirer, må være NULL eller >= 0
+  buy_date DATETIME DEFAULT GETDATE(), -- købsdato, default er nuværende tidspunkt
+  sell_date DATETIME DEFAULT GETDATE(), -- salgsdato, default er nuværende tidspunkt
+  FOREIGN KEY (stock_id) REFERENCES Stocks(id) -- refererer til Stocks, stock_id skal være en gyldig id fra Stocks
 );
