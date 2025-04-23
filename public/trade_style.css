@@ -9,10 +9,26 @@ body{
     src: url(/fonts/Bierstadt.ttf);
   }
   #topBar_id{
+    position: relative;
     width: 100%;
     background-color: #5F45A0;
     display: block;
     position: relative;
+  }
+  #logoutButton {
+    position: absolute; /* Gør det muligt at placere knappen relativt til topbaren */
+    top: 50%; /* Centrerer knappen vertikalt */
+    right: 10px; /* Placerer knappen 10px fra højre kant */
+    transform: translateY(-50%); /* Justerer for vertikal centrering */
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: white; /* Matcher ikonets farve med topbarens tekstfarve */
+    font-size: 24px; /* Justerer ikonets størrelse */
+  }
+  
+  #logoutButton:hover {
+    color: #ff4d4d; /* Ændrer farven ved hover for at indikere handling */
   }
   h1{
       display: inline-block;
