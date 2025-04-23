@@ -20,7 +20,7 @@ CREATE TABLE Accounts (
 CREATE TABLE Portfølier (
   id INT PRIMARY KEY IDENTITY(1,1),
   user_id INT NOT NULL, -- refererer til Users
-  name NVARCHAR(100) NOT NULL, -- navn på portefølje, må ikke være NULL
+  name NVARCHAR(100) NOT NULL UNIQUE, -- navn på portefølje, må ikke være NULL
   created_at DATETIME DEFAULT GETDATE(), -- oprettelsesdato, default er nuværende tidspunkt 
   FOREIGN KEY (user_id) REFERENCES Users(id) -- refererer til Users, user_id skal være en gyldig id fra Users
 );
