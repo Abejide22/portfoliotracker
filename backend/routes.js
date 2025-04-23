@@ -41,11 +41,18 @@ router.get("/trade", (req, res) => {
 });
 
 router.get("/accounts", async (req, res) => {
+  const userId = parseInt(req.query.userId);
+
   try {
     await poolConnect;
-    const result = await pool.request().query("SELECT * FROM Accounts");
+
+    const result = await pool.request()
+      .input("userId", sql.Int, userId)
+      .query("SELECT * FROM Accounts WHERE user_id = @userId");
+
     const accounts = result.recordset;
-    res.render("accounts", { accounts });
+
+    res.render("accounts", { accounts, userId }); // sender userId videre til EJS
   } catch (err) {
     console.error("Fejl ved hentning af konti:", err);
     res.status(500).send("Noget gik galt ved hentning af konti.");
@@ -109,7 +116,7 @@ router.post("/login", async (req, res) => {
       return res.render("login", { error: "Forkert brugernavn eller kodeord" });
     }
 
-    res.redirect(`/dashboard?userId=${user.id}&username=${user.username}`);
+    res.redirect(`/accounts?userId=${user.id}`);
   } catch (err) {
     console.error("Login-fejl:", err);
     res.status(500).send("Noget gik galt under login.");
@@ -118,7 +125,7 @@ router.post("/login", async (req, res) => {
 
 router.post("/create-account", async (req, res) => {
   const { name, currency, bank } = req.body;
-  const userId = 1;
+  const userId = parseInt(req.query.userId); // Hent userId fra forespørgslen, altså fra URL'en.
 
   try {
     await poolConnect;
