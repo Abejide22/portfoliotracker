@@ -89,16 +89,18 @@ router.post("/signup", async (req, res) => {
       });
     }
 
-    await pool
+    const insertResult = await pool
       .request()
       .input("username", sql.NVarChar, username)
       .input("email", sql.NVarChar, email)
       .input("password", sql.NVarChar, password)
       .query(
-        `INSERT INTO Users (username, email, password) VALUES (@username, @email, @password)`
+        `INSERT INTO Users (username, email, password) OUTPUT INSERTED.id VALUES (@username, @email, @password)`
       );
 
-    res.redirect("/login");
+    const newUserId = insertResult.recordset[0].id;
+
+    res.redirect(`/dashboard?userId=${newUserId}`);
   } catch (err) {
     console.error("Fejl ved brugeroprettelse:", err);
     res.render("signup", { error: "Noget gik galt." });
