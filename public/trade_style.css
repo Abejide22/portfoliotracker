@@ -114,8 +114,8 @@ li a:hover span {
     #stockListBox_id div{
       border: 1px solid lightgray;
       font-family: normalskrift;
-      padding: 8px;
-      font-size: 15px;
+      padding: 10px;
+      font-size: 14px;
     }
     #stockListBox_id div:hover{
       color: dodgerblue;

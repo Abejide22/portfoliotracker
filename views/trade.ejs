@@ -89,11 +89,12 @@
 
 
 <script>
-  
-  
-</script>
 
-<script>
+var last30Days = <%= JSON.stringify(last30Days) %>;
+  
+  // Nu kan du bruge 'last30Days' i din JavaScript-kode
+  console.log(last30Days);
+
 
 const tickers = [
   "ALMB",
@@ -205,6 +206,9 @@ function lavListMedAktier(){
       // Create element:
       const para = document.createElement("div");
       para.innerHTML = aktienavne[i];
+
+      // Tilføj value attribut:
+      para.setAttribute("value", tickers[i]);
 
     // Append to another element:
     document.getElementById("stockListBox_id").appendChild(para);
