@@ -67,66 +67,7 @@
 
 <script>
 
-const NasDaqstocks = <%- JSON.stringify(data) %>;
-
-const NasDaqstocksTicker = [
-  "AAPL", "MSFT", "AMZN", "GOOG", "GOOGL", "META", "NVDA", "TSLA", "INTC", "ADBE",
-  "NFLX", "PYPL", "CSCO", "PEP", "COST", "AVGO", "AMD", "QCOM", "INTU", "ASML",
-  "PLTR", "TMUS", "PDD", "AMGN", "BKNG", "MSTR", "AXON", "ABNB", "AEP", "ADI",
-  "ANSS", "AMAT", "APP", "ARM", "AZN", "TEAM", "ADSK", "ADP", "BKR", "BIIB",
-  "CDNS", "CDW", "CHTR", "CTAS", "CCEP", "CTSH", "CMCSA", "CEG", "CPRT", "CSGP",
-  "CRWD", "CSX", "DDOG", "DXCM", "FANG", "DASH", "EA", "EXC", "FAST", "FTNT",
-  "GEHC", "GILD", "GFS", "HON", "IDXX", "ISRG", "KDP", "KLAC", "KHC", "LRCX",
-  "LIN", "LULU", "MAR", "MRVL", "MELI", "MCHP", "MU", "MDB", "MDLZ", "MNST",
-  "NXPI", "ORLY", "ODFL", "ON", "PCAR", "PANW", "PAYX", "REGN", "ROP", "ROST"];
-
-  const DK_tickers = [
-    "MAERSK-B", "MAERSK-A", "AMBU-B", "BAVA", "CARLB", "COLO-B", "DANSKE", 
-    "DEMANT", "DSV", "GEN", "GN", "ISS", "JYKRE", "JYSK", "NKT", "NDA-DK", 
-    "NOVO-B", "NOVO-B", "PNDORA", "ROCK-B", "RBREW", "SYDBANK", "TRYG", 
-    "VWS", "ZEAL", "ORSTED", "ALPORT", "AAK", "ALMB", "AMBU-B", "ARLA", 
-    "BAVA", "BASF", "BMG", "BEST", "BJO", "BVIT", "BILL", "BJO", "DUNI", 
-    "DYN", "ECCO", "FLS", "FOLK", "FREEN", "G4S", "GALL", "GEN", "GSK", 
-    "GRUN", "LUN", "HM", "HEI", "ICG", "ICL", "DELO", "DONG", "DUNI", "GSK", 
-    "FLS", "FLS", "ISS", "JYKRE", "KLM", "LUN", "LUND", "ISAK", "SACO", "NNG"
-]
-
   let stockName = "";
-
-
-  function chooseMarket_nasDaq(){
-    // Skift farve på nasDaqButton 
-    document.getElementById("nasDaqButton_id").style.backgroundColor = "lightgray";
-    // Skift skriftfarve på nasdaq
-    document.getElementById("nasDaqButton_id").style.color = "#252525";
-
-    // Skift farve på CSEButton
-    document.getElementById("CSEButton_id").style.backgroundColor = "#252525";
-    // Skift skriftfarve på cse
-    document.getElementById("CSEButton_id").style.color = "lightgray";
-
-    // Skift font weight
-    document.getElementById("nasDaqButton_id").style.fontWeight = "bold";
-    document.getElementById("CSEButton_id").style.fontWeight = "normal";
-
-    
-  }
-
-  function chooseMarket_CSE(){
-    // Skift farve på nasDaqButton 
-    document.getElementById("nasDaqButton_id").style.backgroundColor = "#252525";
-    // Skift skriftfarve på nasDaq
-    document.getElementById("nasDaqButton_id").style.color = "lightgray";
-
-    // Skift farve på CSEButton
-    document.getElementById("CSEButton_id").style.backgroundColor = "lightgray";
-    // Skift skriftfarve på cse
-    document.getElementById("CSEButton_id").style.color = "#252525";
-
-    // Skift font weight
-    document.getElementById("nasDaqButton_id").style.fontWeight = "normal";
-    document.getElementById("CSEButton_id").style.fontWeight = "bold";
-  }
 
 
 for (let i = 0; i < NasDaqstocks.length; i++) {
