@@ -1,10 +1,15 @@
+/* Denne fil er en del af backend. Den håndterer ruterne
+og forespørgslerne til serveren. Når brugeren besøger en side,
+så sender der en forespørgsel til serveren, og serveren sender
+siden tilbage til brugeren. */
+
 const express = require("express");
 const router = express.Router();
 const { pool, poolConnect, sql } = require("./database/database");
 const fs = require("fs");
 const { getDataByKey } = require("./api_test");
 
-// Eksempel:
+
 router.get("/dashboard", (req, res) => {
   res.render("dashboard", {
     userId: req.query.userId,
