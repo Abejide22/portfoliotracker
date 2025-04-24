@@ -4,7 +4,6 @@ const path = require("path");
 const session = require("express-session"); // vi tilføjer express-session for at forhindre folk i at tilgå sider uden at være logget ind
 const { pool, poolConnect, sql } = require("./database/database");
 const routes = require("./routes");
-const session = require("express-session");
 
 const app = express();
 const PORT = 3000;
