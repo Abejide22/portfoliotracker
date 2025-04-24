@@ -7,13 +7,15 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE Accounts (
-  id INT PRIMARY KEY IDENTITY(1,1),
+  konto_id INT PRIMARY KEY IDENTITY(1,1), -- primær nøgle
   user_id INT NOT NULL, -- refererer til Users
-  name NVARCHAR(100) NOT NULL, -- navn på konto, må ikke være NULL   
+  name NVARCHAR(100) NOT NULL, -- navn på konto, må ikke være NULL
   currency NVARCHAR(10) NOT NULL, -- valuta på konto, må ikke være NULL
   balance DECIMAL(18,2) DEFAULT 0, -- balancen, default er 0
-  created_at DATETIME DEFAULT GETDATE(), -- oprettelsesdato, default er nuværende tidspunkt 
+  created_at DATETIME DEFAULT GETDATE(), -- oprettelsesdato, default er nuværende tidspunkt
   bank NVARCHAR(100), -- bankens navn, som kontoen er tilknyttet til
+  status NVARCHAR(10) DEFAULT 'åben' CHECK (status IN ('åben', 'lukket')), -- status, enten 'åben' eller 'lukket'
+  closed_at DATETIME NULL, -- dato for lukning af konto, kan være NULL
   FOREIGN KEY (user_id) REFERENCES Users(id) -- refererer til Users, user_id skal være en gyldig id fra Users
 );
 
