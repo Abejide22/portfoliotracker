@@ -9,7 +9,6 @@ const { pool, poolConnect, sql } = require("./database/database");
 const fs = require("fs");
 const { getDataByKey } = require("./api_test");
 
-
 router.get("/dashboard", (req, res) => {
   res.render("dashboard", {
     userId: req.query.userId,
@@ -182,6 +181,51 @@ router.post("/reopen-account", async (req, res) => {
   } catch (err) {
     console.error("Fejl ved genåbning af konto:", err);
     res.status(500).send("Noget gik galt ved genåbning af konto.");
+  }
+});
+
+router.post("/deposit", async (req, res) => {
+  const { accountId, amount } = req.body;
+  const userId = parseInt(req.query.userId);
+
+  try {
+    await poolConnect;
+
+    await pool
+      .request()
+      .input("accountId", sql.Int, accountId)
+      .input("amount", sql.Decimal(18, 2), amount).query(`
+        UPDATE Accounts SET balance = balance + @amount WHERE id = @accountId;
+        INSERT INTO Transactions (account_id, type, amount, currency)
+        VALUES (@accountId, 'deposit', @amount, (SELECT currency FROM Accounts WHERE id = @accountId));
+      `);
+
+    res.redirect(`/accounts?userId=${userId}`);
+  } catch (err) {
+    console.error("Fejl ved indbetaling:", err);
+    res.status(500).send("Noget gik galt ved indbetaling.");
+  }
+});
+
+router.post("/withdraw", async (req, res) => {
+  const { accountId, amount } = req.body;
+  const userId = parseInt(req.query.userId);
+
+  try {
+    await poolConnect; // Sikrer at forbindelsen er oprettet
+
+    await pool
+      .request()
+      .input("accountId", sql.Int, accountId)
+      .input("amount", sql.Decimal(18, 2), amount).query(`
+      UPDATE Accounts SET balance = balance - @amount WHERE id = @accountId;
+      INSERT INTO Transactions (account_id, type, amount, currency)
+      VALUES (@accountId, 'withdrawal', -@amount, (SELECT currency FROM Accounts WHERE id = @accountId));
+      `);
+    res.redirect(`/accounts?userId=${userId}`);
+  } catch (err) {
+    console.error("Fejl ved hævning:", err);
+    res.status(500).send("Noget gik galt ved hævning.");
   }
 });
 
