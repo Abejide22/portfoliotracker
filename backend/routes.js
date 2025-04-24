@@ -10,11 +10,9 @@ const fs = require("fs");
 const { getDataByKey } = require("./api_test");
 
 router.get("/dashboard", (req, res) => {
-  res.render("dashboard", {
-    userId: req.query.userId,
-    username: req.query.username,
+  const userId = req.query.userId;
+  res.render("dashboard", { userId });
   });
-});
 
 router.get("/", (req, res) => {
   res.redirect("/index");
@@ -33,15 +31,18 @@ router.get("/login", (req, res) => {
 });
 
 router.get("/profile", (req, res) => {
-  res.render("profile");
+  const userId = req.query.userId;
+  res.render("profile", { userId });
 });
 
 router.get("/portfolios", (req, res) => {
-  res.render("portfolios");
+  const userId = req.query.userId;
+  res.render("portfolios" , { userId });
 });
 
 router.get("/trade", (req, res) => {
-  res.render("trade");
+  const userId = req.query.userId;
+  res.render("trade" , { userId });
 });
 
 router.get("/accounts", async (req, res) => {
@@ -251,7 +252,17 @@ router.get("/transactions", async (req, res) => {
       return { ...trans, balance_after: runningBalance };
     });
 
-    res.render("transactions", { transactions: transactionsWithBalance });
+    const accountResult = await pool
+      .request()
+      .input("accountId", sql.Int, accountId)
+      .query("SELECT * FROM Accounts WHERE id = @accountId");
+
+    const account = accountResult.recordset[0];
+
+    res.render("transactions", {
+      transactions: transactionsWithBalance,
+      account
+    });
   } catch (err) {
     console.error("Fejl ved hentning af transaktioner:", err);
     res.status(500).send("Noget gik galt ved hentning af transaktioner.");

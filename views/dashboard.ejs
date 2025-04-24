@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfoliotracker - Dashboard</title>
-    <link href="dashboard_style.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfoliotracker - Dashboard</title>
+  <link href="dashboard_style.css" rel="stylesheet">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 </head>
 
 <body>
@@ -18,152 +20,156 @@
           account_circle_off
         </span>
       </button>
-    </form> 
+    </form>
   </div>
 
-    
 
-    <ul>
-        <li><a href="/dashboard" style="color: gray;"><span class="material-symbols-outlined" style="color: gray;">dashboard</span>Dashboard</a></li>
-        <li><a href="/portfolios"><span class="material-symbols-outlined">folder_open</span>Portfolios</a></li>
-        <li><a href="/trade"><span class="material-symbols-outlined">query_stats</span>Market</a></li>
-        <li><a href="/accounts"><span class="material-symbols-outlined">account_balance_wallet</span>Accounts</a></li>
-        <li><a href="/profile"><span class="material-symbols-outlined">person</span>Profile</a></li>
-      </ul>
 
-      
-      <div id="bodyIndholdContainer_id">
-        <h2>Dashboard</h2>
-        <div id="container_værdier_id">
-          <div id="totalVærdi_box_id">
-            <span>Total værdi</span>
-            <hr>
-            <span>
-              <span class="material-symbols-outlined" style="color: limegreen">arrow_upward_alt</span>
-              <span id="totalVærdi_procent_id">5%</span>
-              <span style="float: right;">&nbsp;1000 kr.</span>
-            </span>
-          </div>
-          
-          <div id="totalRealiseretVærdi_box_id">
-            <span>Total realiseret værdi</span>
-            <hr>
-            <span>
-              <span class="material-symbols-outlined" style="color: limegreen">arrow_downward_alt</span>
-              <span id="totalRealiseretVærdi_procent_id">3%</span>
-              <span style="float: right;">&nbsp;500 kr.</span>
-            </span>
-          </div>
-          
-          <div id="totalUrealiseretVærdi_box_id">
-            <span>Total urealiseret værdi</span>
-            <hr>
-            <span>
-              <span class="material-symbols-outlined" style="color: limegreen">arrow_upward_alt</span>
-              <span id="totalUrealiseretVærdi_procent_id">6%</span>
-              <span style="float: right;">&nbsp;300 kr.</span>
-          </div>
-        </div>
+  <ul>
+    <li><a href="/dashboard?userId=<%= userId %>" style="color: gray;"><span class="material-symbols-outlined"
+          style="color: gray;">dashboard</span>Dashboard</a></li>
+    <li><a href="/portfolios?userId=<%= userId %>"><span
+          class="material-symbols-outlined">folder_open</span>Portfolios</a></li>
+    <li><a href="/trade?userId=<%= userId %>"><span class="material-symbols-outlined">query_stats</span>Market</a></li>
+    <li><a href="/accounts?userId=<%= userId %>"><span
+          class="material-symbols-outlined">account_balance_wallet</span>Accounts</a></li>
+    <li><a href="/profile?userId=<%= userId %>" style="color: gray;"><span class="material-symbols-outlined">person</span>Profile</a></li>
+  </ul>
+
+
+  <div id="bodyIndholdContainer_id">
+    <h2>Dashboard</h2>
+    <div id="container_værdier_id">
+      <div id="totalVærdi_box_id">
+        <span>Total værdi</span>
+        <hr>
+        <span>
+          <span class="material-symbols-outlined" style="color: limegreen">arrow_upward_alt</span>
+          <span id="totalVærdi_procent_id">5%</span>
+          <span style="float: right;">&nbsp;1000 kr.</span>
+        </span>
       </div>
 
-      <!-- Graf over samlet værdi -->
-      <div id="samletVærdi_boks_id">
-        <div id="chart"></div>
-        
+      <div id="totalRealiseretVærdi_box_id">
+        <span>Total realiseret værdi</span>
+        <hr>
+        <span>
+          <span class="material-symbols-outlined" style="color: limegreen">arrow_downward_alt</span>
+          <span id="totalRealiseretVærdi_procent_id">3%</span>
+          <span style="float: right;">&nbsp;500 kr.</span>
+        </span>
       </div>
 
-      <!-- Top 5 værdipapirer -->
-      <div id="top5_boks_id">
-        <div id="top5Værdipapirer_tværsAfPorteføljer_id">
-          <span>Top 5 værdipapirer på tværs af porteføljer</span>
-          <table>
-            <tr>
-              <th>Name</th>
-              <th>Portfolio</th>
-              <th>24h change</th>
-              <th>Value</th>
-            </tr>
-            <tr>
-              <td>Apple Inc.</td>
-              <td>Sushi</td>
-              <td>1.3%</td>
-              <td>12.000 DKK</td>
-            </tr>
-            <tr>
-              <td>Microsoft Cooperation</td>
-              <td>Hamburger</td>
-              <td>1.4%</td>
-              <td>19.000 DKK</td>
-            </tr>
-            <tr>
-              <td>Alhabet Inc.</td>
-              <td>Water</td>
-              <td>1.5%</td>
-              <td>9.000 DKK</td>
-            </tr>
-            <tr>
-              <td>Meta Inc.</td>
-              <td>Bottle of water</td>
-              <td>1.6%</td>
-              <td>10.000 DKK</td>
-            </tr>
-            <tr>
-              <td>Shopify</td>
-              <td>Hamburger</td>
-              <td>3.6%</td>
-              <td>2.000 DKK</td>
-            </tr>
-            
-          </table>
-        </div>
-        <div id="top5Værdipapirer_urealiseret_id">
-          <span>Top 5 værdipapirer på tværs af porteføljer</span>
-          <table>
-            <tr>
-              <th>Name</th>
-              <th>Portfolio</th>
-              <th>24h change</th>
-              <th>Value</th>
-            </tr>
-            <tr>
-              <td>Apple Inc.</td>
-              <td>Sushi</td>
-              <td>1.3%</td>
-              <td>12.000 DKK</td>
-            </tr>
-            <tr>
-              <td>Microsoft Cooperation</td>
-              <td>Hamburger</td>
-              <td>1.4%</td>
-              <td>19.000 DKK</td>
-            </tr>
-            <tr>
-              <td>Alhabet Inc.</td>
-              <td>Water</td>
-              <td>1.5%</td>
-              <td>9.000 DKK</td>
-            </tr>
-            <tr>
-              <td>Meta Inc.</td>
-              <td>Bottle of water</td>
-              <td>1.6%</td>
-              <td>10.000 DKK</td>
-            </tr>
-            <tr>
-              <td>Shopify</td>
-              <td>Hamburger</td>
-              <td>3.6%</td>
-              <td>2.000 DKK</td>
-            </tr>
-            
-          </table>
-        </div>
+      <div id="totalUrealiseretVærdi_box_id">
+        <span>Total urealiseret værdi</span>
+        <hr>
+        <span>
+          <span class="material-symbols-outlined" style="color: limegreen">arrow_upward_alt</span>
+          <span id="totalUrealiseretVærdi_procent_id">6%</span>
+          <span style="float: right;">&nbsp;300 kr.</span>
       </div>
-      <br><br>
-      <div>
+    </div>
+  </div>
 
-      </div>
+  <!-- Graf over samlet værdi -->
+  <div id="samletVærdi_boks_id">
+    <div id="chart"></div>
+
+  </div>
+
+  <!-- Top 5 værdipapirer -->
+  <div id="top5_boks_id">
+    <div id="top5Værdipapirer_tværsAfPorteføljer_id">
+      <span>Top 5 værdipapirer på tværs af porteføljer</span>
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Portfolio</th>
+          <th>24h change</th>
+          <th>Value</th>
+        </tr>
+        <tr>
+          <td>Apple Inc.</td>
+          <td>Sushi</td>
+          <td>1.3%</td>
+          <td>12.000 DKK</td>
+        </tr>
+        <tr>
+          <td>Microsoft Cooperation</td>
+          <td>Hamburger</td>
+          <td>1.4%</td>
+          <td>19.000 DKK</td>
+        </tr>
+        <tr>
+          <td>Alhabet Inc.</td>
+          <td>Water</td>
+          <td>1.5%</td>
+          <td>9.000 DKK</td>
+        </tr>
+        <tr>
+          <td>Meta Inc.</td>
+          <td>Bottle of water</td>
+          <td>1.6%</td>
+          <td>10.000 DKK</td>
+        </tr>
+        <tr>
+          <td>Shopify</td>
+          <td>Hamburger</td>
+          <td>3.6%</td>
+          <td>2.000 DKK</td>
+        </tr>
+
+      </table>
+    </div>
+    <div id="top5Værdipapirer_urealiseret_id">
+      <span>Top 5 værdipapirer på tværs af porteføljer</span>
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Portfolio</th>
+          <th>24h change</th>
+          <th>Value</th>
+        </tr>
+        <tr>
+          <td>Apple Inc.</td>
+          <td>Sushi</td>
+          <td>1.3%</td>
+          <td>12.000 DKK</td>
+        </tr>
+        <tr>
+          <td>Microsoft Cooperation</td>
+          <td>Hamburger</td>
+          <td>1.4%</td>
+          <td>19.000 DKK</td>
+        </tr>
+        <tr>
+          <td>Alhabet Inc.</td>
+          <td>Water</td>
+          <td>1.5%</td>
+          <td>9.000 DKK</td>
+        </tr>
+        <tr>
+          <td>Meta Inc.</td>
+          <td>Bottle of water</td>
+          <td>1.6%</td>
+          <td>10.000 DKK</td>
+        </tr>
+        <tr>
+          <td>Shopify</td>
+          <td>Hamburger</td>
+          <td>3.6%</td>
+          <td>2.000 DKK</td>
+        </tr>
+
+      </table>
+    </div>
+  </div>
+  <br><br>
+  <div>
+
+  </div>
 </body>
+
 </html>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
@@ -171,113 +177,113 @@
 <script>
 
 
-// Get the current date
-const currentDate = new Date();
+  // Get the current date
+  const currentDate = new Date();
 
-// Create an array to hold the dates
-const datesArray = [];
+  // Create an array to hold the dates
+  const datesArray = [];
 
-// Loop from 0-13 days ago up to the current date
-for (let i = 0; i <= 13; i++) {
+  // Loop from 0-13 days ago up to the current date
+  for (let i = 0; i <= 13; i++) {
     const tempDate = new Date();
     tempDate.setDate(currentDate.getDate() - i); // Set the date to be `i` days before today
     datesArray.push(tempDate.toISOString().split('T')[0]); // Add the date to the array in YYYY-MM-DD format
-}
-console.log(datesArray);
+  }
+  console.log(datesArray);
 
-const flippedArray = datesArray.reverse();
+  const flippedArray = datesArray.reverse();
 
   const xValues = flippedArray;
-console.log(xValues);
+  console.log(xValues);
 
 
-const options = {
-      chart: {
-        type: 'line',
-        height: 350,
-        fontFamily: 'normalSkrift'
-      },
-      colors: ['blue'], // Graflinje farve
-      
-      series: [{
-        name: 'Aktiekurs',
-        data: [150, 152, 149, 155, 160, 162, 158, 161,150,155,143,148,167,169]
-      }],
-      xaxis: {
-        categories: xValues,
-        labels: {
-          style: {
-            colors: '#fff' // Tekstfarve på x-aksen
-          }
-        },
-        title: {
-          text: 'Ugedage',
-          style: {
-            color: 'lightgray'
-          }
-        }
-      },
-      yaxis: {
-        labels: {
-          style: {
-            colors: 'lightgray' // Tekstfarve på y-aksen
-          }
-        },
-        title: {
-          text: 'Kurs (DKK)',
-          style: {
-            color: 'lightgray'
-          }
+  const options = {
+    chart: {
+      type: 'line',
+      height: 350,
+      fontFamily: 'normalSkrift'
+    },
+    colors: ['blue'], // Graflinje farve
+
+    series: [{
+      name: 'Aktiekurs',
+      data: [150, 152, 149, 155, 160, 162, 158, 161, 150, 155, 143, 148, 167, 169]
+    }],
+    xaxis: {
+      categories: xValues,
+      labels: {
+        style: {
+          colors: '#fff' // Tekstfarve på x-aksen
         }
       },
       title: {
-        text: 'Samlet værdi',
-        align: 'left',
+        text: 'Ugedage',
         style: {
           color: 'lightgray'
         }
-      },
-      stroke: {
-        curve: 'smooth'
-      },
-
-
-      tooltip: {
-        theme: 'dark',
+      }
+    },
+    yaxis: {
+      labels: {
         style: {
-          fontSize: '14px',
-          fontFamily: 'normalSkrift',
-          backgroundColor: 'black'
-        },
-        marker: {
-          show: true,
-          fillColors: ['blue']
-        },
-  y: {
-    formatter: function (value) {
-      return value + " DKK";
-    }
-  }
-},
+          colors: 'lightgray' // Tekstfarve på y-aksen
+        }
+      },
+      title: {
+        text: 'Kurs (DKK)',
+        style: {
+          color: 'lightgray'
+        }
+      }
+    },
+    title: {
+      text: 'Samlet værdi',
+      align: 'left',
+      style: {
+        color: 'lightgray'
+      }
+    },
+    stroke: {
+      curve: 'smooth'
+    },
 
-grid: {
-  show: true, // sæt til false hvis du vil skjule alle gitterlinjer
-  borderColor: 'gray', // farven på linjerne
-  strokeDashArray: 4, // gør dem stiplede (0 = fuldt optrukket)
-  xaxis: {
-    lines: {
-      show: false // fjerner vertikale linjer
-    }
-  },
-  yaxis: {
-    lines: {
-      show: true // viser horisontale linjer
-    }
-  }
-}
 
-    };
+    tooltip: {
+      theme: 'dark',
+      style: {
+        fontSize: '14px',
+        fontFamily: 'normalSkrift',
+        backgroundColor: 'black'
+      },
+      marker: {
+        show: true,
+        fillColors: ['blue']
+      },
+      y: {
+        formatter: function (value) {
+          return value + " DKK";
+        }
+      }
+    },
 
-    const chart = new ApexCharts(document.querySelector("#chart"), options);
-    chart.render();
-  </script>
+    grid: {
+      show: true, // sæt til false hvis du vil skjule alle gitterlinjer
+      borderColor: 'gray', // farven på linjerne
+      strokeDashArray: 4, // gør dem stiplede (0 = fuldt optrukket)
+      xaxis: {
+        lines: {
+          show: false // fjerner vertikale linjer
+        }
+      },
+      yaxis: {
+        lines: {
+          show: true // viser horisontale linjer
+        }
+      }
+    }
+
+  };
+
+  const chart = new ApexCharts(document.querySelector("#chart"), options);
+  chart.render();
+</script>
