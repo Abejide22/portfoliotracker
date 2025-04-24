@@ -91,6 +91,11 @@
                         <input type="hidden" name="accountId" value="<%= account.id %>">
                         <button type="submit" class="reopen-account">Genåbn Konto</button>
                       </form>
+                      <!-- Se transaktioner-knap -->
+                      <form action="/transactions" method="GET" style="display:inline;">
+                        <input type="hidden" name="accountId" value="<%= account.id %>">
+                        <button type="submit">Se transaktioner</button>
+                      </form>
             </div>
             <% }) %>
               <% } %>
