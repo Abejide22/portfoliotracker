@@ -238,13 +238,15 @@ router.get("/transactions", async (req, res) => {
     const result = await pool
       .request()
       .input("accountId", sql.Int, accountId)
-      .query("SELECT * FROM Transactions WHERE account_id = @accountId ORDER BY created_at ASC");
+      .query(
+        "SELECT * FROM Transactions WHERE account_id = @accountId ORDER BY created_at ASC"
+      );
 
     const transactions = result.recordset;
 
     // Beregn løbende saldo efter hver transaktion
     let runningBalance = 0;
-    const transactionsWithBalance = transactions.map(trans => {
+    const transactionsWithBalance = transactions.map((trans) => {
       runningBalance += trans.amount;
       return { ...trans, balance_after: runningBalance };
     });
