@@ -107,9 +107,19 @@ li a:hover span {
         font-size: 115%;
         padding: 8px;
     }
-    #boi
+    #stockListBox_id
     {
       height: 420px;
+    }
+    #stockListBox_id div{
+      border: 1px solid lightgray;
+      font-family: normalskrift;
+      padding: 8px;
+      font-size: 15px;
+    }
+    #stockListBox_id div:hover{
+      color: dodgerblue;
+      cursor: pointer;
     }
     
   

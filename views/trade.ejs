@@ -28,7 +28,7 @@
       <br>
       <div id="stockBox_id">
         <input placeholder="Search stock..." autofocus id="searchStocks_input_id">
-        <div id="boi" style="color: white"></div>
+        <div id="stockListBox_id" style="color: white"></div>
       </div>
       
       <div id="ViewBuystockBox_id">
@@ -64,6 +64,126 @@
 
 <script>
 
+const tickers = [
+  "ALMB",
+  "AMBU B",
+  "MAERSK A",
+  "MAERSK B",
+  "AQP",
+  "ATLA DKK",
+  "BO",
+  "BAVA",
+  "AOJ B",
+  "CARL A",
+  "CARL B",
+  "CHR",
+  "COLO B",
+  "DANSKE",
+  "DEMANT",
+  "DFDS",
+  "DNORD",
+  "DSV",
+  "FLS",
+  "GMAB",
+  "GN",
+  "LUN",
+  "HYDRCT",
+  "ISS",
+  "JYSK",
+  "NETC",
+  "NKT",
+  "NORTHM",
+  "NSIS B",
+  "NOVO B",
+  "NTG",
+  "ORSTED",
+  "PNDORA",
+  "RBREW",
+  "ROCK B",
+  "SPNO",
+  "SIM",
+  "STG",
+  "TRYGR",
+  "VWS",
+  "ORSTED",
+  "SIM",
+  "STRAP",
+  "SPASJ",
+  "SPNO",
+  "SIM",
+  "STG",
+  "TRYGR",
+  "VWS"
+];
+
+
+const aktienavne = [
+    "Alm. Brand A/S",
+    "Ambu A/S",
+    "A.P. Møller - Mærsk A/S (A)",
+    "A.P. Møller - Mærsk A/S (B)",
+    "Aquaporin A/S",
+    "Atlantic Petroleum",
+    "Bang & Olufsen A/S",
+    "Bavarian Nordic A/S",
+    "Brdr. A&O Johansen A/S (B)",
+    "Carlsberg A/S (A)",
+    "Carlsberg A/S (B)",
+    "Chr. Hansen Holding A/S",
+    "Coloplast A/S (B)",
+    "Danske Bank A/S",
+    "Demant A/S",
+    "DFDS A/S",
+    "D/S Norden A/S",
+    "DSV A/S",
+    "FLSmidth & Co. A/S",
+    "Genmab A/S",
+    "GN Store Nord A/S",
+    "H. Lundbeck A/S",
+    "Hydract A/S",
+    "ISS A/S",
+    "Jyske Bank A/S",
+    "Netcompany Group A/S",
+    "NKT A/S",
+    "North Media A/S",
+    "Novonesis A/S (B)",
+    "Novo Nordisk A/S (B)",
+    "NTG Nordic Transport Group A/S",
+    "Ørsted A/S",
+    "Pandora A/S",
+    "Royal Unibrew A/S",
+    "Rockwool International A/S (B)",
+    "Spar Nord Bank A/S",
+    "SimCorp A/S",
+    "Scandinavian Tobacco Group A/S",
+    "Tryg A/S",
+    "Vestas Wind Systems A/S",
+    "Ørsted A/S",
+    "SimCorp A/S",
+    "Strategic Partners A/S",
+    "Sparekassen Sjælland",
+    "Spar Nord Bank A/S",
+    "SimCorp A/S",
+    "Scandinavian Tobacco Group A/S",
+    "Tryg A/S",
+    "Vestas Wind Systems A/S"
+  ];
+
+function lavListMedAktier(){
+    for(let i = 0; i < aktienavne.length; i++){
+      // Create element:
+      const para = document.createElement("div");
+      para.innerHTML = aktienavne[i];
+
+    // Append to another element:
+    document.getElementById("stockListBox_id").appendChild(para);
+    }
+  }
+  lavListMedAktier();
+
+
+
+
   let stockName = "";
 
 
@@ -94,10 +214,6 @@ event.currentTarget.classList.add('active'); // Set current one to blue
     const element = document.getElementById("boi");
     element.appendChild(para);
 }
-
-
-
-
 
 
 
