@@ -1,7 +1,14 @@
 /* Denne fil er en del af backend. Den håndterer ruterne
 og forespørgslerne til serveren. Når brugeren besøger en side,
 så sender der en forespørgsel til serveren, og serveren sender
-siden tilbage til brugeren. */
+siden tilbage til brugeren.
+*/
+
+/*
+Denne fil bruger nu sessions til at beskytte ruter:
+I stedet for at brugeren kan manipulere med ?userId=... i URL'en, gemmes userId i req.session.userId,
+når brugeren logger ind. Det gør det både sikrere og mere elegant.
+*/
 
 const express = require("express");
 const router = express.Router();
@@ -10,9 +17,10 @@ const fs = require("fs");
 const { getDataByKey } = require("./api_test");
 
 router.get("/dashboard", (req, res) => {
-  const userId = req.query.userId;
+  if (!req.session.userId) return res.redirect("/login");
+  const userId = req.session.userId;
   res.render("dashboard", { userId });
-  });
+});
 
 router.get("/", (req, res) => {
   res.redirect("/index");
@@ -31,22 +39,26 @@ router.get("/login", (req, res) => {
 });
 
 router.get("/profile", (req, res) => {
-  const userId = req.query.userId;
+  if (!req.session.userId) return res.redirect("/login");
+  const userId = req.session.userId;
   res.render("profile", { userId });
 });
 
 router.get("/portfolios", (req, res) => {
-  const userId = req.query.userId;
-  res.render("portfolios" , { userId });
+  if (!req.session.userId) return res.redirect("/login");
+  const userId = req.session.userId;
+  res.render("portfolios", { userId });
 });
 
 router.get("/trade", (req, res) => {
-  const userId = req.query.userId;
-  res.render("trade" , { userId });
+  if (!req.session.userId) return res.redirect("/login");
+  const userId = req.session.userId;
+  res.render("trade", { userId });
 });
 
 router.get("/accounts", async (req, res) => {
-  const userId = parseInt(req.query.userId);
+  if (!req.session.userId) return res.redirect("/login");
+  const userId = req.session.userId;
 
   try {
     await poolConnect;
@@ -124,7 +136,8 @@ router.post("/login", async (req, res) => {
       return res.render("login", { error: "Forkert brugernavn eller kodeord" });
     }
 
-    res.redirect(`/accounts?userId=${user.id}`);
+    req.session.userId = user.id;
+    res.redirect("/accounts");
   } catch (err) {
     console.error("Login-fejl:", err);
     res.status(500).send("Noget gik galt under login.");
@@ -133,7 +146,7 @@ router.post("/login", async (req, res) => {
 
 router.post("/create-account", async (req, res) => {
   const { name, currency, bank } = req.body;
-  const userId = parseInt(req.query.userId); // Hent userId fra forespørgslen, altså fra URL'en.
+  const userId = req.session.userId;
 
   try {
     await poolConnect;
@@ -148,7 +161,7 @@ router.post("/create-account", async (req, res) => {
         `INSERT INTO Accounts (user_id, name, currency, bank) VALUES (@user_id, @name, @currency, @bank)`
       );
 
-    res.redirect(`/accounts?userId=${userId}`);
+    res.redirect("/accounts");
   } catch (err) {
     console.error("Fejl ved oprettelse af konto:", err);
     res.status(500).send("Noget gik galt ved oprettelse af konto.");
@@ -157,14 +170,14 @@ router.post("/create-account", async (req, res) => {
 
 router.post("/close-account", async (req, res) => {
   const { accountId } = req.body;
-  const userId = parseInt(req.query.userId); // Hent userId fra forespørgslen, altså fra URL'en.
+  const userId = req.session.userId;
   try {
     await poolConnect;
     await pool
       .request()
       .input("accountId", sql.Int, accountId)
       .query("UPDATE Accounts SET closed_at = GETDATE() WHERE id = @accountId");
-    res.redirect(`/accounts?userId=${userId}`); // Man bliver sendt tilbage til accounts-siden. Siden bliver opdateret.
+    res.redirect("/accounts"); // Man bliver sendt tilbage til accounts-siden. Siden bliver opdateret.
   } catch (err) {
     console.error("Fejl ved lukning af konto:", err);
     res.status(500).send("Noget gik galt ved lukning af konto.");
@@ -173,14 +186,14 @@ router.post("/close-account", async (req, res) => {
 
 router.post("/reopen-account", async (req, res) => {
   const { accountId } = req.body;
-  const userId = parseInt(req.query.userId); // Hent userId fra forespørgslen, altså fra URL'en.
+  const userId = req.session.userId;
   try {
     await poolConnect;
     await pool
       .request()
       .input("accountId", sql.Int, accountId)
       .query("UPDATE Accounts SET closed_at = NULL WHERE id = @accountId");
-    res.redirect(`/accounts?userId=${userId}`); // / Man bliver sendt tilbage til accounts-siden. Siden bliver opdateret.
+    res.redirect("/accounts"); // / Man bliver sendt tilbage til accounts-siden. Siden bliver opdateret.
   } catch (err) {
     console.error("Fejl ved genåbning af konto:", err);
     res.status(500).send("Noget gik galt ved genåbning af konto.");
@@ -189,7 +202,7 @@ router.post("/reopen-account", async (req, res) => {
 
 router.post("/deposit", async (req, res) => {
   const { accountId, amount } = req.body;
-  const userId = parseInt(req.query.userId);
+  const userId = req.session.userId;
 
   try {
     await poolConnect;
@@ -203,7 +216,7 @@ router.post("/deposit", async (req, res) => {
         VALUES (@accountId, 'deposit', @amount, (SELECT currency FROM Accounts WHERE id = @accountId));
       `);
 
-    res.redirect(`/accounts?userId=${userId}`);
+    res.redirect("/accounts");
   } catch (err) {
     console.error("Fejl ved indbetaling:", err);
     res.status(500).send("Noget gik galt ved indbetaling.");
@@ -212,7 +225,7 @@ router.post("/deposit", async (req, res) => {
 
 router.post("/withdraw", async (req, res) => {
   const { accountId, amount } = req.body;
-  const userId = parseInt(req.query.userId);
+  const userId = req.session.userId;
 
   try {
     await poolConnect; // Sikrer at forbindelsen er oprettet
@@ -225,7 +238,7 @@ router.post("/withdraw", async (req, res) => {
       INSERT INTO Transactions (account_id, type, amount, currency)
       VALUES (@accountId, 'withdrawal', -@amount, (SELECT currency FROM Accounts WHERE id = @accountId));
       `);
-    res.redirect(`/accounts?userId=${userId}`);
+    res.redirect("/accounts");
   } catch (err) {
     console.error("Fejl ved hævning:", err);
     res.status(500).send("Noget gik galt ved hævning.");
