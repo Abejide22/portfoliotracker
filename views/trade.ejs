@@ -54,6 +54,37 @@
         </div>
       </div>
 
+      <form action="/trade" method="POST">
+        <input type="hidden" name="message" value="AAPL">
+        <button type="submit">Send besked</button>
+      </form>
+
+
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Dato</th>
+            <th>Åbning</th>
+            
+          </tr>
+        </thead>
+        <tbody>
+          
+          <% if (last30Days) { %>
+            <% last30Days.forEach(function(day) { %>
+              <tr>
+                <td><%= day.date %></td>
+                <td><%= day.data['1. open'] %></td>
+              </tr>
+            <% }); %>
+          <% } else { %>
+            <tr>
+              <td colspan="2">Ingen data endnu. Indtast en aktie ovenfor.</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+
 </body>
 
 

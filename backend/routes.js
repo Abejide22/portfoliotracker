@@ -50,11 +50,49 @@ router.get("/portfolios", (req, res) => {
   res.render("portfolios", { userId });
 });
 
-router.get("/trade", (req, res) => {
-  if (!req.session.userId) return res.redirect("/login");
+router.get('/trade', (req, res) => {
+  // Først, tjek om brugeren er logget ind
+  if (!req.session.userId) {
+    return res.redirect('/login');
+  }
+
   const userId = req.session.userId;
-  res.render("trade", { userId });
+  const stockName = req.query.stockName; // Hent stockName fra query (hvis der er en)
+
+  if (!stockName) {
+    // Hvis der ikke er en aktie valgt, vis en tom side eller bare brugerinfo
+    return res.render('trade', { userId, last30Days: null });
+  }
+
+  // Hvis stockName findes, så hent aktiedata fra API'et
+  const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${stockName}&apikey=UWEODA1EXLUVVU77`;
+
+  request.get({
+    url: url,
+    json: true,
+    headers: { 'User-Agent': 'request' }
+  }, (err, apiRes, data) => {
+    if (err) {
+      console.log('Error:', err);
+      return res.status(500).send("Fejl ved API-kald.");
+    }
+
+    const timeSeries = data['Time Series (Daily)'];
+    if (!timeSeries) {
+      return res.status(500).send("Ingen data fundet.");
+    }
+
+    const dates = Object.keys(timeSeries).sort((a, b) => new Date(b) - new Date(a));
+    const last30Days = dates.slice(0, 30).map(date => ({
+      date,
+      data: timeSeries[date]
+    }));
+
+    // Når aktiedataene er hentet, render vi trade-siden med både brugerinfo og aktiedata
+    res.render('trade', { userId, last30Days });
+  });
 });
+
 
 router.get("/accounts", async (req, res) => {
   if (!req.session.userId) return res.redirect("/login");
@@ -284,18 +322,73 @@ router.get("/transactions", async (req, res) => {
   }
 });
 
-router.get("/api/data", async (req, res) => {
-  const key = req.query.key;
-  try {
-    const stockData = await getDataByKey(key);
-    if (stockData.length === 0) {
-      return res.json({ error: "No data found for the given ticker." });
-    }
-    res.json(stockData);
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    res.json({ error: "An error occurred while fetching stock data." });
+
+
+
+
+
+
+
+
+
+/*
+
+
+// ----------------------------------------------------------------------------------------------------------------------------- //
+// 
+// API DATA
+//
+// ----------------------------------------------------------------------------------------------------------------------------- //
+
+*/
+const request = require('request');
+
+router.use(express.urlencoded({ extended: true })); // For at læse form-data
+
+
+// POST: Brugeren indsender stockName
+router.post('/trade', (req, res) => {
+  const stockName = req.body.stockName;
+
+  // Redirect til GET med stockName som query parameter
+  res.redirect(`/trade?stockName=${encodeURIComponent(stockName)}`);
+});
+/*
+router.get('/trade', (req, res) => {
+  const stockName = req.query.stockName;
+
+  if (!stockName) {
+    return res.render('/trade', { last30Days: null }); // tom side ved første load
   }
+
+  const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${stockName}&apikey=UWEODA1EXLUVVU77`;
+
+  request.get({
+    url: url,
+    json: true,
+    headers: { 'User-Agent': 'request' }
+  }, (err, apiRes, data) => {
+    if (err) {
+      console.log('Error:', err);
+      return res.status(500).send("Fejl ved API-kald.");
+    }
+    console.log(data);
+    const timeSeries = data['Time Series (Daily)'];
+    if (!timeSeries) {
+      return res.status(500).send("Ingen data fundet.");
+    }
+
+    const dates = Object.keys(timeSeries).sort((a, b) => new Date(b) - new Date(a));
+    const last30Days = dates.slice(0, 30).map(date => ({
+      date,
+      data: timeSeries[date]
+    }));
+    
+    res.render('trade', { last30Days });
+  });
+
+
 });
 
+*/
 module.exports = router;
