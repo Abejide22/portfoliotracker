@@ -229,6 +229,33 @@ router.post("/withdraw", async (req, res) => {
   }
 });
 
+router.get("/transactions", async (req, res) => {
+  const accountId = parseInt(req.query.accountId);
+
+  try {
+    await poolConnect;
+
+    const result = await pool
+      .request()
+      .input("accountId", sql.Int, accountId)
+      .query("SELECT * FROM Transactions WHERE account_id = @accountId ORDER BY created_at ASC");
+
+    const transactions = result.recordset;
+
+    // Beregn løbende saldo efter hver transaktion
+    let runningBalance = 0;
+    const transactionsWithBalance = transactions.map(trans => {
+      runningBalance += trans.amount;
+      return { ...trans, balance_after: runningBalance };
+    });
+
+    res.render("transactions", { transactions: transactionsWithBalance });
+  } catch (err) {
+    console.error("Fejl ved hentning af transaktioner:", err);
+    res.status(500).send("Noget gik galt ved hentning af transaktioner.");
+  }
+});
+
 router.get("/api/data", async (req, res) => {
   const key = req.query.key;
   try {

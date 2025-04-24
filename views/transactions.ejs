@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <title>Transaktionsoversigt</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>Transaktioner for konto: <%= account.name %></h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Dato</th>
+        <th>Type</th> <!-- Indbetaling eller Udtræk -->
+        <th>Beløb</th>
+        <th>Valuta</th>
+        <th>Saldo efter transaktion</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (transactions.length === 0) { %>
+        <tr><td colspan="5">Ingen transaktioner fundet.</td></tr>
+      <% } else { %>
+        <% transactions.forEach(trans => { %>
+          <tr>
+            <td><%= new Date(trans.date).toISOString().split('T')[0] %></td>
+            <td><%= trans.type %></td>
+            <td><%= trans.amount.toFixed(2) %></td>
+            <td><%= trans.currency %></td>
+            <td><%= trans.balance_after.toFixed(2) %></td>
+          </tr>
+        <% }) %>
+      <% } %>
+    </tbody>
+  </table>
+
+  <a href="/accounts?userId=<%= account.user_id %>">Tilbage til konti</a>
+</body>
+</html>
