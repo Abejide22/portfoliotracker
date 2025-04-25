@@ -337,16 +337,13 @@ router.get("/transactions", async (req, res) => {
 // ----------------------------------------------------------------------------------------------------------------------------- //
 
 */
-const request = require('request');
+const request = require('request')
 
-router.use(express.urlencoded({ extended: true })); // For at læse form-data
+router.use(express.urlencoded({ extended: true }));
 
-
-// POST: Brugeren indsender stockName
+// POST: modtager stockName fra form
 router.post('/trade', (req, res) => {
   const stockName = req.body.stockName;
-
-  // Redirect til GET med stockName som query parameter
   res.redirect(`/trade?stockName=${encodeURIComponent(stockName)}`);
 });
 
@@ -354,7 +351,12 @@ router.get('/trade', (req, res) => {
   const stockName = req.query.stockName;
 
   if (!stockName) {
-    return res.render('/trade', { last30Days: null }); // tom side ved første load
+    return res.render('trade', { last30Days: null });
+  }
+
+  // Simpel validering af symbol
+  if (!/^[A-Z]{1,5}$/.test(stockName.toUpperCase())) {
+    return res.status(400).send("Ugyldigt aktiesymbol.");
   }
 
   const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${stockName}&apikey=UWEODA1EXLUVVU77`;
@@ -364,13 +366,20 @@ router.get('/trade', (req, res) => {
     json: true,
     headers: { 'User-Agent': 'request' }
   }, (err, apiRes, data) => {
+
+    console.log('ERR:', err);
+  console.log('STATUS:', apiRes && apiRes.statusCode);
+  console.log('DATA:', data);
+
+
     if (err) {
       console.log('Error:', err);
       return res.status(500).send("Fejl ved API-kald.");
     }
-    console.log(data);
+
     const timeSeries = data['Time Series (Daily)'];
     if (!timeSeries) {
+      console.log(data);
       return res.status(500).send("Ingen data fundet.");
     }
 
@@ -379,12 +388,11 @@ router.get('/trade', (req, res) => {
       date,
       data: timeSeries[date]
     }));
-    
+    console.log(data);
     res.render('trade', { last30Days });
   });
-
-
 });
+
 
 
 module.exports = router;

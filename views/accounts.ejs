@@ -109,7 +109,12 @@
         <label>Kontonavn:</label>
         <input type="text" name="name" required>
         <label>Valuta:</label>
-        <input type="text" name="currency" placeholder="DKK, USD, EUR..." required>
+        <select name="currency" required>
+          <option value="">Vælg valuta</option>
+          <option value="DKK">DKK</option>
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+        </select>
         <label>Banknavn:</label>
         <input type="text" name="bank" required>
         <button type="submit">Opret Konto</button>
