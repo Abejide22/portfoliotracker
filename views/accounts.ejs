@@ -40,16 +40,10 @@
     <!-- Kontooversigt -->
     <div id="accountsContainer">
       <h2>Kontooversigt</h2>
-      <% if (accounts.length===0) { %>
+      <% if (accounts.length === 0) { %>
         <div class="account">
-          <h3>Konto Navn: Opsparing</h3>
-          <p>Valuta: DKK</p>
-          <p>Saldo: 10.000 DKK</p>
-          <p>Oprettet: 2025-04-01</p>
-          <p>Bank: Danske Bank</p>
-          <button class="deposit-account">Indbetal</button>
-          <button class="withdraw-account">Udbetal</button>
-          <button class="reopen-account">Genåbn Konto</button>
+          <h3>Ingen konti oprettet endnu.</h3>
+          <p>Opret din første konto nedenfor.</p>
         </div>
         <% } else { %>
           <% accounts.forEach(account=> { %>
