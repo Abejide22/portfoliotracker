@@ -764,11 +764,7 @@ router.get("/trade", (req, res) => {
   const stockName = req.query.stockName;
 
   if (!stockName) {
-<<<<<<< Updated upstream
-    return res.render('trade', { last30Days: null });
-=======
     return res.render("trade", { last30Days: null });
->>>>>>> Stashed changes
   }
 
   const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${stockName}&apikey=UWEODA1EXLUVVU77`;
