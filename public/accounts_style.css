@@ -159,6 +159,15 @@ li a:hover span {
   color: lightgray;
 }
 
+#createAccountContainer select {
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  background-color: #252525;
+  color: lightgray;
+}
+
 #createAccountContainer button {
   margin-top: 15px;
   padding: 10px 15px;
