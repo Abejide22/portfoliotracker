@@ -27,7 +27,8 @@
     <!-- Side navigation -->
     <ul>
         <li><a href="/dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
-        <li><a href="/portfolios" style="color: gray;"><span class="material-symbols-outlined" style="color: gray;">folder_open</span>Portfolios</a></li>
+        <li><a href="/portfolios" style="color: gray;"><span class="material-symbols-outlined"
+                    style="color: gray;">folder_open</span>Portfolios</a></li>
         <li><a href="/trade"><span class="material-symbols-outlined">query_stats</span>Market</a></li>
         <li><a href="/accounts"><span class="material-symbols-outlined">account_balance_wallet</span>Accounts</a></li>
         <li><a href="/profile"><span class="material-symbols-outlined">person</span>Profile</a></li>
@@ -142,4 +143,18 @@
     const chart = new ApexCharts(document.querySelector("#chart"), options);
     chart.render();
 
+</script>
+
+</html>
+
+<script>
+    const logoutForm = document.querySelector('form[action="/logout"]');
+    if (logoutForm) {
+        logoutForm.addEventListener("submit", function (event) {
+            const confirmed = confirm("Er du sikker på, at du vil logge ud?");
+            if (!confirmed) {
+                event.preventDefault(); // Stopper formularen
+            }
+        });
+    }
 </script>

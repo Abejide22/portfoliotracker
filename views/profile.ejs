@@ -1,40 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Portfoliotracker - Market</title>
-        <link href="profile_style.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-    </head>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfoliotracker - Market</title>
+  <link href="profile_style.css" rel="stylesheet">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+</head>
+
 </html>
 
 <body>
-    <div id="topBar_id">
-        <h1>PORTFOLIOTRACKER</h1>
-        <form action="/logout" method="POST" style="display: inline;">
-          <button type="submit" id="logoutButton" title="Log ud">
-            <span class="material-symbols-outlined">
-              account_circle_off
-            </span>
-          </button>
-        </form> 
-      </div>
+  <div id="topBar_id">
+    <h1>PORTFOLIOTRACKER</h1>
+    <form action="/logout" method="POST" style="display: inline;">
+      <button type="submit" id="logoutButton" title="Log ud">
+        <span class="material-symbols-outlined">
+          account_circle_off
+        </span>
+      </button>
+    </form>
+  </div>
 
-    <ul>
-        <li><a href="/dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
-        <li><a href="/portfolios"><span class="material-symbols-outlined">folder_open</span>Portfolios</a></li>
-        <li><a href="/trade"><span class="material-symbols-outlined">query_stats</span>Market</a></li>
-        <li><a href="/accounts"><span class="material-symbols-outlined">account_balance_wallet</span>Accounts</a></li>
-        <li><a href="/profile" style="color: gray;"><span class="material-symbols-outlined" style="color: gray;">person</span>Profile</a></li>
-    </ul>
+  <ul>
+    <li><a href="/dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
+    <li><a href="/portfolios"><span class="material-symbols-outlined">folder_open</span>Portfolios</a></li>
+    <li><a href="/trade"><span class="material-symbols-outlined">query_stats</span>Market</a></li>
+    <li><a href="/accounts"><span class="material-symbols-outlined">account_balance_wallet</span>Accounts</a></li>
+    <li><a href="/profile" style="color: gray;"><span class="material-symbols-outlined"
+          style="color: gray;">person</span>Profile</a></li>
+  </ul>
 
+<<<<<<< HEAD
+  <div id="profileBox_id">
+    <h2 id="profiloplysninger_id">Profiloplysninger</h2>
+    <hr>
+    <input placeholder="e-mail" style="width: 310px;">
+=======
     <div id="profileBox_id">
       <h2 id="profiloplysninger_id">Skift Adgangskode</h2>
         <input placeholder="Ny Adgangskode" id="adgangskode_id" style="width: 300px;">
         <br>
         <input placeholder="Bekræft Adgangskode" id="bekræftAdgangskode_id" style="width: 300px;">
     </div>
+>>>>>>> bd0814770f7fcf0dbef909c421c03a3626db045a
     <br>
-    <button id="gemÆndringer_id">Gem ændringer</button>
+    <input placeholder="Brugernavn" id="brugernavn_id">
+    <input placeholder="Adgangskode" id="adgangskode_id">
+  </div>
+  <br>
+  <button id="gemÆndringer_id">Gem ændringer</button>
+  <script>
+    const logoutForm = document.querySelector('form[action="/logout"]');
+    if (logoutForm) {
+      logoutForm.addEventListener("submit", function (event) {
+        const confirmed = confirm("Er du sikker på, at du vil logge ud?");
+        if (!confirmed) {
+          event.preventDefault(); // Stopper formularen
+        }
+      });
+    }
+  </script>
 </body>

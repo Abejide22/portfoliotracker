@@ -115,6 +115,18 @@
       </form>
     </div>
   </div>
+  <script>
+    const logoutForm = document.querySelector('form[action="/logout"]'); // Finder logout-formularen
+  
+    if (logoutForm) {
+      logoutForm.addEventListener("submit", function (event) { // Denne del af kdoen fortæller browseren, at den skal vente på, at brugeren trykker på knappen
+        const confirmed = confirm("Er du sikker på, at du vil logge ud?"); // Viser en bekræftelsesdialog
+        if (!confirmed) {
+          event.preventDefault(); // Forhindrer formularen i at blive sendt, hvis brugeren klikker på "Annuller"
+        }
+      });
+    }
+  </script>
 </body>
 
 </html>

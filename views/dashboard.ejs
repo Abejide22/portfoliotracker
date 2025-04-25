@@ -168,6 +168,19 @@
   <div>
 
   </div>
+  <script>
+    // Find formularen med logud-knappen
+    const logoutForm = document.querySelector('form[action="/logout"]');
+  
+    if (logoutForm) {
+      logoutForm.addEventListener("submit", function (event) {
+        const confirmed = confirm("Er du sikker på, at du vil logge ud?");
+        if (!confirmed) {
+          event.preventDefault(); // Forhindrer formularen i at blive sendt
+        }
+      });
+    }
+  </script>
 </body>
 
 </html>

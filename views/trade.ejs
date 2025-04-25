@@ -424,4 +424,14 @@ grid: {
     chart.render();
 
 };
+// Logout confirmation
+const logoutForm = document.querySelector('form[action="/logout"]');
+if (logoutForm) {
+  logoutForm.addEventListener("submit", function (event) {
+    const confirmed = confirm("Er du sikker på, at du vil logge ud?");
+    if (!confirmed) {
+      event.preventDefault(); // Stopper formularen
+    }
+  });
+}
 </script>
