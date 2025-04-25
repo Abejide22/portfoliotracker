@@ -20,11 +20,17 @@ CREATE TABLE Accounts (
 );
 
 CREATE TABLE Portfolios (
-  id INT PRIMARY KEY IDENTITY(1,1),
-  user_id INT NOT NULL, -- refererer til Users
-  name NVARCHAR(100) NOT NULL UNIQUE, -- navn på portefølje, må ikke være NULL
-  created_at DATETIME DEFAULT GETDATE(), -- oprettelsesdato, default er nuværende tidspunkt 
-  FOREIGN KEY (user_id) REFERENCES Users(id) -- refererer til Users, user_id skal være en gyldig id fra Users
+  id INT PRIMARY KEY IDENTITY(1,1),  -- Primær nøgle: Unikt ID for hver portefølje, auto-increment fra 1
+
+  user_id INT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES Users(id),  -- Hvilken bruger ejer porteføljen? (FK til Users.id)
+
+  account_id INT NOT NULL,
+  FOREIGN KEY (account_id) REFERENCES Accounts(konto_id),  -- Hvilken konto hører porteføljen under? (FK til Accounts.konto_id)
+
+  name NVARCHAR(100) NOT NULL UNIQUE, -- Navnet på porteføljen, må ikke være tomt, og to porteføljer kan ikke have samme navn
+
+  created_at DATETIME DEFAULT GETDATE() -- Hvornår blev porteføljen oprettet? Standard: tidsstemplet på indsættelsestidspunktet
 );
 
 CREATE TABLE Stocks (
