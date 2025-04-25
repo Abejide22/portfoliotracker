@@ -24,7 +24,7 @@
       <% } else { %>
         <% transactions.forEach(trans => { %>
           <tr>
-            <td><%= new Date(trans.date).toISOString().split('T')[0] %></td>
+            <td><%= trans.created_at ? new Date(trans.created_at).toISOString().split('T')[0] : 'Ukendt dato' %></td>
             <td><%= trans.type %></td>
             <td><%= trans.amount.toFixed(2) %></td>
             <td><%= trans.currency %></td>
