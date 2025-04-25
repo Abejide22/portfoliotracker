@@ -358,11 +358,6 @@ router.get('/trade', (req, res) => {
     return res.render('trade', { last30Days: null });
   }
 
-  // Simpel validering af symbol
-  if (!/^[A-Z]{1,5}$/.test(stockName.toUpperCase())) {
-    return res.status(400).send("Ugyldigt aktiesymbol.");
-  }
-
   const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${stockName}&apikey=UWEODA1EXLUVVU77`;
 
   request.get({
