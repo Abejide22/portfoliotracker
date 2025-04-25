@@ -35,7 +35,7 @@ router.get("/signup", (req, res) => {
 });
 
 router.get("/login", (req, res) => {
-  res.render("login", { error: undefined });
+  res.render("index", { error: undefined });
 });
 
 router.get("/profile", (req, res) => {
@@ -171,7 +171,7 @@ router.post("/login", async (req, res) => {
     const user = result.recordset[0];
 
     if (!user || user.password !== password) {
-      return res.render("login", { error: "Forkert brugernavn eller kodeord" });
+      return res.render("index", { error: "Forkert brugernavn eller kodeord" });
     }
 
     req.session.userId = user.id;
@@ -250,8 +250,8 @@ router.post("/deposit", async (req, res) => {
       .input("accountId", sql.Int, accountId)
       .input("amount", sql.Decimal(18, 2), amount).query(`
         UPDATE Accounts SET balance = balance + @amount WHERE id = @accountId;
-        INSERT INTO Transactions (account_id, type, amount, currency)
-        VALUES (@accountId, 'deposit', @amount, (SELECT currency FROM Accounts WHERE id = @accountId));
+        INSERT INTO Transactions (account_id, transaction_type, amount, currency)
+        VALUES (@accountId, 'credit', @amount, (SELECT currency FROM Accounts WHERE id = @accountId));
       `);
 
     res.redirect("/accounts");
@@ -273,8 +273,8 @@ router.post("/withdraw", async (req, res) => {
       .input("accountId", sql.Int, accountId)
       .input("amount", sql.Decimal(18, 2), amount).query(`
       UPDATE Accounts SET balance = balance - @amount WHERE id = @accountId;
-      INSERT INTO Transactions (account_id, type, amount, currency)
-      VALUES (@accountId, 'withdrawal', -@amount, (SELECT currency FROM Accounts WHERE id = @accountId));
+      INSERT INTO Transactions (account_id, transaction_type, amount, currency)
+      VALUES (@accountId, 'debit', -@amount, (SELECT currency FROM Accounts WHERE id = @accountId));
       `);
     res.redirect("/accounts");
   } catch (err) {
