@@ -35,7 +35,7 @@ router.get("/signup", (req, res) => {
 });
 
 router.get("/login", (req, res) => {
-  res.render("login", { error: undefined });
+  res.render("index", { error: undefined });
 });
 
 router.get("/profile", (req, res) => {
@@ -171,7 +171,7 @@ router.post("/login", async (req, res) => {
     const user = result.recordset[0];
 
     if (!user || user.password !== password) {
-      return res.render("login", { error: "Forkert brugernavn eller kodeord" });
+      return res.render("index", { error: "Forkert brugernavn eller kodeord" });
     }
 
     req.session.userId = user.id;
@@ -250,8 +250,8 @@ router.post("/deposit", async (req, res) => {
       .input("accountId", sql.Int, accountId)
       .input("amount", sql.Decimal(18, 2), amount).query(`
         UPDATE Accounts SET balance = balance + @amount WHERE id = @accountId;
-        INSERT INTO Transactions (account_id, type, amount, currency)
-        VALUES (@accountId, 'deposit', @amount, (SELECT currency FROM Accounts WHERE id = @accountId));
+        INSERT INTO Transactions (account_id, transaction_type, amount, currency)
+        VALUES (@accountId, 'credit', @amount, (SELECT currency FROM Accounts WHERE id = @accountId));
       `);
 
     res.redirect("/accounts");
@@ -273,8 +273,8 @@ router.post("/withdraw", async (req, res) => {
       .input("accountId", sql.Int, accountId)
       .input("amount", sql.Decimal(18, 2), amount).query(`
       UPDATE Accounts SET balance = balance - @amount WHERE id = @accountId;
-      INSERT INTO Transactions (account_id, type, amount, currency)
-      VALUES (@accountId, 'withdrawal', -@amount, (SELECT currency FROM Accounts WHERE id = @accountId));
+      INSERT INTO Transactions (account_id, transaction_type, amount, currency)
+      VALUES (@accountId, 'debit', -@amount, (SELECT currency FROM Accounts WHERE id = @accountId));
       `);
     res.redirect("/accounts");
   } catch (err) {
@@ -322,6 +322,11 @@ router.get("/transactions", async (req, res) => {
   }
 });
 
+
+
+
+
+
 /*
 
 
@@ -332,24 +337,21 @@ router.get("/transactions", async (req, res) => {
 // ----------------------------------------------------------------------------------------------------------------------------- //
 
 */
-const request = require('request');
+const request = require('request')
 
-router.use(express.urlencoded({ extended: true })); // For at læse form-data
+router.use(express.urlencoded({ extended: true }));
 
-
-// POST: Brugeren indsender stockName
+// POST: modtager stockName fra form
 router.post('/trade', (req, res) => {
   const stockName = req.body.stockName;
-
-  // Redirect til GET med stockName som query parameter
   res.redirect(`/trade?stockName=${encodeURIComponent(stockName)}`);
 });
-/*
+
 router.get('/trade', (req, res) => {
   const stockName = req.query.stockName;
 
   if (!stockName) {
-    return res.render('/trade', { last30Days: null }); // tom side ved første load
+    return res.render('trade', { last30Days: null });
   }
 
   const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${stockName}&apikey=UWEODA1EXLUVVU77`;
@@ -359,13 +361,20 @@ router.get('/trade', (req, res) => {
     json: true,
     headers: { 'User-Agent': 'request' }
   }, (err, apiRes, data) => {
+
+    console.log('ERR:', err);
+  console.log('STATUS:', apiRes && apiRes.statusCode);
+  console.log('DATA:', data);
+
+
     if (err) {
       console.log('Error:', err);
       return res.status(500).send("Fejl ved API-kald.");
     }
-    console.log(data);
+
     const timeSeries = data['Time Series (Daily)'];
     if (!timeSeries) {
+      console.log(data);
       return res.status(500).send("Ingen data fundet.");
     }
 
@@ -374,12 +383,11 @@ router.get('/trade', (req, res) => {
       date,
       data: timeSeries[date]
     }));
-    
+    console.log(data);
     res.render('trade', { last30Days });
   });
-
-
 });
 
-*/
+
+
 module.exports = router;
