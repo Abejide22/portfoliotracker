@@ -353,7 +353,7 @@ router.post('/trade', (req, res) => {
   // Redirect til GET med stockName som query parameter
   res.redirect(`/trade?stockName=${encodeURIComponent(stockName)}`);
 });
-/*
+
 router.get('/trade', (req, res) => {
   const stockName = req.query.stockName;
 
@@ -390,5 +390,5 @@ router.get('/trade', (req, res) => {
 
 });
 
-*/
+
 module.exports = router;
