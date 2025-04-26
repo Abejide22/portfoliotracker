@@ -652,8 +652,7 @@ når brugeren logger ind. Det gør det både sikrere og mere elegant.
       }
     });
 
-    /*
-
+    
 
 // ----------------------------------------------------------------------------------------------------------------------------- //
 // 
@@ -661,7 +660,7 @@ når brugeren logger ind. Det gør det både sikrere og mere elegant.
 //
 // ----------------------------------------------------------------------------------------------------------------------------- //
 
-*/
+/*
     const request = require("request");
 
     router.use(express.urlencoded({ extended: true }));
@@ -723,7 +722,7 @@ når brugeren logger ind. Det gør det både sikrere og mere elegant.
         }
       );
     });
-
+*/
     module.exports = router;
 
     const accountResult = await pool

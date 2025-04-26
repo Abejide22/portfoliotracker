@@ -97,8 +97,6 @@
 
 <script>
 
-
-
 const tickers = [
   "ALMB",
   "AMBU B",
@@ -209,10 +207,7 @@ const aktienavne = [
 
   let stockName = "";
 
-
-
-  
-
+/*
   var last30Days = <%- JSON.stringify(last30Days) %>;
 
 console.log(last30Days[0].data["4. close"]);
@@ -221,53 +216,50 @@ let bababoi = last30Days[0].data["4. close"];
 
   // Nu kan du bruge 'last30Days' i din JavaScript-kode
 
+*/
 
-
-
+let bababoi = 0;
   function lavListMedAktier() {
   for (let i = 0; i < aktienavne.length; i++) {
     const button = document.createElement("button");
     button.id = "soi";
 
+    button.name = tickers[i];
 
     // Først tilføjer vi aktienavnet som tekst
     button.append(aktienavne[i] + " ");
 
     // Så tilføjer vi span bagefter
 
-    bababoi = last30Days[i].data["4. close"];
 
     const span = document.createElement("span");
     span.textContent = bababoi + " DKK";
     
     button.appendChild(span);
 
+    button.addEventListener('click', displayStock); // Afspiller displayStock() der viser grafen
 
     document.getElementById("stockListBox_id").appendChild(button);
   }
 }
-
-
-  lavListMedAktier();
-
+lavListMedAktier();
 
 
 
 
 
-
-// Search stocks //
+// søg efterr aktier //
 let userInput_SearchStocks = "";
 
 function searchStocks(event) {
   userInput_SearchStocks = document.getElementById("searchStocks_input_id").value.toLowerCase();
 
-  const buttons = document.querySelectorAll("#boi button");
+  const buttons = document.querySelectorAll("#stockBox_id button");
 
   buttons.forEach(button => {
     const text = button.textContent.toLowerCase();
     if (text.includes(userInput_SearchStocks)) {
-      button.style.display = "inline-block"; // or "block", depending on your layout
+      button.style.display = "inline-block";
     } else {
       button.style.display = "none";
     }
@@ -276,65 +268,8 @@ function searchStocks(event) {
 document.getElementById("searchStocks_input_id").addEventListener("keyup", searchStocks);
 
 
+let boi = [100,110,90,100,110,100,100,90,110,110];
 
-
-
-
-// -------------------------------------------------------------------------------------//
-
-// RETRIEVE STOCK DATA //
-
-// -------------------------------------------------------------------------------------//
-
-
-let boi = [];
-
-function retrieveStockTicker(ticker) {
-    let key = ticker; // Denne variabel bestemmer hvilket data der hentes
-    console.log(ticker);
-
-    fetch(`/api/data?key=${key}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.error) {
-            console.log(data.error);
-        } else {
-            console.log(data);  // This will log the fetched stock data (prices)
-            boi = data;
-            boi = boi.map(boi => Math.round(boi * 100)/100);
-            displayStock();
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-
-      // Viser aktie navn når der trykkes på aktie //
-      document.getElementById("aktieNavn_id").innerHTML = stockName;
-}
-
-
-let dates = [];
-
-function get14days(){
-  
-const today = new Date();
-
-for (let i = 0; i < 14; i++) {
-  const date = new Date();
-  date.setDate(today.getDate() - i);
-
-  const day = date.getDay(); // 0 = Sunday, 6 = Saturday
-  if (day !== 0 && day !== 6) {
-    const formatted = date.toISOString().split('T')[0];
-    dates.push(formatted);
-  }
-}
-dates.reverse(); // optional: to have oldest to newest
-console.log(dates);
-
-}
-get14days();
 
 
 function displayStock(){
@@ -342,7 +277,7 @@ function displayStock(){
 
   document.getElementById("myChart").innerHTML = "";
 
-  const xValues = dates;
+  const xValues = [1,2,3,4,5,6,7,8,9,10];
 const options = {
       chart: {
         type: 'line',
@@ -428,6 +363,16 @@ grid: {
     chart.render();
 
 };
+
+
+
+function fåPorteføljer(){
+  
+}
+
+
+
+
 // Logout confirmation
 const logoutForm = document.querySelector('form[action="/logout"]');
 if (logoutForm) {
