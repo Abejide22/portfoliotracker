@@ -666,12 +666,15 @@ når brugeren logger ind. Det gør det både sikrere og mere elegant.
 
     router.use(express.urlencoded({ extended: true }));
 
+    
     // POST: modtager stockName fra form
     router.post("/trade", (req, res) => {
       const stockName = req.body.stockName;
       res.redirect(`/trade?stockName=${encodeURIComponent(stockName)}`);
     });
 
+
+    
     router.get("/trade", (req, res) => {
       const stockName = req.query.stockName;
 

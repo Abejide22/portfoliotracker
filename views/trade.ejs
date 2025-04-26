@@ -55,8 +55,9 @@
       </div>
 
       <form action="/trade" method="POST">
-        <input type="hidden" name="stockName" value="AAPL">
-        <button type="submit">Send besked</button>
+        <button type="submit" name="stockName" value="AAPL">AAPL</button>
+        <button type="submit" name="stockName" value="GOOGL">GOOGL</button>
+        <button type="submit" name="stockName" value="TSLA">TSLA</button>
       </form>
 
 
@@ -90,10 +91,6 @@
 
 <script>
 
-var last30Days = <%= JSON.stringify(last30Days) %>;
-  
-  // Nu kan du bruge 'last30Days' i din JavaScript-kode
-  console.log(last30Days);
 
 
 const tickers = [
@@ -201,54 +198,55 @@ const aktienavne = [
     "Vestas Wind Systems A/S"
   ];
 
-function lavListMedAktier(){
-    for(let i = 0; i < aktienavne.length; i++){
-      // Create element:
-      const para = document.createElement("div");
-      para.innerHTML = aktienavne[i];
-
-      // Tilføj value attribut:
-      para.setAttribute("value", tickers[i]);
-
-    // Append to another element:
-    document.getElementById("stockListBox_id").appendChild(para);
-    }
-  }
-  lavListMedAktier();
-
 
 
 
   let stockName = "";
 
 
-for (let i = 0; i < NasDaqstocks.length; i++) {
-    const para = document.createElement("button");
-    const node = document.createTextNode(NasDaqstocks[i]);
 
-    para.setAttribute("data-ticker", NasDaqstocksTicker[i]);
-    para.type = "button";
+  
 
-    para.appendChild(node);
+  var last30Days = <%- JSON.stringify(last30Days) %>;
+
+console.log(last30Days[0].data["4. close"]);
+
+let bababoi = last30Days[0].data["4. close"];
+
+  // Nu kan du bruge 'last30Days' i din JavaScript-kode
+
+
+
+
+  function lavListMedAktier() {
+  for (let i = 0; i < aktienavne.length; i++) {
+    const button = document.createElement("button");
+    button.id = "soi";
+
+
+    // Først tilføjer vi aktienavnet som tekst
+    button.append(aktienavne[i] + " ");
+
+    // Så tilføjer vi span bagefter
+
+    bababoi = last30Days[i].data["4. close"];
+
+    const span = document.createElement("span");
+    span.textContent = bababoi + " DKK";
     
-    para.addEventListener("click", function(event) {
-        let ticker = event.currentTarget.dataset.ticker;
-        stockName = event.currentTarget.textContent;
-        
-        document.querySelectorAll('button').forEach(el => {
-          el.classList.remove('active'); // Reset all
-});
+    button.appendChild(span);
 
-event.currentTarget.classList.add('active'); // Set current one to blue
 
-        
-        console.log("Ticker clicked:", ticker); // For debugging
-        retrieveStockTicker(ticker);
-    });
-
-    const element = document.getElementById("boi");
-    element.appendChild(para);
+    document.getElementById("stockListBox_id").appendChild(button);
+  }
 }
+
+
+  lavListMedAktier();
+
+
+
+
 
 
 

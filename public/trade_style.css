@@ -166,6 +166,9 @@ li a:hover span {
     color: lightgray;
     text-align: left;
 }
+#stockBox_id button span{
+  float: right;
+}
 #stockBox_id button:hover{
     cursor: pointer;
     color: dodgerblue;
