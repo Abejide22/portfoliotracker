@@ -33,34 +33,18 @@
           style="color: gray;">person</span>Profile</a></li>
   </ul>
 
-<<<<<<< HEAD
+
   <div id="profileBox_id">
     <h2 id="profiloplysninger_id">Profiloplysninger</h2>
     <hr>
     <input placeholder="e-mail" style="width: 310px;">
-=======
     <div id="profileBox_id">
       <h2 id="profiloplysninger_id">Skift Adgangskode</h2>
         <input placeholder="Ny Adgangskode" id="adgangskode_id" style="width: 300px;">
         <br>
         <input placeholder="Bekræft Adgangskode" id="bekræftAdgangskode_id" style="width: 300px;">
     </div>
->>>>>>> bd0814770f7fcf0dbef909c421c03a3626db045a
     <br>
-    <input placeholder="Brugernavn" id="brugernavn_id">
-    <input placeholder="Adgangskode" id="adgangskode_id">
-  </div>
-  <br>
-  <button id="gemÆndringer_id">Gem ændringer</button>
-  <script>
-    const logoutForm = document.querySelector('form[action="/logout"]');
-    if (logoutForm) {
-      logoutForm.addEventListener("submit", function (event) {
-        const confirmed = confirm("Er du sikker på, at du vil logge ud?");
-        if (!confirmed) {
-          event.preventDefault(); // Stopper formularen
-        }
-      });
-    }
-  </script>
+    <button id="gemÆndringer_id">Gem ændringer</button>
+    
 </body>
