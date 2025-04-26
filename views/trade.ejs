@@ -11,21 +11,27 @@
 </html>
 
 <body>
-    <div id="topBar_id">
-        <h1>PORTFOLIOTRACKER</h1>
-        <span class="material-symbols-outlined" id="topBar_goBack_id">home</span>
-    </div>
+  <div id="topBar_id">
+    <h1>PORTFOLIOTRACKER</h1>
+    <form action="/logout" method="POST" style="display: inline;">
+      <button type="submit" id="logoutButton" title="Log ud">
+        <span class="material-symbols-outlined">
+          account_circle_off
+        </span>
+      </button>
+    </form>
+  </div>
 
-    <ul>
-        <li><a href="/dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
-        <li><a href="/portfolios"><span class="material-symbols-outlined">folder_open</span>Portfolios</a></li>
-        <li><a href="/trade" style="color: gray;"><span class="material-symbols-outlined" style="color: gray;">query_stats</span>Market</a></li>
-        <li><a href="/accounts"><span class="material-symbols-outlined">account_balance_wallet</span>Accounts</a></li>
-        <li><a href="/profile"><span class="material-symbols-outlined">person</span>Profile</a></li>
-      </ul>
+  <ul>
+    <li><a href="/dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
+    <li><a href="/portfolios"><span class="material-symbols-outlined">folder_open</span>Portfolios</a></li>
+    <li><a href="/trade" style="color: gray;"><span class="material-symbols-outlined" style="color: gray;">query_stats</span>Market</a></li>
+    <li><a href="/accounts"><span class="material-symbols-outlined">account_balance_wallet</span>Accounts</a></li>
+    <li><a href="/profile"><span class="material-symbols-outlined">person</span>Profile</a></li>
+  </ul>
 
       
-      <br>
+  <br>
       <div id="stockBox_id">
         <input placeholder="Search stock..." autofocus id="searchStocks_input_id">
         <div id="stockListBox_id" style="color: white"></div>

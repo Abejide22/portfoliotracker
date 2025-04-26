@@ -768,7 +768,30 @@ router.post('/profile/update-password', async (req, res) => {
   }
 });
 
+router.put('/profile/update-password', async (req, res) => {
+  const { userId, newPassword, confirmPassword } = req.body;
 
+  // Tjek om de to adgangskoder matcher
+  if (newPassword !== confirmPassword) {
+    return res.status(400).json({ error: 'Adgangskoderne matcher ikke.' });
+  }
+
+  try {
+    await poolConnect;
+
+    // Opdater adgangskoden i databasen
+    await pool
+      .request()
+      .input('userId', sql.Int, userId)
+      .input('password', sql.NVarChar, newPassword)
+      .query('UPDATE Users SET password = @password WHERE id = @userId');
+
+    res.status(200).json({ success: 'Adgangskoden er opdateret!' });
+  } catch (err) {
+    console.error('Fejl ved opdatering af adgangskode:', err);
+    res.status(500).json({ error: 'Noget gik galt.' });
+  }
+});
 
 
 /*
