@@ -1,11 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="da">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Opret Portefølje</title>
+    <link rel="stylesheet" href="/addportfolios_style.css">
 </head>
+
 <body>
-    
+    <div class="container">
+        <h1>Opret ny Portefølje</h1>
+        <form action="/create-portfolio" method="POST" class="form-box">
+            <label for="portfolioName">Portefølje Navn:</label>
+            <input type="text" id="portfolioName" name="portfolioName" required>
+
+            <label for="accountId">Vælg Konto:</label>
+            <select id="accountId" name="accountId" required>
+                <% accounts.forEach(account => { %>
+                    <option value="<%= account.id %>">
+                        <%= account.name %> - <%= account.currency %>
+                    </option>
+                <% }) %>
+            </select>
+
+            <button type="submit" class="primary-btn">Opret Portefølje</button>
+        </form>
+    </div>
 </body>
+
 </html>
