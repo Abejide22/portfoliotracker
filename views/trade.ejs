@@ -34,8 +34,10 @@
   <br>
       <div id="stockBox_id">
         <input placeholder="Search stock..." autofocus id="searchStocks_input_id">
-        <div id="stockListBox_id" style="color: white"></div>
+        <form action="/trade" method="POST" id="stockListBox_id"></form>
       </div>
+
+      
       
       <div id="ViewBuystockBox_id">
         <div id="viewStock_id">
@@ -60,102 +62,74 @@
         </div>
       </div>
 
-      <form action="/trade" method="POST">
-        <button type="submit" name="stockName" value="AAPL">AAPL</button>
-        <button type="submit" name="stockName" value="GOOGL">GOOGL</button>
-        <button type="submit" name="stockName" value="TSLA">TSLA</button>
-      </form>
+      
 
     
     
 
-      <table border="1">
-        <thead>
-          <tr>
-            <th>Dato</th>
-            <th>Åbning</th>
-            
-          </tr>
-        </thead>
-        <tbody>
-          
-          <% if (last30Days) { %>
-            <% last30Days.forEach(function(day) { %>
-              <tr>
-                <td><%= day.date %></td>
-                <td><%= day.data['1. open'] %></td>
-              </tr>
-            <% }); %>
-          <% } else { %>
-            <tr>
-              <td colspan="2">Ingen data endnu. Indtast en aktie ovenfor.</td>
-            </tr>
-          <% } %>
-        </tbody>
-      </table>
+      
 </body>
 
 
 <script>
-  <% console.log(portfolios); %>
 
-  // Kontroller at portfolios faktisk er defineret og tilgængelig
-  if (typeof portfolios !== 'undefined') {
-      console.log("Portfolios data:", portfolios); // Log dataen i browserens konsol
-    } else {
-      console.error("Portfolios is not defined!");
-    }
+
+
+const dates = <%- JSON.stringify(dates) %>;
+  const closes = <%- JSON.stringify(closes) %>;
+  
+
 
 const tickers = [
-  "ALMB",
-  "AMBU B",
-  "MAERSK A",
-  "MAERSK B",
-  "AQP",
-  "ATLA DKK",
-  "BO",
-  "BAVA",
-  "AOJ B",
-  "CARL A",
-  "CARL B",
-  "CHR",
-  "COLO B",
-  "DANSKE",
-  "DEMANT",
-  "DFDS",
-  "DNORD",
-  "DSV",
-  "FLS",
-  "GMAB",
-  "GN",
-  "LUN",
-  "HYDRCT",
-  "ISS",
-  "JYSK",
-  "NETC",
-  "NKT",
-  "NORTHM",
-  "NSIS B",
-  "NOVO B",
-  "NTG",
-  "ORSTED",
-  "PNDORA",
-  "RBREW",
-  "ROCK B",
-  "SPNO",
-  "SIM",
-  "STG",
-  "TRYGR",
-  "VWS",
-  "ORSTED",
-  "SIM",
-  "STRAP",
-  "SPASJ",
-  "SPNO",
-  "SIM",
-  "STG",
-  "TRYGR",
-  "VWS"
+  "ALMB.CO",
+  "AMBU-B.CO",
+  "MAERSK-A.CO",
+  "MAERSK-B.CO",
+  "AQP.CO",
+  "ATLA-DKK.CO",
+  "BO.CO",
+  "BAVA.CO",
+  "AOJ-B.CO",
+  "CARL-A.CO",
+  "CARL-B.CO",
+  "CHR.CO",
+  "COLO-B.CO",
+  "DANSKE.CO",
+  "DEMANT.CO",
+  "DFDS.CO",
+  "DNORD.CO",
+  "DSV.CO",
+  "FLS.CO",
+  "GMAB.CO",
+  "GN.CO",
+  "LUN.CO",
+  "HYDRCT.CO",
+  "ISS.CO",
+  "JYSK.CO",
+  "NETC.CO",
+  "NKT.CO",
+  "NORTHM.CO",
+  "NSIS-B.CO",
+  "NOVO-B.CO",
+  "NTG.CO",
+  "ORSTED.CO",
+  "PNDORA.CO",
+  "RBREW.CO",
+  "ROCK B.CO",
+  "SPNO.CO",
+  "SIM.CO",
+  "STG.CO",
+  "TRYGR.CO",
+  "VWS.CO",
+  "ORSTED.CO",
+  "SIM.CO",
+  "STRAP.CO",
+  "SPASJ.CO",
+  "SPNO.CO",
+  "SIM.CO",
+  "STG.CO",
+  "TRYGR.CO",
+  "VWS.CO"
 ];
 
 
@@ -216,42 +190,34 @@ const aktienavne = [
 
   let stockName = "";
 
-/*
-  var last30Days = <%- JSON.stringify(last30Days) %>;
 
-console.log(last30Days[0].data["4. close"]);
-
-let bababoi = last30Days[0].data["4. close"];
-
-  // Nu kan du bruge 'last30Days' i din JavaScript-kode
-
-*/
-
-let bababoi = 0;
-  function lavListMedAktier() {
+function lavListMedAktier() {
+  // Forloop gennem aktienavne og tickers
   for (let i = 0; i < aktienavne.length; i++) {
     const button = document.createElement("button");
-    button.id = "soi";
+    button.id = "soi";  // Giver knappen en ID
+    button.value = tickers[i];  // Aktieloggen værdi
+    button.type = "submit";  // Knaptypen er submit, da vi ønsker at sende data via POST
+    button.name = "stockName";  // Giver knappen navn for at sende det med i formularen
 
-    button.name = tickers[i];
-
-    // Først tilføjer vi aktienavnet som tekst
+    // Tilføjer aktienavnet som knaptekst
     button.append(aktienavne[i] + " ");
 
-    // Så tilføjer vi span bagefter
-
-
+    // Tilføjer et span med yderligere info
     const span = document.createElement("span");
-    span.textContent = bababoi + " DKK";
-    
+    span.textContent = 10 + " DKK";  // Eksempelvis viser vi kursen på aktien
     button.appendChild(span);
 
-    button.addEventListener('click', displayStock); // Afspiller displayStock() der viser grafen
+    button.onclick = function(event) {
+      displayStock(event);
+    };
 
+    // Tilføjer knappen til formularen
     document.getElementById("stockListBox_id").appendChild(button);
   }
 }
 lavListMedAktier();
+
 
 
 
@@ -277,16 +243,22 @@ function searchStocks(event) {
 document.getElementById("searchStocks_input_id").addEventListener("keyup", searchStocks);
 
 
-let boi = [100,110,90,100,110,100,100,90,110,110];
 
 
+// Tjekker om siden har modtaget dato og close priser - hvis ja kør displayStock funktion//
+if(dates.length > 0 && closes.length > 0){
+  displayStock(event);
+}
 
-function displayStock(){
+function displayStock(event){
 
+  let closes_shortend = closes.map(num => parseFloat(num.toFixed(2))); // Forkorter decimaltal til kun 2 decimaler
+
+  dates.reverse(); closes.reverse(); // Rerverser så dato og priser udskrives i rigtig række følge fra ældste dato til nyeste dato
 
   document.getElementById("myChart").innerHTML = "";
-
-  const xValues = [1,2,3,4,5,6,7,8,9,10];
+console.log("boi");
+  const xValues = dates;
 const options = {
       chart: {
         type: 'line',
@@ -297,7 +269,7 @@ const options = {
       
       series: [{
         name: 'Aktiekurs',
-        data: boi
+        data: closes_shortend
       }],
       xaxis: {
         categories: xValues,
@@ -365,13 +337,14 @@ grid: {
     }
   }
 }
-
     };
-
     const chart = new ApexCharts(document.querySelector("#myChart"), options);
     chart.render();
 
+  
 };
+
+
 
 
 

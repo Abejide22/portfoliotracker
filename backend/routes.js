@@ -367,70 +367,68 @@ router.put("/profile/update-password", async (req, res) => {
   }
 });
 
+
+
+
+
+
+
+
+
+
+
+
+const yahooFinance = require("yahoo-finance2").default;
+
 // POST: modtager stockName fra form
 router.post("/trade", (req, res) => {
   const stockName = req.body.stockName;
   res.redirect(`/trade?stockName=${encodeURIComponent(stockName)}`);
 });
 
-// GET /trade - viser aktiedata for valgt aktie
-router.get("/trade", (req, res) => {
+// GET: viser aktiedata for valgt aktie
+router.get("/trade", async (req, res) => {
   if (!req.session.userId) {
     return res.redirect("/login");
   }
+
   const userId = req.session.userId;
   const stockName = req.query.stockName;
+
   if (!stockName) {
-    return res.render("trade", { userId, last30Days: null });
+    return res.render("trade", { userId, dates: null, closes: null });
   }
-  const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${stockName}&apikey=UWEODA1EXLUVVU77`;
-  request.get(
-    {
-      url: url,
-      json: true,
-      headers: { "User-Agent": "request" },
-    },
-    (err, apiRes, data) => {
-      if (err) {
-        console.log("Error:", err);
-        return res.status(500).send("Fejl ved API-kald.");
-      }
-      const timeSeries = data["Time Series (Daily)"];
-      if (!timeSeries) {
-        return res.status(500).send("Ingen data fundet.");
-      }
-      const dates = Object.keys(timeSeries).sort(
-        (a, b) => new Date(b) - new Date(a)
-      );
-      const last30Days = dates.slice(0, 30).map((date) => ({
-        date,
-        data: timeSeries[date],
-      }));
-      res.render("trade", { userId, last30Days });
-    }
-  );
-});
 
-router.get("/trade", async (req, res) => {
   try {
-    await pool.connect(); // Vent på, at forbindelsen til databasen er klar
+    const today = new Date();
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(today.getDate() - 30);
 
-    // Hent portfolionavne fra databasen
-    const result = await pool
-      .request()
-      .query("SELECT name FROM Portfolios ORDER BY name ASC");
+    const result = await yahooFinance.historical(stockName, {
+      period1: thirtyDaysAgo,
+      period2: today,
+      interval: "1d"
+    });
 
-    const portfolios = result.recordset;
+    if (!result || result.length === 0) {
+      return res.status(500).send("Ingen data fundet.");
+    }
 
-    // Log dataen for at kontrollere, at den er korrekt
-    console.log("Portfolios:", portfolios); // Log dette i backend for at kontrollere dataen
+    // Sorter nyeste først
+    const sorted = result.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 30);
 
-    // Send portfolios som en del af renderingen
-    res.render("trade", { portfolios: portfolios });
+    const dates = sorted.map(day => day.date.toISOString().split('T')[0]);
+    const closes = sorted.map(day => day.close);
+
+    res.render("trade", { userId, dates, closes });
+
   } catch (err) {
-    console.error("Fejl ved hentning af portfolier:", err);
-    res.status(500).send("Noget gik galt ved hentning af portfolier.");
+    console.error("Fejl ved Yahoo Finance API-kald:", err);
+    res.status(500).send("Fejl ved hentning af data.");
   }
 });
+
+
+
 
 module.exports = router;
