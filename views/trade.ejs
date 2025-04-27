@@ -66,6 +66,8 @@
         <button type="submit" name="stockName" value="TSLA">TSLA</button>
       </form>
 
+    
+    
 
       <table border="1">
         <thead>
@@ -91,11 +93,18 @@
           <% } %>
         </tbody>
       </table>
-
 </body>
 
 
 <script>
+  <% console.log(portfolios); %>
+
+  // Kontroller at portfolios faktisk er defineret og tilgængelig
+  if (typeof portfolios !== 'undefined') {
+      console.log("Portfolios data:", portfolios); // Log dataen i browserens konsol
+    } else {
+      console.error("Portfolios is not defined!");
+    }
 
 const tickers = [
   "ALMB",

@@ -804,7 +804,7 @@ router.put('/profile/update-password', async (req, res) => {
 
 */
 const request = require("request");
-
+/*
 router.use(express.urlencoded({ extended: true }));
 
 // POST: modtager stockName fra form
@@ -855,6 +855,31 @@ router.get("/trade", (req, res) => {
       res.render("trade", { last30Days });
     }
   );
+});
+*/
+
+
+router.get("/trade", async (req, res) => {
+  try {
+    await pool.connect(); // Vent på, at forbindelsen til databasen er klar
+
+    // Hent portfolionavne fra databasen
+    const result = await pool
+      .request()
+      .query("SELECT name FROM Portfolios ORDER BY name ASC");
+
+    const portfolios = result.recordset;
+
+    // Log dataen for at kontrollere, at den er korrekt
+    console.log("Portfolios:", portfolios);  // Log dette i backend for at kontrollere dataen
+
+    // Send portfolios som en del af renderingen
+    res.render("trade", { portfolios: portfolios });
+
+  } catch (err) {
+    console.error("Fejl ved hentning af portfolier:", err);
+    res.status(500).send("Noget gik galt ved hentning af portfolier.");
+  }
 });
 
 module.exports = router;
