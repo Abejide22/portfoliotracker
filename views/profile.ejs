@@ -41,17 +41,47 @@
     <input placeholder="Brugernavn" id="brugernavn_id">
     <input placeholder="Adgangskode" id="adgangskode_id">
   </div>
-  <br>
-  <button id="gemÆndringer_id">Gem ændringer</button>
   <script>
-    const logoutForm = document.querySelector('form[action="/logout"]');
-    if (logoutForm) {
-      logoutForm.addEventListener("submit", function (event) {
-        const confirmed = confirm("Er du sikker på, at du vil logge ud?");
-        if (!confirmed) {
-          event.preventDefault(); // Stopper formularen
-        }
+    document.getElementById('gemÆndringer_id').addEventListener('click', async () => {
+      const userId = document.getElementById('userId').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      // Tjek om adgangskoderne matcher og har mindst 4 tegn
+      const messageElement = document.getElementById('message');
+
+      if (newPassword.length < 4) {
+        messageElement.style.color = 'red';
+        messageElement.textContent = 'Adgangskoden skal være mindst 4 tegn lang.';
+        return; // Stop processen, hvis adgangskoden er for kort
+      }
+      if (newPassword !== confirmPassword) {
+        messageElement.style.color = 'red';
+        messageElement.textContent = 'Adgangskoderne matcher ikke.';
+        return; // Stop processen, hvis adgangskoderne ikke matcher
+      }
+  
+      // Send PUT-anmodning til serveren
+      const response = await fetch('/profile/update-password', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, newPassword, confirmPassword }),
       });
-    }
+  
+      const result = await response.json();
+  
+      if (response.ok) {
+        messageElement.style.color = 'green';
+        messageElement.textContent = result.success;
+      } else {
+        messageElement.style.color = 'red';
+        messageElement.textContent = result.error;
+      }
+    });
   </script>
+
+
+    
 </body>

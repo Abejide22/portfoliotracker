@@ -11,21 +11,27 @@
 </html>
 
 <body>
-    <div id="topBar_id">
-        <h1>PORTFOLIOTRACKER</h1>
-        <span class="material-symbols-outlined" id="topBar_goBack_id">home</span>
-    </div>
+  <div id="topBar_id">
+    <h1>PORTFOLIOTRACKER</h1>
+    <form action="/logout" method="POST" style="display: inline;">
+      <button type="submit" id="logoutButton" title="Log ud">
+        <span class="material-symbols-outlined">
+          account_circle_off
+        </span>
+      </button>
+    </form>
+  </div>
 
-    <ul>
-        <li><a href="/dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
-        <li><a href="/portfolios"><span class="material-symbols-outlined">folder_open</span>Portfolios</a></li>
-        <li><a href="/trade" style="color: gray;"><span class="material-symbols-outlined" style="color: gray;">query_stats</span>Market</a></li>
-        <li><a href="/accounts"><span class="material-symbols-outlined">account_balance_wallet</span>Accounts</a></li>
-        <li><a href="/profile"><span class="material-symbols-outlined">person</span>Profile</a></li>
-      </ul>
+  <ul>
+    <li><a href="/dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
+    <li><a href="/portfolios"><span class="material-symbols-outlined">folder_open</span>Portfolios</a></li>
+    <li><a href="/trade" style="color: gray;"><span class="material-symbols-outlined" style="color: gray;">query_stats</span>Market</a></li>
+    <li><a href="/accounts"><span class="material-symbols-outlined">account_balance_wallet</span>Accounts</a></li>
+    <li><a href="/profile"><span class="material-symbols-outlined">person</span>Profile</a></li>
+  </ul>
 
       
-      <br>
+  <br>
       <div id="stockBox_id">
         <input placeholder="Search stock..." autofocus id="searchStocks_input_id">
         <div id="stockListBox_id" style="color: white"></div>
@@ -55,8 +61,9 @@
       </div>
 
       <form action="/trade" method="POST">
-        <input type="hidden" name="stockName" value="AAPL">
-        <button type="submit">Send besked</button>
+        <button type="submit" name="stockName" value="AAPL">AAPL</button>
+        <button type="submit" name="stockName" value="GOOGL">GOOGL</button>
+        <button type="submit" name="stockName" value="TSLA">TSLA</button>
       </form>
 
 
@@ -89,12 +96,6 @@
 
 
 <script>
-
-var last30Days = <%= JSON.stringify(last30Days) %>;
-  
-  // Nu kan du bruge 'last30Days' i din JavaScript-kode
-  console.log(last30Days);
-
 
 const tickers = [
   "ALMB",
@@ -201,69 +202,64 @@ const aktienavne = [
     "Vestas Wind Systems A/S"
   ];
 
-function lavListMedAktier(){
-    for(let i = 0; i < aktienavne.length; i++){
-      // Create element:
-      const para = document.createElement("div");
-      para.innerHTML = aktienavne[i];
-
-      // Tilføj value attribut:
-      para.setAttribute("value", tickers[i]);
-
-    // Append to another element:
-    document.getElementById("stockListBox_id").appendChild(para);
-    }
-  }
-  lavListMedAktier();
-
 
 
 
   let stockName = "";
 
+/*
+  var last30Days = <%- JSON.stringify(last30Days) %>;
 
-for (let i = 0; i < NasDaqstocks.length; i++) {
-    const para = document.createElement("button");
-    const node = document.createTextNode(NasDaqstocks[i]);
+console.log(last30Days[0].data["4. close"]);
 
-    para.setAttribute("data-ticker", NasDaqstocksTicker[i]);
-    para.type = "button";
+let bababoi = last30Days[0].data["4. close"];
 
-    para.appendChild(node);
+  // Nu kan du bruge 'last30Days' i din JavaScript-kode
+
+*/
+
+let bababoi = 0;
+  function lavListMedAktier() {
+  for (let i = 0; i < aktienavne.length; i++) {
+    const button = document.createElement("button");
+    button.id = "soi";
+
+    button.name = tickers[i];
+
+    // Først tilføjer vi aktienavnet som tekst
+    button.append(aktienavne[i] + " ");
+
+    // Så tilføjer vi span bagefter
+
+
+    const span = document.createElement("span");
+    span.textContent = bababoi + " DKK";
     
-    para.addEventListener("click", function(event) {
-        let ticker = event.currentTarget.dataset.ticker;
-        stockName = event.currentTarget.textContent;
-        
-        document.querySelectorAll('button').forEach(el => {
-          el.classList.remove('active'); // Reset all
-});
+    button.appendChild(span);
 
-event.currentTarget.classList.add('active'); // Set current one to blue
+    button.addEventListener('click', displayStock); // Afspiller displayStock() der viser grafen
 
-        
-        console.log("Ticker clicked:", ticker); // For debugging
-        retrieveStockTicker(ticker);
-    });
-
-    const element = document.getElementById("boi");
-    element.appendChild(para);
+    document.getElementById("stockListBox_id").appendChild(button);
+  }
 }
+lavListMedAktier();
 
 
 
-// Search stocks //
+
+
+// søg efterr aktier //
 let userInput_SearchStocks = "";
 
 function searchStocks(event) {
   userInput_SearchStocks = document.getElementById("searchStocks_input_id").value.toLowerCase();
 
-  const buttons = document.querySelectorAll("#boi button");
+  const buttons = document.querySelectorAll("#stockBox_id button");
 
   buttons.forEach(button => {
     const text = button.textContent.toLowerCase();
     if (text.includes(userInput_SearchStocks)) {
-      button.style.display = "inline-block"; // or "block", depending on your layout
+      button.style.display = "inline-block";
     } else {
       button.style.display = "none";
     }
@@ -272,65 +268,8 @@ function searchStocks(event) {
 document.getElementById("searchStocks_input_id").addEventListener("keyup", searchStocks);
 
 
+let boi = [100,110,90,100,110,100,100,90,110,110];
 
-
-
-
-// -------------------------------------------------------------------------------------//
-
-// RETRIEVE STOCK DATA //
-
-// -------------------------------------------------------------------------------------//
-
-
-let boi = [];
-
-function retrieveStockTicker(ticker) {
-    let key = ticker; // Denne variabel bestemmer hvilket data der hentes
-    console.log(ticker);
-
-    fetch(`/api/data?key=${key}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.error) {
-            console.log(data.error);
-        } else {
-            console.log(data);  // This will log the fetched stock data (prices)
-            boi = data;
-            boi = boi.map(boi => Math.round(boi * 100)/100);
-            displayStock();
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-
-      // Viser aktie navn når der trykkes på aktie //
-      document.getElementById("aktieNavn_id").innerHTML = stockName;
-}
-
-
-let dates = [];
-
-function get14days(){
-  
-const today = new Date();
-
-for (let i = 0; i < 14; i++) {
-  const date = new Date();
-  date.setDate(today.getDate() - i);
-
-  const day = date.getDay(); // 0 = Sunday, 6 = Saturday
-  if (day !== 0 && day !== 6) {
-    const formatted = date.toISOString().split('T')[0];
-    dates.push(formatted);
-  }
-}
-dates.reverse(); // optional: to have oldest to newest
-console.log(dates);
-
-}
-get14days();
 
 
 function displayStock(){
@@ -338,7 +277,7 @@ function displayStock(){
 
   document.getElementById("myChart").innerHTML = "";
 
-  const xValues = dates;
+  const xValues = [1,2,3,4,5,6,7,8,9,10];
 const options = {
       chart: {
         type: 'line',
@@ -424,6 +363,16 @@ grid: {
     chart.render();
 
 };
+
+
+
+function fåPorteføljer(){
+  
+}
+
+
+
+
 // Logout confirmation
 const logoutForm = document.querySelector('form[action="/logout"]');
 if (logoutForm) {

@@ -38,10 +38,10 @@ router.get("/login", (req, res) => {
   res.render("index", { error: undefined });
 });
 
-router.get("/profile", (req, res) => {
-  if (!req.session.userId) return res.redirect("/login");
+router.get('/profile', (req, res) => {
+  if (!req.session.userId) return res.redirect('/login');
   const userId = req.session.userId;
-  res.render("profile", { userId });
+  res.render('profile', { userId, error: null, success: null });
 });
 
 router.get("/portfolios", (req, res) => {
@@ -652,8 +652,7 @@ når brugeren logger ind. Det gør det både sikrere og mere elegant.
       }
     });
 
-    /*
-
+    
 
 // ----------------------------------------------------------------------------------------------------------------------------- //
 // 
@@ -661,17 +660,20 @@ når brugeren logger ind. Det gør det både sikrere og mere elegant.
 //
 // ----------------------------------------------------------------------------------------------------------------------------- //
 
-*/
+/*
     const request = require("request");
 
     router.use(express.urlencoded({ extended: true }));
 
+    
     // POST: modtager stockName fra form
     router.post("/trade", (req, res) => {
       const stockName = req.body.stockName;
       res.redirect(`/trade?stockName=${encodeURIComponent(stockName)}`);
     });
 
+
+    
     router.get("/trade", (req, res) => {
       const stockName = req.query.stockName;
 
@@ -720,7 +722,7 @@ når brugeren logger ind. Det gør det både sikrere og mere elegant.
         }
       );
     });
-
+*/
     module.exports = router;
 
     const accountResult = await pool
@@ -739,6 +741,57 @@ når brugeren logger ind. Det gør det både sikrere og mere elegant.
     res.status(500).send("Noget gik galt ved hentning af transaktioner.");
   }
 });
+
+router.post('/profile/update-password', async (req, res) => {
+  const { userId, newPassword, confirmPassword } = req.body;
+
+  // Tjek om de to adgangskoder matcher
+  if (newPassword !== confirmPassword) {
+    return res.render('profile', { userId, error: 'Adgangskoderne matcher ikke.', success: null });
+  }
+
+  try {
+    await poolConnect;
+
+    // Opdater adgangskoden i databasen
+    await pool
+      .request()
+      .input('userId', sql.Int, userId)
+      .input('password', sql.NVarChar, newPassword)
+      .query('UPDATE Users SET password = @password WHERE id = @userId');
+
+    res.render('profile', { userId, success: 'Adgangskoden er opdateret!', error: null });
+  } catch (err) {
+    console.error('Fejl ved opdatering af adgangskode:', err);
+    res.status(500).send('Noget gik galt.');
+  }
+});
+
+router.put('/profile/update-password', async (req, res) => {
+  const { userId, newPassword, confirmPassword } = req.body;
+
+  // Tjek om de to adgangskoder matcher
+  if (newPassword !== confirmPassword) {
+    return res.status(400).json({ error: 'Adgangskoderne matcher ikke.' });
+  }
+
+  try {
+    await poolConnect;
+
+    // Opdater adgangskoden i databasen
+    await pool
+      .request()
+      .input('userId', sql.Int, userId)
+      .input('password', sql.NVarChar, newPassword)
+      .query('UPDATE Users SET password = @password WHERE id = @userId');
+
+    res.status(200).json({ success: 'Adgangskoden er opdateret!' });
+  } catch (err) {
+    console.error('Fejl ved opdatering af adgangskode:', err);
+    res.status(500).json({ error: 'Noget gik galt.' });
+  }
+});
+
 
 /*
 
