@@ -60,7 +60,7 @@
         messageElement.textContent = 'Adgangskoderne matcher ikke.';
         return; // Stop processen, hvis adgangskoderne ikke matcher
       }
-  
+
       // Send PUT-anmodning til serveren
       const response = await fetch('/profile/update-password', {
         method: 'PUT',
@@ -69,9 +69,9 @@
         },
         body: JSON.stringify({ userId, newPassword, confirmPassword }),
       });
-  
+
       const result = await response.json();
-  
+
       if (response.ok) {
         messageElement.style.color = 'green';
         messageElement.textContent = result.success;
@@ -83,5 +83,5 @@
   </script>
 
 
-    
+
 </body>
