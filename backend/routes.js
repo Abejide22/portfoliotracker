@@ -47,12 +47,6 @@ router.get("/profile", (req, res) => {
   res.render("profile", { userId, error: null, success: null });
 });
 
-router.get("/portfolios", (req, res) => {
-  if (!req.session.userId) return res.redirect("/login");
-  const userId = req.session.userId;
-  res.render("portfolios", { userId });
-});
-
 router.get("/accounts", async (req, res) => {
   if (!req.session.userId) return res.redirect("/login");
   const userId = req.session.userId;
@@ -300,6 +294,26 @@ router.get("/transactions", async (req, res) => {
   } catch (err) {
     console.error("Fejl ved hentning af transaktioner:", err);
     res.status(500).send("Noget gik galt ved hentning af transaktioner.");
+  }
+});
+
+router.get("/portfolios", async (req, res) => {
+  const userId = req.session.userId; // Henter brugerens id
+
+  try {
+    await poolConnect;
+
+    const result = await pool
+      .request()
+      .input("userId", sql.Int, userId)
+      .query("SELECT * FROM Portfolios WHERE user_id = @userId");
+
+    const portfolios = result.recordset;
+
+    res.render("portfolios", { portfolios, userId });
+  } catch (err) {
+    console.error("Fejl ved hentning af porteføljer:", err);
+    res.status(500).send("Noget gik galt ved hentning af porteføljer.");
   }
 });
 

@@ -71,41 +71,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Teknologi</td>
-                        <td>54.000 DKK</td>
-                        <td>59.000 DKK</td>
-                        <td>5000 DKK</td>
-                    </tr>
-                    <tr>
-                        <td>Teknologi</td>
-                        <td>54.000 DKK</td>
-                        <td>59.000 DKK</td>
-                        <td>5000 DKK</td>
-                    </tr>
-                    <tr>
-                        <td>Teknologi</td>
-                        <td>54.000 DKK</td>
-                        <td>59.000 DKK</td>
-                        <td>5000 DKK</td>
-                    </tr>
-                    <tr>
-                        <td>Teknologi</td>
-                        <td>54.000 DKK</td>
-                        <td>59.000 DKK</td>
-                        <td>5000 DKK</td>
-                    </tr>
-                    <tr>
-                        <td>Teknologi</td>
-                        <td>54.000 DKK</td>
-                        <td>59.000 DKK</td>
-                        <td>5000 DKK</td>
-                    </tr>
+                    <% portfolios.forEach(portfolio=> { %>
+                        <tr>
+                            <td>
+                                <%= portfolio.name %>
+                            </td>
+                            <td>0 DKK</td> <!-- Midlertidig dummy, kan ændres senere -->
+                            <td>0 DKK</td> <!-- Midlertidig dummy, kan ændres senere -->
+                            <td>0 DKK</td> <!-- Midlertidig dummy, kan ændres senere -->
+                        </tr>
+                        <% }) %>
                 </tbody>
-            </table>
-        </div>
-    </div>
-</body>
 
 </html>
 
