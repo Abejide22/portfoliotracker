@@ -259,8 +259,7 @@ router.post("/create-portfolio", async (req, res) => {
       .request()
       .input("user_id", sql.Int, userId)
       .input("account_id", sql.Int, accountId)
-      .input("name", sql.NVarChar, portfolioName)
-      .query(`
+      .input("name", sql.NVarChar, portfolioName).query(`
         INSERT INTO Portfolios (user_id, account_id, name, created_at)
         VALUES (@user_id, @account_id, @name, GETDATE());
       `);
@@ -397,8 +396,6 @@ router.get("/trade", (req, res) => {
     }
   );
 });
-*/
-
 
 router.get("/trade", async (req, res) => {
   try {
@@ -412,11 +409,10 @@ router.get("/trade", async (req, res) => {
     const portfolios = result.recordset;
 
     // Log dataen for at kontrollere, at den er korrekt
-    console.log("Portfolios:", portfolios);  // Log dette i backend for at kontrollere dataen
+    console.log("Portfolios:", portfolios); // Log dette i backend for at kontrollere dataen
 
     // Send portfolios som en del af renderingen
     res.render("trade", { portfolios: portfolios });
-
   } catch (err) {
     console.error("Fejl ved hentning af portfolier:", err);
     res.status(500).send("Noget gik galt ved hentning af portfolier.");
