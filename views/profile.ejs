@@ -35,11 +35,15 @@
 
   <div id="profileBox_id">
     <h2 id="profiloplysninger_id">Profiloplysninger</h2>
-    <hr>
-    <input placeholder="e-mail" style="width: 310px;">
-    <br>
-    <input placeholder="Brugernavn" id="brugernavn_id">
-    <input placeholder="Adgangskode" id="adgangskode_id">
+    <form id="passwordForm">
+      <input type="hidden" id="userId" value="<%= userId %>">
+      <input placeholder="Ny Adgangskode" id="newPassword" style="width: 300px;" required>
+      <br>
+      <input placeholder="Bekræft Adgangskode" id="confirmPassword" style="width: 300px;" required>
+      <br>
+      <button type="button" id="gemÆndringer_id">Gem ændringer</button>
+    </form>
+    <p id="message" style="color: red;"></p>
   </div>
   <script>
     document.getElementById('gemÆndringer_id').addEventListener('click', async () => {
