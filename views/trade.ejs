@@ -33,54 +33,115 @@
       
   <br>
       <div id="stockBox_id">
-        <input placeholder="Search stock..." autofocus id="searchStocks_input_id">
-        <form action="/trade" method="POST" id="stockListBox_id"></form>
+        <input placeholder="Search stocks on CSE..." autofocus id="searchStocks_input_id">
+        <div id="stockListBox_id"></div>
       </div>
-
-      
       
       <div id="ViewBuystockBox_id">
         <div id="viewStock_id">
           <span id="aktieNavn_id"></span>
+          <hr id="aktieNavnLinje_id">
           <div id="myChart"></div>
         </div>
         <div id="StockPurchaseInfo_id">
-          <input id="NumberOfStocks_id" type="number" max="99999" min="1" placeholder="1">
+          <input id="NumberOfStocks_id" type="number" max="99999" min="1" placeholder="1" onkeyup="beregnSamletKøbspris()">
+          <span id="totalPrice_id">149 DKK</span>
           <select name="Vælg portefølje" id="vælgPortefølje_id">
             <option value="">Vælg portefølje</option>
-            <option value="">Tech</option>
-            <option value="">Food</option>
-            <option value="">Defence</option>
           </select>
           <select name="vælg konto" id="vælgKonto_id">
             <option value="">Vælg konto</option>
-            <option value="">Gamerkonto</option>
-            <option value="">Børnepenge</option>
-            <option value="">Madpenge</option>
           </select>
           <button id="BuyStockButton_id">Purchase</button>
         </div>
-      </div>
-
-      
-
-    
-    
-
-      
+      </div>      
 </body>
 
 
 <script>
 
+let stockName = "";
+  let aktieData = ""; // Variabel der skal indeholde aktie data der kommer fra api
+  let aktieTickerValgt = ""; // Variabel der skal gemme tickeren på aktien der er blevet valgt
+  let aktieNavnValgt = ""; // Variabel der skal gemme navn på aktien der er blevet valgt
 
 
-const dates = <%- JSON.stringify(dates) %>;
-  const closes = <%- JSON.stringify(closes) %>;
+function lavListeMedPorteføljer(){
+  const portfolios = <%- JSON.stringify(portfolios) %>;
+
+  // LAVER ELEMENTER TIL PORTEFØLJE DROPDOWN /
+
+  for(let i = 0; i < portfolios.length; i++){
+    const porteføljeDropdown = document.getElementById("vælgPortefølje_id");
+    const nyOption = document.createElement('option');
+    
+    nyOption.textContent = portfolios[i].name;
+    
+    porteføljeDropdown.appendChild(nyOption);
+  }
+}
+lavListeMedPorteføljer();
+
+
+function lavListeMedAccounts(){
   
+  const accounts = <%- JSON.stringify(accounts) %>;
+  console.log(accounts);
+
+  for(let i = 0; i < accounts.length; i++){
+    const accountsDropdown = document.getElementById("vælgKonto_id");
+    const nyOption = document.createElement('option');
+    
+    nyOption.textContent = accounts[i].name;
+    
+    accountsDropdown.appendChild(nyOption);
+  }
+}
+lavListeMedAccounts(); 
 
 
-const tickers = [
+
+const købButton = document.getElementById("BuyStockButton_id");
+købButton.addEventListener("click", købAktie_tjekForhold);
+
+function købAktie_tjekForhold() {
+  const porteføljeSelect = document.getElementById("vælgPortefølje_id");
+  const kontoSelect = document.getElementById("vælgKonto_id");
+
+  const porteføljeText = porteføljeSelect.options[porteføljeSelect.selectedIndex].text; // henter den valgte tekst
+  const kontoText = kontoSelect.options[kontoSelect.selectedIndex].text; // henter den valgte tekst
+
+  if (kontoText == "Vælg konto" && porteføljeText == "Vælg portefølje" && aktieNavnValgt.length == 0)
+  {
+    alert("Du mangler at vælge en aktie, en portefølje og en konto.");
+  }
+  if (aktieNavnValgt.length == 0){
+    alert("Du mangler at vælge en aktie.");
+  }
+  if (porteføljeText == "Vælg portefølje")
+  {
+    alert("Du mangler at vælge en portefølje.");
+  }
+  if (kontoText == "Vælg konto")
+  {
+    alert("Du mangler at vælge en konto.");
+  } 
+  else
+  {
+    console.log("Ja tak");
+  }
+}
+
+
+
+
+function beregnSamletKøbspris(){
+  let samletKøbspris = document.getElementById("NumberOfStocks_id").value * 119;
+  document.getElementById("totalPrice_id").innerHTML = samletKøbspris + " DKK";
+}
+
+
+  const tickers = [
   "ALMB.CO",
   "AMBU-B.CO",
   "MAERSK-A.CO",
@@ -112,108 +173,123 @@ const tickers = [
   "NSIS-B.CO",
   "NOVO-B.CO",
   "NTG.CO",
-  "ORSTED.CO",
+  "ORSTED.CO",  // Kun én forekomst
   "PNDORA.CO",
   "RBREW.CO",
   "ROCK B.CO",
   "SPNO.CO",
-  "SIM.CO",
   "STG.CO",
-  "TRYGR.CO",
-  "VWS.CO",
-  "ORSTED.CO",
-  "SIM.CO",
   "STRAP.CO",
   "SPASJ.CO",
-  "SPNO.CO",
   "SIM.CO",
-  "STG.CO",
   "TRYGR.CO",
   "VWS.CO"
 ];
 
-
 const aktienavne = [
-    "Alm. Brand A/S",
-    "Ambu A/S",
-    "A.P. Møller - Mærsk A/S (A)",
-    "A.P. Møller - Mærsk A/S (B)",
-    "Aquaporin A/S",
-    "Atlantic Petroleum",
-    "Bang & Olufsen A/S",
-    "Bavarian Nordic A/S",
-    "Brdr. A&O Johansen A/S (B)",
-    "Carlsberg A/S (A)",
-    "Carlsberg A/S (B)",
-    "Chr. Hansen Holding A/S",
-    "Coloplast A/S (B)",
-    "Danske Bank A/S",
-    "Demant A/S",
-    "DFDS A/S",
-    "D/S Norden A/S",
-    "DSV A/S",
-    "FLSmidth & Co. A/S",
-    "Genmab A/S",
-    "GN Store Nord A/S",
-    "H. Lundbeck A/S",
-    "Hydract A/S",
-    "ISS A/S",
-    "Jyske Bank A/S",
-    "Netcompany Group A/S",
-    "NKT A/S",
-    "North Media A/S",
-    "Novonesis A/S (B)",
-    "Novo Nordisk A/S (B)",
-    "NTG Nordic Transport Group A/S",
-    "Ørsted A/S",
-    "Pandora A/S",
-    "Royal Unibrew A/S",
-    "Rockwool International A/S (B)",
-    "Spar Nord Bank A/S",
-    "SimCorp A/S",
-    "Scandinavian Tobacco Group A/S",
-    "Tryg A/S",
-    "Vestas Wind Systems A/S",
-    "Ørsted A/S",
-    "SimCorp A/S",
-    "Strategic Partners A/S",
-    "Sparekassen Sjælland",
-    "Spar Nord Bank A/S",
-    "SimCorp A/S",
-    "Scandinavian Tobacco Group A/S",
-    "Tryg A/S",
-    "Vestas Wind Systems A/S"
-  ];
+  "Alm. Brand A/S",
+  "Ambu A/S",
+  "A.P. Møller - Mærsk A/S (A)",
+  "A.P. Møller - Mærsk A/S (B)",
+  "Aquaporin A/S",
+  "Atlantic Petroleum",
+  "Bang & Olufsen A/S",
+  "Bavarian Nordic A/S",
+  "Brdr. A&O Johansen A/S (B)",
+  "Carlsberg A/S (A)",
+  "Carlsberg A/S (B)",
+  "Chr. Hansen Holding A/S",
+  "Coloplast A/S (B)",
+  "Danske Bank A/S",
+  "Demant A/S",
+  "DFDS A/S",
+  "D/S Norden A/S",
+  "DSV A/S",
+  "FLSmidth & Co. A/S",
+  "Genmab A/S",
+  "GN Store Nord A/S",
+  "H. Lundbeck A/S",
+  "Hydract A/S",
+  "ISS A/S",
+  "Jyske Bank A/S",
+  "Netcompany Group A/S",
+  "NKT A/S",
+  "North Media A/S",
+  "Novonesis A/S (B)",
+  "Novo Nordisk A/S (B)",
+  "NTG Nordic Transport Group A/S",
+  "Ørsted A/S",  // Kun én forekomst
+  "Pandora A/S",
+  "Royal Unibrew A/S",
+  "Rockwool International A/S (B)",
+  "Spar Nord Bank A/S",
+  "Scandinavian Tobacco Group A/S",
+  "Strategic Partners A/S",
+  "Sparekassen Sjælland",
+  "SimCorp A/S",
+  "Tryg A/S",
+  "Vestas Wind Systems A/S"
+];
 
 
 
 
-  let stockName = "";
 
-
-function lavListMedAktier() {
-  // Forloop gennem aktienavne og tickers
+  
+  function lavListMedAktier() {
   for (let i = 0; i < aktienavne.length; i++) {
     const button = document.createElement("button");
-    button.id = "soi";  // Giver knappen en ID
-    button.value = tickers[i];  // Aktieloggen værdi
-    button.type = "submit";  // Knaptypen er submit, da vi ønsker at sende data via POST
-    button.name = "stockName";  // Giver knappen navn for at sende det med i formularen
+    button.type = "button"; // Ikke submit mere bare knap
+    button.value = tickers[i];
+    button.textContent = aktienavne[i];
 
-    // Tilføjer aktienavnet som knaptekst
-    button.append(aktienavne[i] + " ");
+    button.onclick = async function(event) {
 
-    // Tilføjer et span med yderligere info
-    const span = document.createElement("span");
-    span.textContent = 10 + " DKK";  // Eksempelvis viser vi kursen på aktien
-    button.appendChild(span);
+      aktieTickerValgt = event.target.value; // Få tickeren fra den valgte aktie (tickeren er gemt i value)
+      aktieNavnValgt = event.target.textContent; // få navnet fra den valgte aktie som er gemt i indholdet
 
-    button.onclick = function(event) {
+
+
+      const buttons = document.querySelectorAll("#stockListBox_id button");
+
+      // Gennemgå alle knapper og ændr deres farve
+      buttons.forEach(function(button) {
+        button.style.color = "lightgray"; // Skift tekstfarven til hvid
+        button.style.fontWeight = "normal"; // sætter font weight til normal
+       
+      });
+
+
+      event.target.style.color = "dodgerblue"; // Ændre farven på den knap der trykkes på
+      event.target.style.fontWeight = "bold";
+
+
+
+ 
+      // sender en post ved brug af fetch
+      try {
+        const response = await fetch('/trade', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ stockName: aktieTickerValgt })
+        });
+
+        if (!response.ok) {
+          throw new Error('Netværksfejl');
+        }
+
+        aktieData = await response.json();
+        console.log("Server svar:", aktieData); // data kommer i json format
+
+      } catch (error) {
+        console.error('Fejl ved fetch:', error);
+      }
       displayStock(event);
     };
-
-    // Tilføjer knappen til formularen
-    document.getElementById("stockListBox_id").appendChild(button);
+    
+    document.getElementById("stockListBox_id").appendChild(button); // Tilføjer knap til stockListBox div
   }
 }
 lavListMedAktier();
@@ -228,6 +304,7 @@ let userInput_SearchStocks = "";
 
 function searchStocks(event) {
   userInput_SearchStocks = document.getElementById("searchStocks_input_id").value.toLowerCase();
+
 
   const buttons = document.querySelectorAll("#stockBox_id button");
 
@@ -244,21 +321,21 @@ document.getElementById("searchStocks_input_id").addEventListener("keyup", searc
 
 
 
-
-// Tjekker om siden har modtaget dato og close priser - hvis ja kør displayStock funktion//
-if(dates.length > 0 && closes.length > 0){
-  displayStock(event);
-}
-
 function displayStock(event){
 
-  let closes_shortend = closes.map(num => parseFloat(num.toFixed(2))); // Forkorter decimaltal til kun 2 decimaler
+  document.getElementById("aktieNavn_id").innerHTML = aktieNavnValgt + " (" + aktieTickerValgt + ")"; // Viser navn og ticker på valgt aktie over grafen
+  document.getElementById("aktieNavnLinje_id").style.display = "block";
 
-  dates.reverse(); closes.reverse(); // Rerverser så dato og priser udskrives i rigtig række følge fra ældste dato til nyeste dato
+  let aktieDataPriser = aktieData.closes;
+  let aktieDataDatoer = aktieData.dates;
+
+  let aktieDataPriser_forkortet = aktieDataPriser.map(num => parseFloat(num.toFixed(2))); // Forkorter decimaltal til kun 2 decimaler
+
+  aktieDataDatoer.reverse(); aktieDataPriser.reverse(); // Rerverser så dato og priser udskrives i rigtig række følge fra ældste dato til nyeste dato
 
   document.getElementById("myChart").innerHTML = "";
-console.log("boi");
-  const xValues = dates;
+
+  const xValues = aktieDataDatoer;
 const options = {
       chart: {
         type: 'line',
@@ -269,7 +346,7 @@ const options = {
       
       series: [{
         name: 'Aktiekurs',
-        data: closes_shortend
+        data: aktieDataPriser_forkortet
       }],
       xaxis: {
         categories: xValues,
@@ -279,7 +356,7 @@ const options = {
           }
         },
         title: {
-          text: 'Ugedage',
+         
           style: {
             color: 'lightgray'
           }
@@ -344,13 +421,6 @@ grid: {
   
 };
 
-
-
-
-
-function fåPorteføljer(){
-  
-}
 
 
 

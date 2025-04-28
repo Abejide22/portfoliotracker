@@ -375,31 +375,25 @@ router.put("/profile/update-password", async (req, res) => {
 
 
 
-
+// ------------------------------------------------------------------------
+// 
+// KODE DER HENTER API DATA
+//
+// ------------------------------------------------------------------------
 
 
 const yahooFinance = require("yahoo-finance2").default;
 
-// POST: modtager stockName fra form
-router.post("/trade", (req, res) => {
+// POST: modtager stockName fra fetch og returnerer data i JSON
+router.post("/trade", async (req, res) => {
   const stockName = req.body.stockName;
-  res.redirect(`/trade?stockName=${encodeURIComponent(stockName)}`);
-});
-
-// GET: viser aktiedata for valgt aktie
-router.get("/trade", async (req, res) => {
-  if (!req.session.userId) {
-    return res.redirect("/login");
-  }
-
-  const userId = req.session.userId;
-  const stockName = req.query.stockName;
 
   if (!stockName) {
-    return res.render("trade", { userId, dates: null, closes: null });
+    return res.status(400).json({ error: "Stock name is required" });
   }
 
   try {
+    // Hent aktiedata fra Yahoo Finance
     const today = new Date();
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(today.getDate() - 30);
@@ -411,7 +405,7 @@ router.get("/trade", async (req, res) => {
     });
 
     if (!result || result.length === 0) {
-      return res.status(500).send("Ingen data fundet.");
+      return res.status(500).json({ error: "No data found for the stock" });
     }
 
     // Sorter nyeste først
@@ -420,13 +414,69 @@ router.get("/trade", async (req, res) => {
     const dates = sorted.map(day => day.date.toISOString().split('T')[0]);
     const closes = sorted.map(day => day.close);
 
-    res.render("trade", { userId, dates, closes });
-
+    // Returner data som JSON
+    res.json({ dates, closes });
   } catch (err) {
     console.error("Fejl ved Yahoo Finance API-kald:", err);
-    res.status(500).send("Fejl ved hentning af data.");
+    res.status(500).json({ error: "Fejl ved hentning af data." });
   }
 });
+
+
+// GET: viser trade.ejs og initialiserer siden
+router.get("/trade", async (req, res) => {
+  if (!req.session.userId) {
+    return res.redirect("/login");
+  }
+
+  const userId = req.session.userId;
+  const stockName = req.query.stockName;
+
+  let dates = null;
+  let closes = null;
+  let portfolios = [];
+  let accounts = [];
+
+  try {
+    await poolConnect;
+    const portfolioResult = await pool.request().query(
+      "SELECT name FROM Portfolios"
+    );
+    portfolios = portfolioResult.recordset;
+  } catch (err) {
+    console.error("Fejl ved hentning af porteføljer:", err);
+  }
+
+  try {
+    await poolConnect;
+    const accountsResult = await pool.request().query("SELECT name FROM Accounts");
+    accounts = accountsResult.recordset;
+  } catch(err){
+    console.error("Fejl ved hentning af accounts", err);
+  }
+
+  if (stockName) {
+    try {
+      
+      const result = await yahooFinance.historical(stockName, {
+        period1: new Date("2022-01-01"),
+        period2: new Date(),
+        interval: "1d"
+      });
+
+      // Sorter nyeste først
+      const sorted = result.sort((a, b) => new Date(b.date) - new Date(a.date));
+      dates = sorted.map(day => day.date.toISOString().split('T')[0]);
+      closes = sorted.map(day => day.close);
+    } catch (err) {
+      console.error("Fejl ved Yahoo Finance API-kald:", err);
+    }
+  }
+
+  // Returner trade.ejs med alle relevante data
+  res.render("trade", { userId, dates, closes, portfolios, accounts });
+});
+
 
 
 

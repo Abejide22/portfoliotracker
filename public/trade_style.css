@@ -93,8 +93,7 @@ li a:hover span {
         width: 37%;
         border: 2px solid lightgray;
         display: inline-block;
-        margin-top: 2.7%;
-        padding: 0px;
+        margin-top: -100px;
         
     }
     #searchStocks_input_id{
@@ -117,7 +116,7 @@ li a:hover span {
       padding: 10px;
       font-size: 14px;
     }
-    #stockListBox_id div:hover{
+    #stockListBox_id button:hover{
       color: dodgerblue;
       cursor: pointer;
     }
@@ -245,4 +244,24 @@ li a:hover span {
   outline: none;
   background-color: lightgray;
   height: 33px;
+}
+#aktieNavn_id{
+  font-size: 25px;
+  display: block;
+  padding: 5px;
+}
+#aktieNavnLinje_id{
+  display: none; /* Display none fordi linjen først skal vises når der er valgt en aktie */
+}
+#totalPrice_id{
+  background-color: lightgray;
+  font-family: normalSkrift;
+  display: inline-block;
+  max-width: 100px;
+  min-width: 100px;
+  padding-left: 5px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  color: gray;
+  font-size: 15px;
 }
