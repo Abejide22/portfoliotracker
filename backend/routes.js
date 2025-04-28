@@ -112,7 +112,7 @@ router.post("/login", async (req, res) => {
       return res.render("index", { error: "Forkert brugernavn eller kodeord" });
     }
     req.session.userId = user.id;
-    res.redirect("/accounts");
+    res.redirect("/dashboard");
   } catch (err) {
     console.error("Login-fejl:", err);
     res.status(500).send("Noget gik galt under login.");
