@@ -303,14 +303,16 @@ router.get("/portfolios", async (req, res) => {
   try {
     await poolConnect;
 
-    const portfoliosResult = await pool.request()
+    const portfoliosResult = await pool
+      .request()
       .input("userId", sql.Int, userId)
       .query("SELECT * FROM Portfolios WHERE user_id = @userId");
 
     const portfolios = portfoliosResult.recordset;
 
     for (const portfolio of portfolios) {
-      const tradesResult = await pool.request()
+      const tradesResult = await pool
+        .request()
         .input("portfolioId", sql.Int, portfolio.id)
         .query("SELECT * FROM Trades WHERE portfolio_id = @portfolioId");
 
@@ -318,7 +320,7 @@ router.get("/portfolios", async (req, res) => {
 
       const stocks = {};
 
-      trades.forEach(trade => {
+      trades.forEach((trade) => {
         if (!stocks[trade.stock_id]) {
           stocks[trade.stock_id] = {
             samletAntal: 0,
@@ -326,24 +328,45 @@ router.get("/portfolios", async (req, res) => {
           };
         }
         stocks[trade.stock_id].samletAntal += trade.quantity_bought;
-        stocks[trade.stock_id].samletKøbspris += trade.quantity_bought * trade.buy_price;
+        stocks[trade.stock_id].samletKøbspris +=
+          trade.quantity_bought * trade.buy_price;
       });
 
-      const stocksWithGAK = Object.entries(stocks).map(([stockId, data]) => {
-        const gak = data.samletAntal > 0 ? data.samletKøbspris / data.samletAntal : 0;
-        return {
-          stockId,
-          samletAntal: data.samletAntal,
-          samletKøbspris: data.samletKøbspris,
-          gak,
-        };
-      });
+      // Asynkron version med kurs og forventet værdi
+      const stocksWithGAK = await Promise.all(
+        Object.entries(stocks).map(async ([stockId, data]) => {
+          const gak =
+            data.samletAntal > 0 ? data.samletKøbspris / data.samletAntal : 0;
+
+          // Hent aktiens nuværende kurs fra Yahoo Finance
+          let currentPrice = 0;
+          try {
+            const quote = await yahooFinance.quote(stockId);
+            currentPrice = quote.regularMarketPrice || 0;
+          } catch (error) {
+            console.error(
+              `Fejl ved hentning af aktiekurs for ${stockId}:`,
+              error
+            );
+          }
+
+          const forventetVærdi = currentPrice * data.samletAntal;
+
+          return {
+            stockId,
+            samletAntal: data.samletAntal,
+            samletKøbspris: data.samletKøbspris,
+            gak,
+            currentPrice,
+            forventetVærdi,
+          };
+        })
+      );
 
       portfolio.stocks = stocksWithGAK;
     }
 
     res.render("portfolios", { portfolios, userId });
-
   } catch (err) {
     console.error("Fejl ved hentning af porteføljer:", err);
     res.status(500).send("Noget gik galt ved hentning af porteføljer.");
@@ -400,20 +423,11 @@ router.put("/profile/update-password", async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-
 // ------------------------------------------------------------------------
-// 
+//
 // KODE DER HENTER API DATA
 //
 // ------------------------------------------------------------------------
-
 
 const yahooFinance = require("yahoo-finance2").default;
 
@@ -434,7 +448,7 @@ router.post("/trade", async (req, res) => {
     const result = await yahooFinance.historical(stockName, {
       period1: thirtyDaysAgo,
       period2: today,
-      interval: "1d"
+      interval: "1d",
     });
 
     if (!result || result.length === 0) {
@@ -442,10 +456,12 @@ router.post("/trade", async (req, res) => {
     }
 
     // Sorter nyeste først
-    const sorted = result.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 30);
+    const sorted = result
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 30);
 
-    const dates = sorted.map(day => day.date.toISOString().split('T')[0]);
-    const closes = sorted.map(day => day.close);
+    const dates = sorted.map((day) => day.date.toISOString().split("T")[0]);
+    const closes = sorted.map((day) => day.close);
 
     // Returner data som JSON
     res.json({ dates, closes });
@@ -454,7 +470,6 @@ router.post("/trade", async (req, res) => {
     res.status(500).json({ error: "Fejl ved hentning af data." });
   }
 });
-
 
 // GET: viser trade.ejs og initialiserer siden
 router.get("/trade", async (req, res) => {
@@ -472,9 +487,9 @@ router.get("/trade", async (req, res) => {
 
   try {
     await poolConnect;
-    const portfolioResult = await pool.request().query(
-      "SELECT name FROM Portfolios"
-    );
+    const portfolioResult = await pool
+      .request()
+      .query("SELECT name FROM Portfolios");
     portfolios = portfolioResult.recordset;
   } catch (err) {
     console.error("Fejl ved hentning af porteføljer:", err);
@@ -482,25 +497,26 @@ router.get("/trade", async (req, res) => {
 
   try {
     await poolConnect;
-    const accountsResult = await pool.request().query("SELECT name FROM Accounts");
+    const accountsResult = await pool
+      .request()
+      .query("SELECT name FROM Accounts");
     accounts = accountsResult.recordset;
-  } catch(err){
+  } catch (err) {
     console.error("Fejl ved hentning af accounts", err);
   }
 
   if (stockName) {
     try {
-      
       const result = await yahooFinance.historical(stockName, {
         period1: new Date("2022-01-01"),
         period2: new Date(),
-        interval: "1d"
+        interval: "1d",
       });
 
       // Sorter nyeste først
       const sorted = result.sort((a, b) => new Date(b.date) - new Date(a.date));
-      dates = sorted.map(day => day.date.toISOString().split('T')[0]);
-      closes = sorted.map(day => day.close);
+      dates = sorted.map((day) => day.date.toISOString().split("T")[0]);
+      closes = sorted.map((day) => day.close);
     } catch (err) {
       console.error("Fejl ved Yahoo Finance API-kald:", err);
     }
@@ -509,9 +525,5 @@ router.get("/trade", async (req, res) => {
   // Returner trade.ejs med alle relevante data
   res.render("trade", { userId, dates, closes, portfolios, accounts });
 });
-
-
-
-
 
 module.exports = router;

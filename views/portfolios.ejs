@@ -89,6 +89,7 @@
                                 <th>Samlet antal aktier</th>
                                 <th>Samlet erhvervelsespris</th>
                                 <th>GAK</th>
+                                <th>Forventet værdi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -98,6 +99,7 @@
                                     <td><%= stock.samletAntal %></td>
                                     <td><%= typeof stock.samletKøbspris === "number" ? stock.samletKøbspris.toFixed(2) : "0.00" %> DKK</td>
                                     <td><%= typeof stock.gak === "number" ? stock.gak.toFixed(2) : "0.00" %> DKK</td>
+                                    <td><%= typeof stock.forventetVærdi === "number" ? stock.forventetVærdi.toFixed(2) : "0.00" %> DKK</td>
                                 </tr>
                             <% }) %>
                         </tbody>
