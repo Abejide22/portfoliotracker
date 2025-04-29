@@ -351,6 +351,7 @@ router.get("/portfolios", async (req, res) => {
           }
 
           const forventetVærdi = currentPrice * data.samletAntal;
+          const urealiseretGevinst = forventetVærdi - data.samletKøbspris;
 
           return {
             stockId,
@@ -359,6 +360,7 @@ router.get("/portfolios", async (req, res) => {
             gak,
             currentPrice,
             forventetVærdi,
+            urealiseretGevinst,
           };
         })
       );
