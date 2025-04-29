@@ -465,12 +465,31 @@ router.post("/trade", async (req, res) => {
     const dates = sorted.map((day) => day.date.toISOString().split("T")[0]);
     const closes = sorted.map((day) => day.close);
 
+
+
+
+    // HÅNDTER KØB AF AKTIE (BEREGN PRIS, OPDATER DATABASE OG SEND BESKED TIL BRUGER)
+
+    let antalAktier = req.body.antalAktier;
+    let aktieTickerValgt = req.body.aktieTickerValgt;
+
+    let totalPris = antalAktier * closes[closes.length -1];
+
+
     // Returner data som JSON
-    res.json({ dates, closes });
+    res.json({ dates, closes, totalPris });
   } catch (err) {
     console.error("Fejl ved Yahoo Finance API-kald:", err);
     res.status(500).json({ error: "Fejl ved hentning af data." });
   }
+
+
+
+
+
+
+
+
 });
 
 // GET: viser trade.ejs og initialiserer siden
@@ -487,27 +506,31 @@ router.get("/trade", async (req, res) => {
   let portfolios = [];
   let accounts = [];
 
+  // Henter data om brugerens porteføkjer
   try {
     await poolConnect;
     const portfolioResult = await pool
       .request()
-      .query("SELECT name FROM Portfolios");
+      .input("userId", sql.Int, userId)
+      .query("SELECT name FROM Portfolios WHERE user_id = @userId"); // Henter data fra portføljer hvor bruger id matcher med det bruger id der er logget ind med
     portfolios = portfolioResult.recordset;
   } catch (err) {
     console.error("Fejl ved hentning af porteføljer:", err);
   }
 
+  // Henter data om brugerens kontoer
   try {
     await poolConnect;
     const accountsResult = await pool
       .request()
-      .query("SELECT name FROM Accounts");
+      .input("userId", sql.Int, userId)
+      .query("SELECT name FROM Accounts WHERE user_id = @userId");
     accounts = accountsResult.recordset;
   } catch (err) {
     console.error("Fejl ved hentning af accounts", err);
   }
 
-  if (stockName) {
+  if (stockName) { // tjekker om der er en værdi for aktien
     try {
       const result = await yahooFinance.historical(stockName, {
         period1: new Date("2022-01-01"),
@@ -523,6 +546,7 @@ router.get("/trade", async (req, res) => {
       console.error("Fejl ved Yahoo Finance API-kald:", err);
     }
   }
+
 
   // Returner trade.ejs med alle relevante data
   res.render("trade", { userId, dates, closes, portfolios, accounts });

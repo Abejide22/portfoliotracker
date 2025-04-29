@@ -44,13 +44,14 @@
           <div id="myChart"></div>
         </div>
         <div id="StockPurchaseInfo_id">
-          <input id="NumberOfStocks_id" type="number" max="99999" min="1" placeholder="1" onkeyup="beregnSamletKøbspris()">
-          <span id="totalPrice_id">149 DKK</span>
-          <select name="Vælg portefølje" id="vælgPortefølje_id">
-            <option value="">Vælg portefølje</option>
-          </select>
-          <select name="vælg konto" id="vælgKonto_id">
-            <option value="">Vælg konto</option>
+         
+            <input id="NumberOfStocks_id" type="number" max=99999 min=1 placeholder=1 onkeyup="beregnSamletKøbspris()">
+            <span id="totalPrice_id">0 DKK</span>
+            <select name="Vælg portefølje" id="vælgPortefølje_id">
+              <option value="">Vælg portefølje</option>
+            </select>
+            <select name="vælg konto" id="vælgKonto_id">
+              <option value="">Vælg konto</option>
           </select>
           <button id="BuyStockButton_id">Purchase</button>
         </div>
@@ -78,7 +79,7 @@ function lavListeMedPorteføljer(){
     nyOption.textContent = portfolios[i].name;
     
     porteføljeDropdown.appendChild(nyOption);
-  }
+  } 
 }
 lavListeMedPorteføljer();
 
@@ -128,17 +129,48 @@ function købAktie_tjekForhold() {
   } 
   else
   {
-    console.log("Ja tak");
+    foretagAktiekøb();
   }
 }
 
 
+let antalAktier = 0; // Antallet af aktie brugeren har tastet ind
 
 
-function beregnSamletKøbspris(){
-  let samletKøbspris = document.getElementById("NumberOfStocks_id").value * 119;
-  document.getElementById("totalPrice_id").innerHTML = samletKøbspris + " DKK";
+function foretagAktiekøb() {
+  antalAktier = document.getElementById("NumberOfStocks_id").value;
+  aktieTickerValgt = "ALMB.CO";
+
+  fetch('/trade', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ 
+      antalAktier: antalAktier,
+      aktieTickerValgt: aktieTickerValgt,
+      stockName: aktieTickerValgt // Send denne, så backenden kan bruge den
+    })
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Netværksfejl');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log("Server svar:", data.totalPris);
+  })
+  .catch(error => {
+    console.error('Fejl ved fetch:', error);
+  });
 }
+
+
+
+
+
+
 
 
   const tickers = [
@@ -235,7 +267,8 @@ const aktienavne = [
 
 
 
-  
+let currentPrice = 0; // Nuværende pris på den valgte aktie - værdi tildeles i lavListMedAktier
+
   function lavListMedAktier() {
   for (let i = 0; i < aktienavne.length; i++) {
     const button = document.createElement("button");
@@ -283,16 +316,27 @@ const aktienavne = [
         aktieData = await response.json();
         console.log("Server svar:", aktieData); // data kommer i json format
 
+        currentPrice = aktieData.closes[aktieData.closes.length-1].toFixed(2); // fidner det sidste indeks i objektet
+        document.getElementById("totalPrice_id").innerHTML = currentPrice;
+
+
       } catch (error) {
         console.error('Fejl ved fetch:', error);
       }
       displayStock(event);
     };
-    
     document.getElementById("stockListBox_id").appendChild(button); // Tilføjer knap til stockListBox div
   }
 }
 lavListMedAktier();
+
+
+function beregnSamletKøbspris(){
+  antalAktier = document.getElementById("NumberOfStocks_id").value;
+ 
+ 
+  document.getElementById("totalPrice_id").innerHTML = (antalAktier * currentPrice).toFixed(2) + " DKK";
+}
 
 
 
@@ -318,6 +362,7 @@ function searchStocks(event) {
   });
 }
 document.getElementById("searchStocks_input_id").addEventListener("keyup", searchStocks);
+
 
 
 
