@@ -303,14 +303,12 @@ router.get("/portfolios", async (req, res) => {
   try {
     await poolConnect;
 
-    // 1. Hent brugerens porteføljer
     const portfoliosResult = await pool.request()
       .input("userId", sql.Int, userId)
       .query("SELECT * FROM Portfolios WHERE user_id = @userId");
 
     const portfolios = portfoliosResult.recordset;
 
-    // 2. For hver portefølje, hent aktier og købshandler
     for (const portfolio of portfolios) {
       const tradesResult = await pool.request()
         .input("portfolioId", sql.Int, portfolio.id)
@@ -318,33 +316,30 @@ router.get("/portfolios", async (req, res) => {
 
       const trades = tradesResult.recordset;
 
-      // 3. Beregn samlet antal aktier, samlet købspris
-      let samletAntal = 0;
-      let samletKøbspris = 0;
+      const stocks = {};
 
       trades.forEach(trade => {
-        samletAntal += trade.quantity_bought;
-        samletKøbspris += trade.quantity_bought * trade.buy_price;
+        if (!stocks[trade.stock_id]) {
+          stocks[trade.stock_id] = {
+            samletAntal: 0,
+            samletKøbspris: 0,
+          };
+        }
+        stocks[trade.stock_id].samletAntal += trade.quantity_bought;
+        stocks[trade.stock_id].samletKøbspris += trade.quantity_bought * trade.buy_price;
       });
 
-      // 4. Beregn GAK (gennemsnitlig anskaffelseskurs)
-      let gak = samletAntal > 0 ? samletKøbspris / samletAntal : 0;
+      const stocksWithGAK = Object.entries(stocks).map(([stockId, data]) => {
+        const gak = data.samletAntal > 0 ? data.samletKøbspris / data.samletAntal : 0;
+        return {
+          stockId,
+          samletAntal: data.samletAntal,
+          samletKøbspris: data.samletKøbspris,
+          gak,
+        };
+      });
 
-      // 5. Hent aktuel pris for hver aktie (valgfrit - vi kan tage gennemsnit for nu)
-      let aktuelPris = trades.length > 0 ? trades[trades.length - 1].buy_price : 0;
-
-      // 6. Beregn samlet forventet værdi
-      let samletForventetVærdi = samletAntal * aktuelPris;
-
-      // 7. Beregn urealiseret gevinst/tab
-      let urealiseretGevinst = samletForventetVærdi - samletKøbspris;
-
-      // 8. Gem resultaterne på portefølje-objektet
-      portfolio.samletAntal = samletAntal;
-      portfolio.samletKøbspris = samletKøbspris;
-      portfolio.gak = gak;
-      portfolio.samletForventetVærdi = samletForventetVærdi;
-      portfolio.urealiseretGevinst = urealiseretGevinst;
+      portfolio.stocks = stocksWithGAK;
     }
 
     res.render("portfolios", { portfolios, userId });

@@ -71,32 +71,70 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% portfolios.forEach(portfolio=> { %>
-                        <tr>
-                            <td>
-                                <%= portfolio.name %>
-                            </td>
-                            <td>0 DKK</td> <!-- Midlertidig dummy, kan ændres senere -->
-                            <td>0 DKK</td> <!-- Midlertidig dummy, kan ændres senere -->
-                            <td>0 DKK</td> <!-- Midlertidig dummy, kan ændres senere -->
-                        </tr>
-                        <% }) %>
-                </tbody>
+    <% portfolios.forEach(portfolio => { %>
+        <tr>
+            <td><%= portfolio.name %></td>
+            <td><%= typeof portfolio.samletKøbspris === "number" ? portfolio.samletKøbspris.toFixed(2) : "0.00" %> DKK</td>
+            <td><%= typeof portfolio.samletForventetVærdi === "number" ? portfolio.samletForventetVærdi.toFixed(2) : "0.00" %> DKK</td>
+            <td><%= typeof portfolio.urealiseretGevinst === "number" ? portfolio.urealiseretGevinst.toFixed(2) : "0.00" %> DKK</td>
+        </tr>
+
+        <% if (portfolio.stocks.length > 0) { %>
+            <tr>
+                <td colspan="4">
+                    <table style="width: 100%; background-color: #333; margin-top: 10px;">
+                        <thead>
+                            <tr>
+                                <th>Aktie ID</th>
+                                <th>Samlet antal aktier</th>
+                                <th>Samlet erhvervelsespris</th>
+                                <th>GAK</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% portfolio.stocks.forEach(stock => { %>
+                                <tr>
+                                    <td><%= stock.stockId %></td>
+                                    <td><%= stock.samletAntal %></td>
+                                    <td><%= typeof stock.samletKøbspris === "number" ? stock.samletKøbspris.toFixed(2) : "0.00" %> DKK</td>
+                                    <td><%= typeof stock.gak === "number" ? stock.gak.toFixed(2) : "0.00" %> DKK</td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        <% } else { %>
+            <tr>
+                <td colspan="4" style="text-align: center; padding: 10px; color: gray;">
+                    Der er endnu ingen aktier i denne portefølje.
+                </td>
+            </tr>
+        <% } %>
+    <% }) %>
+</tbody>
 
 </html>
 
 <script>
-    // Runde Diagram 
-    const options = {
+    const chartOptions = {
         chart: {
             type: 'pie',
-            fontFamily: 'normalSkrift' // Ændrer skrifttype i hele grafen
+            fontFamily: 'normalSkrift'
         },
-        series: [32, 8, 15, 16, 29],
-        labels: ['Teknologi', 'Medicin', 'Energi', 'Forsvar', 'Andet'],
+        series: [
+            <% portfolios.forEach((portfolio, index) => { %>
+                <%= typeof portfolio.samletForventetVærdi === "number" ? portfolio.samletForventetVærdi.toFixed(2) : "0.00" %><%= index !== portfolios.length - 1 ? ',' : '' %>
+            <% }) %>
+        ],
+        labels: [
+            <% portfolios.forEach((portfolio, index) => { %>
+            '<%= typeof portfolio.name === "string" ? portfolio.name : "Ukendt" %>' <%= index !== portfolios.length - 1 ? ',' : '' %>
+            <% }) %>
+        ],
         colors: ['#00BFFF', '#9932CC', '#FFA500', '#90EE90', '#FF4040'],
         stroke: {
-            show: false // Fjerner den hvide kant rundt om grafen
+            show: false
         },
         legend: {
             position: 'right',
@@ -104,21 +142,20 @@
                 colors: '#ffffff',
                 useSeriesColors: false,
                 fontSize: '14px',
-                fontFamily: 'normalSkrift' // Legende-skrifttype
+                fontFamily: 'normalSkrift'
             }
         },
         dataLabels: {
             style: {
                 colors: ['#ffffff'],
-                fontFamily: 'normalSkrift', // Skrifttype på procenttal
+                fontFamily: 'normalSkrift',
                 fontWeight: 'normal'
             }
         }
     };
 
-    const chart = new ApexCharts(document.querySelector("#chart"), options);
+    const chart = new ApexCharts(document.querySelector("#chart"), chartOptions);
     chart.render();
-
 </script>
 
 </html>
