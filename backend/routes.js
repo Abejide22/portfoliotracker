@@ -298,19 +298,57 @@ router.get("/transactions", async (req, res) => {
 });
 
 router.get("/portfolios", async (req, res) => {
-  const userId = req.session.userId; // Henter brugerens id
+  const userId = req.session.userId;
 
   try {
     await poolConnect;
 
-    const result = await pool
-      .request()
+    // 1. Hent brugerens porteføljer
+    const portfoliosResult = await pool.request()
       .input("userId", sql.Int, userId)
       .query("SELECT * FROM Portfolios WHERE user_id = @userId");
 
-    const portfolios = result.recordset;
+    const portfolios = portfoliosResult.recordset;
+
+    // 2. For hver portefølje, hent aktier og købshandler
+    for (const portfolio of portfolios) {
+      const tradesResult = await pool.request()
+        .input("portfolioId", sql.Int, portfolio.id)
+        .query("SELECT * FROM Trades WHERE portfolio_id = @portfolioId");
+
+      const trades = tradesResult.recordset;
+
+      // 3. Beregn samlet antal aktier, samlet købspris
+      let samletAntal = 0;
+      let samletKøbspris = 0;
+
+      trades.forEach(trade => {
+        samletAntal += trade.quantity_bought;
+        samletKøbspris += trade.quantity_bought * trade.buy_price;
+      });
+
+      // 4. Beregn GAK (gennemsnitlig anskaffelseskurs)
+      let gak = samletAntal > 0 ? samletKøbspris / samletAntal : 0;
+
+      // 5. Hent aktuel pris for hver aktie (valgfrit - vi kan tage gennemsnit for nu)
+      let aktuelPris = trades.length > 0 ? trades[trades.length - 1].buy_price : 0;
+
+      // 6. Beregn samlet forventet værdi
+      let samletForventetVærdi = samletAntal * aktuelPris;
+
+      // 7. Beregn urealiseret gevinst/tab
+      let urealiseretGevinst = samletForventetVærdi - samletKøbspris;
+
+      // 8. Gem resultaterne på portefølje-objektet
+      portfolio.samletAntal = samletAntal;
+      portfolio.samletKøbspris = samletKøbspris;
+      portfolio.gak = gak;
+      portfolio.samletForventetVærdi = samletForventetVærdi;
+      portfolio.urealiseretGevinst = urealiseretGevinst;
+    }
 
     res.render("portfolios", { portfolios, userId });
+
   } catch (err) {
     console.error("Fejl ved hentning af porteføljer:", err);
     res.status(500).send("Noget gik galt ved hentning af porteføljer.");
