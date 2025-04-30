@@ -71,52 +71,79 @@
                     </tr>
                 </thead>
                 <tbody>
-    <% portfolios.forEach(portfolio => { %>
-        <tr>
-            <td><%= portfolio.name %></td>
-            <td><%= typeof portfolio.samletKøbspris === "number" ? portfolio.samletKøbspris.toFixed(2) : "0.00" %> DKK</td>
-            <td><%= typeof portfolio.samletForventetVærdi === "number" ? portfolio.samletForventetVærdi.toFixed(2) : "0.00" %> DKK</td>
-            <td><%= typeof portfolio.urealiseretGevinst === "number" ? portfolio.urealiseretGevinst.toFixed(2) : "0.00" %> DKK</td>
-        </tr>
+                    <% portfolios.forEach(portfolio=> { %>
+                        <tr>
+                            <td>
+                                <%= portfolio.name %>
+                            </td>
+                            <td>
+                                <%= typeof portfolio.samletKøbspris==="number" ? portfolio.samletKøbspris.toFixed(2)
+                                    : "0.00" %> DKK
+                            </td>
+                            <td>
+                                <%= typeof portfolio.samletForventetVærdi==="number" ?
+                                    portfolio.samletForventetVærdi.toFixed(2) : "0.00" %> DKK
+                            </td>
+                            <td>
+                                <%= typeof portfolio.urealiseretGevinst==="number" ?
+                                    portfolio.urealiseretGevinst.toFixed(2) : "0.00" %> DKK
+                            </td>
+                        </tr>
 
-        <% if (portfolio.stocks.length > 0) { %>
-            <tr>
-                <td colspan="4">
-                    <table style="width: 100%; background-color: #333; margin-top: 10px;">
-                        <thead>
+                        <% if (portfolio.stocks.length> 0) { %>
                             <tr>
-                                <th>Aktie ID</th>
-                                <th>Samlet antal aktier</th>
-                                <th>Samlet erhvervelsespris</th>
-                                <th>GAK</th>
-                                <th>Forventet værdi</th>
-                                <th>Urealiseret gevinst/tab</th>
+                                <td colspan="4">
+                                    <table style="width: 100%; background-color: #333; margin-top: 10px;">
+                                        <thead>
+                                            <tr>
+                                                <th>Aktie ID</th>
+                                                <th>Samlet antal aktier</th>
+                                                <th>Samlet erhvervelsespris</th>
+                                                <th>GAK</th>
+                                                <th>Forventet værdi</th>
+                                                <th>Urealiseret gevinst/tab</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% portfolio.stocks.forEach(stock=> { %>
+                                                <tr>
+                                                    <td>
+                                                        <%= stock.stockId %>
+                                                    </td>
+                                                    <td>
+                                                        <%= stock.samletAntal %>
+                                                    </td>
+                                                    <td>
+                                                        <%= typeof stock.samletKøbspris==="number" ?
+                                                            stock.samletKøbspris.toFixed(2) : "0.00" %> DKK
+                                                    </td>
+                                                    <td>
+                                                        <%= typeof stock.gak==="number" ? stock.gak.toFixed(2) : "0.00"
+                                                            %> DKK
+                                                    </td>
+                                                    <td>
+                                                        <%= typeof stock.forventetVærdi==="number" ?
+                                                            stock.forventetVærdi.toFixed(2) : "0.00" %> DKK
+                                                    </td>
+                                                    <td>
+                                                        <%= typeof stock.urealiseretGevinst==="number" ?
+                                                            stock.urealiseretGevinst.toFixed(2) : "0.00" %> DKK
+                                                    </td>
+                                                </tr>
+                                                <% }) %>
+                                        </tbody>
+                                    </table>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <% portfolio.stocks.forEach(stock => { %>
+                            <% } else { %>
                                 <tr>
-                                    <td><%= stock.stockId %></td>
-                                    <td><%= stock.samletAntal %></td>
-                                    <td><%= typeof stock.samletKøbspris === "number" ? stock.samletKøbspris.toFixed(2) : "0.00" %> DKK</td>
-                                    <td><%= typeof stock.gak === "number" ? stock.gak.toFixed(2) : "0.00" %> DKK</td>
-                                    <td><%= typeof stock.forventetVærdi === "number" ? stock.forventetVærdi.toFixed(2) : "0.00" %> DKK</td>
-                                    <td><%= typeof stock.urealiseretGevinst === "number" ? stock.urealiseretGevinst.toFixed(2) : "0.00" %> DKK</td>
+                                    <td colspan="4" style="text-align: center; padding: 10px; color: gray;">
+                                        Der er endnu ingen aktier i denne portefølje.
+                                    </td>
                                 </tr>
-                            <% }) %>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        <% } else { %>
-            <tr>
-                <td colspan="4" style="text-align: center; padding: 10px; color: gray;">
-                    Der er endnu ingen aktier i denne portefølje.
-                </td>
-            </tr>
-        <% } %>
-    <% }) %>
-</tbody>
+                                <% } %>
+                                    <% }) %>
+                </tbody>
 
 </html>
 
