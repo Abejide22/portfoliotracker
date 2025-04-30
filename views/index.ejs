@@ -1,32 +1,31 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
+<!DOCTYPE html> 
+<html lang="en" dir="ltr"> <!-- Angiver sproget som engelsk og retningen som venstre til højre -->
    <head>
-      <meta charset="utf-8">
-      <title>Login Form</title>
-      <link rel="stylesheet" href="index_style.css">
+      <meta charset="utf-8"> 
+      <title>Login Form</title> <!-- Titel -->
+      <link rel="stylesheet" href="index_style.css"> <!-- Linker til en ekstern CSS-fil for styling -->
    </head>
    <body>
-      <div id="topBar_id">
-         <h1>PORTFOLIOTRACKER</h1>
+      <div id="topBar_id"> <!-- En container til topbaren -->
+         <h1>PORTFOLIOTRACKER</h1> <!-- Overskrift -->
      </div>
 
-      <div class="wrapper">
-         <h2>Log ind</h2>
-         <form action="/login" method="POST">
-            <div class="field">
-               <label>Brugernavn</label>
-               <input type="text" name="username" required>
+      <div class="wrapper"> <!-- En wrapper-container til login-formularen -->
+         <h2>Log ind</h2> <!-- Overskrift for login-sektionen -->
+         <form action="/login" method="POST"> <!-- Formular, der sender data til serveren via POST-metoden -->
+            <div class="field"> <!-- En container til brugernavn-feltet -->
+               <label>Brugernavn</label> <!-- Label for brugernavn-input -->
+               <input type="text" name="username" required> <!-- Inputfelt til brugernavn, kræver en værdi -->
             </div>
-            <div class="field">
-               <label>Kodeord</label>
-               <input type="password" name="password" required>
-   
+            <div class="field"> <!-- En container til kodeord-feltet -->
+               <label>Kodeord</label> <!-- Label for kodeord-input -->
+               <input type="password" name="password" required> <!-- Inputfelt til kodeord, kræver en værdi -->
             </div>
-            <div class="field">
-               <input type="submit" value="Login">
+            <div class="field"> <!-- En container til login-knappen -->
+               <input type="submit" value="Login"> <!-- Login-knap, der sender formularen -->
             </div>
-            <div class="signup-link">
-               Ikke oprettet endnu? <a href="signup">Opret konto</a>
+            <div class="signup-link"> <!-- En container til linket til oprettelse af konto -->
+               Ikke oprettet endnu? <a href="signup">Opret konto</a> <!-- Link til signup-siden -->
             </div>
          </form>
       </div>
