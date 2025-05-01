@@ -12,5 +12,3 @@ router.use("/", require("./tradeRoutes"));
 router.use("/", require("./navigationRoutes.js"));
 
 module.exports = router;
-
-
