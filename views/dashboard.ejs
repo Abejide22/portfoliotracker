@@ -23,8 +23,6 @@
     </form>
   </div>
 
-
-
   <ul>
     <li><a href="/dashboard" style="color: gray;"><span class="material-symbols-outlined"
           style="color: gray;">dashboard</span>Dashboard</a></li>
@@ -43,20 +41,20 @@
       <div id="totalVærdi_box_id">
         <span>Total værdi</span>
         <hr>
-        <span>
-          <span class="material-symbols-outlined" style="color: limegreen">arrow_upward_alt</span>
-          <span id="totalVærdi_procent_id">5%</span>
-          <span style="float: right;">&nbsp;1000 kr.</span>
-        </span>
+        <span style="float: right;">&nbsp;<%= totalValue %> DKK</span> <!-- Viser den samlede værdi -->
       </div>
 
       <div id="totalRealiseretVærdi_box_id">
         <span>Total realiseret værdi</span>
         <hr>
         <span>
-          <span class="material-symbols-outlined" style="color: limegreen">arrow_downward_alt</span>
-          <span id="totalRealiseretVærdi_procent_id">3%</span>
-          <span style="float: right;">&nbsp;500 kr.</span>
+          <% if (totalRealizedValue >= 0) { %>
+            <span class="material-symbols-outlined" style="color: limegreen">arrow_upward_alt</span>
+            <span style="color: limegreen;"><%= totalRealizedValue.toFixed(2) %> DKK</span>
+          <% } else { %>
+            <span class="material-symbols-outlined" style="color: red">arrow_downward_alt</span>
+            <span style="color: red;"><%= totalRealizedValue.toFixed(2) %> DKK</span>
+          <% } %>
         </span>
       </div>
 
@@ -64,9 +62,14 @@
         <span>Total urealiseret værdi</span>
         <hr>
         <span>
-          <span class="material-symbols-outlined" style="color: limegreen">arrow_upward_alt</span>
-          <span id="totalUrealiseretVærdi_procent_id">6%</span>
-          <span style="float: right;">&nbsp;300 kr.</span>
+          <% if (totalUnrealizedValue >= 0) { %>
+            <span class="material-symbols-outlined" style="color: limegreen">arrow_upward_alt</span>
+            <span style="color: limegreen;"><%= totalUnrealizedValue.toFixed(2) %> DKK</span>
+          <% } else { %>
+            <span class="material-symbols-outlined" style="color: red">arrow_downward_alt</span>
+            <span style="color: red;"><%= totalUnrealizedValue.toFixed(2) %> DKK</span>
+          <% } %>
+        </span>
       </div>
     </div>
   </div>
