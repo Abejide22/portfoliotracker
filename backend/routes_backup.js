@@ -609,4 +609,3 @@ router.get("/trade", async (req, res) => {
   res.render("trade", { userId, dates, closes, portfolios, accounts });
 });
 
-module.exports = router;
