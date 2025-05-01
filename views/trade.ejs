@@ -45,8 +45,8 @@
         </div>
         <div id="StockPurchaseInfo_id">
          
-            <input id="NumberOfStocks_id" type="number" max=99999 min=1 placeholder=1 onkeyup="beregnSamletKøbspris()">
-            <span id="totalPrice_id">0 DKK</span>
+            <input id="NumberOfStocks_id" type="number" max=99999 min=1 placeholder=1>
+            <span id="totalPrice_id">0.00 DKK</span>
             <select name="Vælg portefølje" id="vælgPortefølje_id">
               <option value="">Vælg portefølje</option>
             </select>
@@ -331,12 +331,15 @@ let currentPrice = 0; // Nuværende pris på den valgte aktie - værdi tildeles 
 lavListMedAktier();
 
 
-function beregnSamletKøbspris(){
+
+// ÆNDRE I TOTAL PRIS NÅR DER KLIKKES ELLER SKRIVES ET NYT ANTAL AKTIER
+
+const aktieInputFelt = document.getElementById("NumberOfStocks_id");
+
+aktieInputFelt.addEventListener('input', () => {
   antalAktier = document.getElementById("NumberOfStocks_id").value;
- 
- 
   document.getElementById("totalPrice_id").innerHTML = (antalAktier * currentPrice).toFixed(2) + " DKK";
-}
+});
 
 
 
