@@ -208,13 +208,13 @@ function foretagAktiekøb() {
   "ORSTED.CO",  // Kun én forekomst
   "PNDORA.CO",
   "RBREW.CO",
-  "ROCK B.CO",
+  "ROCK-B.CO",
   "SPNO.CO",
   "STG.CO",
   "STRAP.CO",
-  "SPASJ.CO",
+  "SPKSJF.CO",
   "SIM.CO",
-  "TRYGR.CO",
+  "TRYG.CO",
   "VWS.CO"
 ];
 
@@ -265,41 +265,42 @@ const aktienavne = [
 
 
 
+const nuværendePriser = <%- JSON.stringify(nuværendePriser) %>;
+  console.log(nuværendePriser); // Nu kan du bruge det i browserens JS
 
 
 let currentPrice = 0; // Nuværende pris på den valgte aktie - værdi tildeles i lavListMedAktier
 
-  function lavListMedAktier() {
+function lavListMedAktier() {
   for (let i = 0; i < aktienavne.length; i++) {
     const button = document.createElement("button");
-    button.type = "button"; // Ikke submit mere bare knap
+    button.type = "button";
     button.value = tickers[i];
+
+    // Tilføj navnet direkte som tekst
     button.textContent = aktienavne[i];
 
+    // Opret pris-span og tilføj det bagefter
+    const prisSpan = document.createElement("span");
+    prisSpan.textContent = ` ${nuværendePriser[i].price} kr`; // Tilføj mellemrum foran
+    prisSpan.style.marginLeft = "10px"; // Lidt afstand, valgfrit
+
+    button.appendChild(prisSpan); // Tilføj prisen efter navnet
+
+    // OnClick-handler som før
     button.onclick = async function(event) {
-
-      aktieTickerValgt = event.target.value; // Få tickeren fra den valgte aktie (tickeren er gemt i value)
-      aktieNavnValgt = event.target.textContent; // få navnet fra den valgte aktie som er gemt i indholdet
-
-
+      aktieTickerValgt = event.target.value;
+      aktieNavnValgt = event.target.textContent;
 
       const buttons = document.querySelectorAll("#stockListBox_id button");
-
-      // Gennemgå alle knapper og ændr deres farve
       buttons.forEach(function(button) {
-        button.style.color = "lightgray"; // Skift tekstfarven til hvid
-        button.style.fontWeight = "normal"; // sætter font weight til normal
-       
+        button.style.color = "lightgray";
+        button.style.fontWeight = "normal";
       });
 
-
-      event.target.style.color = "dodgerblue"; // Ændre farven på den knap der trykkes på
+      event.target.style.color = "dodgerblue";
       event.target.style.fontWeight = "bold";
 
-
-
- 
-      // sender en post ved brug af fetch
       try {
         const response = await fetch('/trade', {
           method: 'POST',
@@ -309,25 +310,25 @@ let currentPrice = 0; // Nuværende pris på den valgte aktie - værdi tildeles 
           body: JSON.stringify({ stockName: aktieTickerValgt })
         });
 
-        if (!response.ok) {
-          throw new Error('Netværksfejl');
-        }
+        if (!response.ok) throw new Error('Netværksfejl');
 
         aktieData = await response.json();
-        console.log("Server svar:", aktieData); // data kommer i json format
+        console.log("Server svar:", aktieData);
 
-        currentPrice = aktieData.closes[aktieData.closes.length-1].toFixed(2); // fidner det sidste indeks i objektet
+        currentPrice = aktieData.closes[aktieData.closes.length - 1].toFixed(2);
         document.getElementById("totalPrice_id").innerHTML = currentPrice;
-
-
       } catch (error) {
         console.error('Fejl ved fetch:', error);
       }
+
       displayStock(event);
     };
-    document.getElementById("stockListBox_id").appendChild(button); // Tilføjer knap til stockListBox div
+
+    document.getElementById("stockListBox_id").appendChild(button);
   }
 }
+
+
 lavListMedAktier();
 
 

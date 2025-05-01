@@ -117,10 +117,72 @@ router.get("/trade", async (req, res) => {
         console.error("Fejl ved Yahoo Finance API-kald:", err);
       }
     }
+
+
+
+    // SEND NUVÆRENDE PRIS FOR AKTIE DATA FOR ALLE AKTIER
+
+    const tickers = [
+      "ALMB.CO",
+      "AMBU-B.CO",
+      "MAERSK-A.CO",
+      "MAERSK-B.CO",
+      "AQP.CO",
+      "ATLA-DKK.CO",
+      "BO.CO",
+      "BAVA.CO",
+      "AOJ-B.CO",
+      "CARL-A.CO",
+      "CARL-B.CO",
+      "CHR.CO",
+      "COLO-B.CO",
+      "DANSKE.CO",
+      "DEMANT.CO",
+      "DFDS.CO",
+      "DNORD.CO",
+      "DSV.CO",
+      "FLS.CO",
+      "GMAB.CO",
+      "GN.CO",
+      "HLUN-B.CO",
+      "HYDRCT.CO",
+      "ISS.CO",
+      "JYSK.CO",
+      "NETC.CO",
+      "NKT.CO",
+      "NORTHM.CO",
+      "NSIS-B.CO",
+      "NOVO-B.CO",
+      "NTG.CO",
+      "ORSTED.CO",  // Kun én forekomst
+      "PNDORA.CO",
+      "RBREW.CO",
+      "ROCK-B.CO",
+      "SPNO.CO",
+      "STG.CO",
+      "STRAP.CO",
+      "SPKSJF.CO",
+      "SIM.CO",
+      "TRYG.CO",
+      "VWS.CO"
+    ];
+    const nuværendePriser = [];
+    
+    for (let i = 0; i < tickers.length; i++) {
+    try {
+      const quote = await yahooFinance.quote(tickers[i]);
+      nuværendePriser.push({ symbol: tickers[i], price: quote.regularMarketPrice });
+    }
+    catch (err)
+    {
+      console.error(`Error fetching data for ${tickers[i]}`, err);
+      nuværendePriser.push({ symbol: tickers[i], price: 'N/A' });
+    }
+  }
   
   
     // Returner trade.ejs med alle relevante data
-    res.render("trade", { userId, dates, closes, portfolios, accounts });
+    res.render("trade", { userId, dates, closes, portfolios, accounts, nuværendePriser });
   });
 
 module.exports = router;
