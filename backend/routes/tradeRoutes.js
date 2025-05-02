@@ -101,22 +101,36 @@ router.get("/trade", async (req, res) => {
       console.error("Fejl ved hentning af accounts", err);
     }
   
-    if (stockName) { // tjekker om der er en værdi for aktien
+    if (stockName) {
       try {
+        const today = new Date();
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(today.getDate() - 30);
+    
+        // Lav perioder for de sidste 30 dage
+        const period1 = Math.floor(thirtyDaysAgo.getTime() / 1000);
+        const period2 = Math.floor(today.getTime() / 1000); // slut: i dag (nu)
+    
         const result = await yahooFinance.historical(stockName, {
-          period1: new Date("2022-01-01"),
-          period2: new Date(),
+          period1,
+          period2,
           interval: "1d",
         });
-  
-        // Sorter nyeste først
+    
+        // Sortér nyeste først
         const sorted = result.sort((a, b) => new Date(b.date) - new Date(a.date));
-        dates = sorted.map((day) => day.date.toISOString().split("T")[0]);
-        closes = sorted.map((day) => day.close);
+    
+        // Mapper datoer og lukkepriser
+        const dates = sorted.map((day) => day.date.toISOString().split("T")[0]);
+        const closes = sorted.map((day) => day.close);
+    
+        console.log("Seneste pris:", closes[0], "Dato:", dates[0]); // Debug
       } catch (err) {
         console.error("Fejl ved Yahoo Finance API-kald:", err);
       }
     }
+    
+    
 
 
 
@@ -134,7 +148,7 @@ router.get("/trade", async (req, res) => {
       "AOJ-B.CO",
       "CARL-A.CO",
       "CARL-B.CO",
-      "CHR.CO",
+      // "CHR.CO",
       "COLO-B.CO",
       "DANSKE.CO",
       "DEMANT.CO",
@@ -145,7 +159,7 @@ router.get("/trade", async (req, res) => {
       "GMAB.CO",
       "GN.CO",
       "HLUN-B.CO",
-      "HYDRCT.CO",
+      // "HYDRCT.CO",
       "ISS.CO",
       "JYSK.CO",
       "NETC.CO",
@@ -162,27 +176,43 @@ router.get("/trade", async (req, res) => {
       "STG.CO",
       "STRAP.CO",
       "SPKSJF.CO",
-      "SIM.CO",
+      // "SIM.CO",
       "TRYG.CO",
       "VWS.CO"
     ];
     const nuværendePriser = [];
-    
-    for (let i = 0; i < tickers.length; i++) {
-    try {
-      const quote = await yahooFinance.quote(tickers[i]);
-      nuværendePriser.push({ symbol: tickers[i], price: quote.regularMarketPrice });
-    }
-    catch (err)
-    {
-      console.error(`Error fetching data for ${tickers[i]}`, err);
-      nuværendePriser.push({ symbol: tickers[i], price: 'N/A' });
-    }
+
+
+
+// Lav timestamps i sekunder
+const today = new Date();
+const period1 = Math.floor(today.setHours(0, 0, 0, 0) / 1000); // start: i dag 00:00
+const period2 = Math.floor(Date.now() / 1000);                 // slut: nu
+
+for (let i = 0; i < tickers.length; i++) {
+  try {
+    const historical = await yahooFinance.historical(tickers[i], {
+      period1,
+      period2,
+      interval: '1d',
+    });
+
+    const latestData = historical[historical.length - 1];
+
+    nuværendePriser.push({
+      symbol: tickers[i],
+      price: latestData ? latestData.close : 'N/A',
+    });
+  } catch (err) {
+    console.error(`Error fetching data for ${tickers[i]}`, err);
+    nuværendePriser.push({ symbol: tickers[i], price: 'N/A' });
   }
-  
-  
-    // Returner trade.ejs med alle relevante data
-    res.render("trade", { userId, dates, closes, portfolios, accounts, nuværendePriser });
+}
+
+
+res.render("trade", { userId, dates, closes, portfolios, accounts, nuværendePriser });
+
+
   });
 
 module.exports = router;

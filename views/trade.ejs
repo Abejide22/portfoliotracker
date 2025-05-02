@@ -173,50 +173,50 @@ function foretagAktiekøb() {
 
 
 
-  const tickers = [
-  "ALMB.CO",
-  "AMBU-B.CO",
-  "MAERSK-A.CO",
-  "MAERSK-B.CO",
-  "AQP.CO",
-  "ATLA-DKK.CO",
-  "BO.CO",
-  "BAVA.CO",
-  "AOJ-B.CO",
-  "CARL-A.CO",
-  "CARL-B.CO",
-  "CHR.CO",
-  "COLO-B.CO",
-  "DANSKE.CO",
-  "DEMANT.CO",
-  "DFDS.CO",
-  "DNORD.CO",
-  "DSV.CO",
-  "FLS.CO",
-  "GMAB.CO",
-  "GN.CO",
-  "LUN.CO",
-  "HYDRCT.CO",
-  "ISS.CO",
-  "JYSK.CO",
-  "NETC.CO",
-  "NKT.CO",
-  "NORTHM.CO",
-  "NSIS-B.CO",
-  "NOVO-B.CO",
-  "NTG.CO",
-  "ORSTED.CO",  // Kun én forekomst
-  "PNDORA.CO",
-  "RBREW.CO",
-  "ROCK-B.CO",
-  "SPNO.CO",
-  "STG.CO",
-  "STRAP.CO",
-  "SPKSJF.CO",
-  "SIM.CO",
-  "TRYG.CO",
-  "VWS.CO"
-];
+const tickers = [
+      "ALMB.CO",
+      "AMBU-B.CO",
+      "MAERSK-A.CO",
+      "MAERSK-B.CO",
+      "AQP.CO",
+      "ATLA-DKK.CO",
+      "BO.CO",
+      "BAVA.CO",
+      "AOJ-B.CO",
+      "CARL-A.CO",
+      "CARL-B.CO",
+      // "CHR.CO",
+      "COLO-B.CO",
+      "DANSKE.CO",
+      "DEMANT.CO",
+      "DFDS.CO",
+      "DNORD.CO",
+      "DSV.CO",
+      "FLS.CO",
+      "GMAB.CO",
+      "GN.CO",
+      "HLUN-B.CO",
+      // "HYDRCT.CO",
+      "ISS.CO",
+      "JYSK.CO",
+      "NETC.CO",
+      "NKT.CO",
+      "NORTHM.CO",
+      "NSIS-B.CO",
+      "NOVO-B.CO",
+      "NTG.CO",
+      "ORSTED.CO",  // Kun én forekomst
+      "PNDORA.CO",
+      "RBREW.CO",
+      "ROCK-B.CO",
+      "SPNO.CO",
+      "STG.CO",
+      "STRAP.CO",
+      "SPKSJF.CO",
+      // "SIM.CO",
+      "TRYG.CO",
+      "VWS.CO"
+    ];
 
 const aktienavne = [
   "Alm. Brand A/S",
@@ -230,7 +230,7 @@ const aktienavne = [
   "Brdr. A&O Johansen A/S (B)",
   "Carlsberg A/S (A)",
   "Carlsberg A/S (B)",
-  "Chr. Hansen Holding A/S",
+  // "Chr. Hansen Holding A/S",
   "Coloplast A/S (B)",
   "Danske Bank A/S",
   "Demant A/S",
@@ -241,7 +241,7 @@ const aktienavne = [
   "Genmab A/S",
   "GN Store Nord A/S",
   "H. Lundbeck A/S",
-  "Hydract A/S",
+  // "Hydract A/S",
   "ISS A/S",
   "Jyske Bank A/S",
   "Netcompany Group A/S",
@@ -250,7 +250,7 @@ const aktienavne = [
   "Novonesis A/S (B)",
   "Novo Nordisk A/S (B)",
   "NTG Nordic Transport Group A/S",
-  "Ørsted A/S",  // Kun én forekomst
+  "Ørsted A/S",
   "Pandora A/S",
   "Royal Unibrew A/S",
   "Rockwool International A/S (B)",
@@ -258,7 +258,7 @@ const aktienavne = [
   "Scandinavian Tobacco Group A/S",
   "Strategic Partners A/S",
   "Sparekassen Sjælland",
-  "SimCorp A/S",
+  // "SimCorp A/S",
   "Tryg A/S",
   "Vestas Wind Systems A/S"
 ];
@@ -282,7 +282,8 @@ function lavListMedAktier() {
 
     // Opret pris-span og tilføj det bagefter
     const prisSpan = document.createElement("span");
-    prisSpan.textContent = ` ${nuværendePriser[i].price} kr`; // Tilføj mellemrum foran
+    
+    prisSpan.textContent = ` ${nuværendePriser[i].price.toFixed(2)} kr`; // Tilføj mellemrum foran og gør at der kun vises to decimaler
     prisSpan.style.marginLeft = "10px"; // Lidt afstand, valgfrit
 
     button.appendChild(prisSpan); // Tilføj prisen efter navnet
@@ -290,7 +291,10 @@ function lavListMedAktier() {
     // OnClick-handler som før
     button.onclick = async function(event) {
       aktieTickerValgt = event.target.value;
-      aktieNavnValgt = event.target.textContent;
+      aktieNavnValgt = event.target.childNodes[0].textContent.trim(); // Henter kun den første tekstnode fra knappen uden span
+
+
+      document.getElementById("NumberOfStocks_id").value = 1; // nulsætter antal felt
 
       const buttons = document.querySelectorAll("#stockListBox_id button");
       buttons.forEach(function(button) {
@@ -310,7 +314,7 @@ function lavListMedAktier() {
           body: JSON.stringify({ stockName: aktieTickerValgt })
         });
 
-        if (!response.ok) throw new Error('Netværksfejl');
+        if (!response.ok) throw new Error('fejl');
 
         aktieData = await response.json();
         console.log("Server svar:", aktieData);
@@ -376,9 +380,13 @@ function displayStock(event){
   document.getElementById("aktieNavnLinje_id").style.display = "block";
 
   let aktieDataPriser = aktieData.closes;
-  let aktieDataDatoer = aktieData.dates;
+let aktieDataDatoer = aktieData.dates;
 
-  let aktieDataPriser_forkortet = aktieDataPriser.map(num => parseFloat(num.toFixed(2))); // Forkorter decimaltal til kun 2 decimaler
+// Opdater sidste værdi
+
+// Generér forkortet version igen
+let aktieDataPriser_forkortet = aktieDataPriser.map(num => parseFloat(num.toFixed(2)));
+
 
   aktieDataDatoer.reverse(); aktieDataPriser.reverse(); // Rerverser så dato og priser udskrives i rigtig række følge fra ældste dato til nyeste dato
 
