@@ -148,20 +148,24 @@
 </html>
 
 <script>
-    const chartOptions = {
+   const chartOptions = {
         chart: {
             type: 'pie',
             fontFamily: 'normalSkrift'
         },
         series: [
-            <% portfolios.forEach((portfolio, index) => { %>
-                <%= typeof portfolio.samletForventetVærdi === "number" ? portfolio.samletForventetVærdi.toFixed(2) : "0.00" %><%= index !== portfolios.length - 1 ? ',' : '' %>
-            <% }) %>
+            <% if (portfolios[0] && portfolios[0].stocks.length > 0) { %>
+                <% portfolios[0].stocks.forEach((stock, index) => { %>
+                    <%= stock.forventetVærdi.toFixed(2) %><%= index !== portfolios[0].stocks.length - 1 ? ',' : '' %>
+                <% }) %>
+            <% } else { %>0<% } %>
         ],
         labels: [
-            <% portfolios.forEach((portfolio, index) => { %>
-            '<%= typeof portfolio.name === "string" ? portfolio.name : "Ukendt" %>' <%= index !== portfolios.length - 1 ? ',' : '' %>
-            <% }) %>
+            <% if (portfolios[0] && portfolios[0].stocks.length > 0) { %>
+                <% portfolios[0].stocks.forEach((stock, index) => { %>
+                    '<%= stock.stockId %>'<%= index !== portfolios[0].stocks.length - 1 ? ',' : '' %>
+                <% }) %>
+            <% } else { %>'Ingen aktier'<% } %>
         ],
         colors: ['#00BFFF', '#9932CC', '#FFA500', '#90EE90', '#FF4040'],
         stroke: {
