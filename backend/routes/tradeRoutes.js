@@ -139,17 +139,17 @@ router.post("/trade", async (req, res) => {
       .input("amount", sql.Decimal(10, 2), totalPris)
       .query(`UPDATE Accounts SET balance = balance - @amount WHERE name = @name;`);
       
-
-
       res.redirect("/portfolios");
-      }
-      if(kontoBalance < totalPris){
-        return res.status(400).send("Du har ikke penge nok");
+
       }
 
-  
-      
-  
+
+      if(kontoBalance < totalPris){
+        let IkkeNokPenge = true;
+        res.render("trade", { IkkeNokPenge });
+      }
+
+
     } catch (err) {
       console.error("Fejl ved køb af aktie:", err);
       res.status(500).send("Fejl ved køb.");

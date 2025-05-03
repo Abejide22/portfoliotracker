@@ -179,7 +179,8 @@ function foretagAktiekøb() {
     })
   })
   .then(response => {
-    if (response.redirected) {
+    if (response.redirected)
+    {
       window.location.href = response.url; // håndter redirect til /portfolios
     } else if (!response.ok) {
       throw new Error("Fejl ved køb");
@@ -188,6 +189,7 @@ function foretagAktiekøb() {
   .catch(error => {
     console.error("Fejl ved køb:", error);
     alert("Noget gik galt under købet.");
+    
   });
 }
 
