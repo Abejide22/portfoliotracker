@@ -21,21 +21,6 @@ h1 {
   font-weight: normal;
 }
 
-#topBar_goBack_id {
-  display: inline;
-  color: white;
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-  font-size: 200%;
-}
-
-
-li a:hover span {
-  color: gray;
-}
-
 /* Main Content */
 #mainContent {
   margin-left: 20%;
