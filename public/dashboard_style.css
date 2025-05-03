@@ -1,220 +1,216 @@
-body{
+/* Sætter baggrundsfarve og fjerner margin for hele siden */
+body {
   background-color: #121212;
-    /* background-color: #141413;*/
-    margin: 0;
+  margin: 0; 
 }
 
+/* Definerer en brugerdefineret skrifttype */
 @font-face {
-  font-family: normalSkrift;
-  src: url(/fonts/Bierstadt.ttf);
+  font-family: normalSkrift; 
+  src: url(/fonts/Bierstadt.ttf); /* Sti til skrifttypefilen */
 }
 
-#topBar_id{
-  position: relative; /* Gør det muligt at placere knappen relativt til topbaren */
-  width: 100%;
-  background-color: #5F45A0;
-  display: block;
-  position: relative;
+/* Styling for h1-overskrifter */
+h1 {
+  display: inline-block; /* Viser som en inline-blok */
+  background-color: #5F45A0; /* Lilla baggrundsfarve */
+  color: white; /* Hvid tekstfarve */
+  margin: 0; /* Fjerner margin */
+  font-family: Bahnschrift; /* Skrifttype */
+  padding: 0.8%; /* Indvendig afstand */
+  padding-bottom: 0.85%; /* Ekstra afstand i bunden */
+  font-weight: normal; /* Normal tekstvægt */
 }
 
-#logoutButton {
-  position: absolute; /* Gør det muligt at placere knappen relativt til topbaren */
-  top: 50%; /* Centrerer knappen vertikalt */
-  right: 10px; /* Placerer knappen 10px fra højre kant */
+/* Styling for h2-overskrifter */
+h2 {
+  font-family: normalskrift; /* Bruger den brugerdefinerede skrifttype */
+  color: lightgray; /* Lys grå tekstfarve */
+  display: block; /* Viser som en blok */
+  margin-left: 300px; /* Indrykning fra venstre */
+  margin-top: 50px; /* Afstand fra toppen */
+  line-height: 0px; /* Linjeafstand */
+  font-size: 200%; /* Forstørrer teksten */
+}
+
+/* Styling for "Gå tilbage"-knappen i topbaren */
+#topBar_goBack_id {
+  display: inline; /* Viser som inline-element */
+  color: white; /* Hvid tekstfarve */
+  position: absolute; /* Placerer relativt til topbaren */
+  top: 50%; /* Centrerer vertikalt */
+  right: 0; /* Placerer til højre */
   transform: translateY(-50%); /* Justerer for vertikal centrering */
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: white; /* Matcher ikonets farve med topbarens tekstfarve */
-  font-size: 24px; /* Justerer ikonets størrelse */
+  font-size: 200%; /* Forstørrer teksten */
 }
 
-#logoutButton:hover {
-  color: #ff4d4d; /* Ændrer farven ved hover for at indikere handling */
-}
-
-h1{
-    display: inline-block;
-    background-color: #5F45A0;
-    color: white;
-    margin: 0;
-    font-family: Bahnschrift;
-    padding: 0.8%;
-    padding-bottom: 0.85%;
-    font-weight: normal;
-}
-h2{
-  font-family: normalskrift;
-  color: lightgray;
-  display: block;
-  margin-left:300px;
-  margin-top: 50px;
-  line-height: 0px;
-  
-  font-size: 200%;
-  
-}
-#topBar_goBack_id{
-  display: inline;
-  color: white;
-  position: absolute;
-    top: 50%;
-    right: 0; /* Placerer elementet til højre */
-    transform: translateY(-50%);
-    font-size: 200%;
-}
-
+/* Styling for ul-elementer (liste) */
 ul {
-    list-style-type: none;
-    
-    background-color: #252525;
-    margin: 1%;
-    border-radius: 8px;
-    margin-top: 2.5%;
-    float: left;
-    padding-left: 15px;
-    padding-right: 15px;
-  }
-  
-  li a 
-  {
-    text-decoration: none;
-    display: block;
-    font-family: normalSkrift;
-    color: lightgray;
-  }
-  li a span{
-    font-size: 100px;
-    display: block;
-    color: lightgray;
-    font-size: 200% !important;
-    
-    padding-right: 15px;
-    padding-top: 17px;
-    padding-bottom: 17px;
-    
-  }
+  list-style-type: none; /* Fjerner punkttegn */
+  background-color: #252525; /* Mørk baggrundsfarve */
+  margin: 1%; /* Ydre afstand */
+  border-radius: 8px; /* Afrundede hjørner */
+  margin-top: 2.5%; /* Ekstra afstand fra toppen */
+  float: left; /* Placerer til venstre */
+  padding-left: 15px; /* Indvendig afstand til venstre */
+  padding-right: 15px; /* Indvendig afstand til højre */
+}
 
-  li a:hover, 
+/* Styling for links i listen */
+li a {
+  text-decoration: none; /* Fjerner understregning */
+  display: block; /* Viser som en blok */
+  font-family: normalSkrift; /* Bruger den brugerdefinerede skrifttype */
+  color: lightgray; /* Lys grå tekstfarve */
+}
+
+/* Styling for ikoner i links */
+li a span {
+  font-size: 100px; /* Stor tekststørrelse */
+  display: block; /* Viser som en blok */
+  color: lightgray; /* Lys grå tekstfarve */
+  font-size: 200% !important; /* Forstørrer teksten */
+  padding-right: 15px; /* Indvendig afstand til højre */
+  padding-top: 17px; /* Indvendig afstand til toppen */
+  padding-bottom: 17px; /* Indvendig afstand til bunden */
+}
+
+/* Hover-effekt for links */
+li a:hover,
 li a:hover span {
-  color: gray;
+  color: gray; /* Ændrer farven til grå ved hover */
 }
 
-
-  #container_værdier_id{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columns */
-    margin: auto;
-    padding: 0;
-    gap: 2%;
-    width: 68%;
-    margin-top: 2.5%;
-  }
-
-  #totalVærdi_box_id{
-    background-color: #252525;
-    border-radius: 9px;
-    font-family: normalSkrift;
-    color: lightgray;
-    padding: 12px;
-  }
-  #totalVærdi_box_id span{
-    font-size: 93%;
-  }
-
-  #totalRealiseretVærdi_box_id{
-    background-color: #252525;
-    border-radius: 9px;
-    font-family: normalSkrift;
-    color: lightgray;
-    padding: 12px;
-  }
-
-  #totalRealiseretVærdi_box_id span
-  {
-    font-size: 93%;
-  }
-
-  #totalUrealiseretVærdi_box_id{
-    background-color: #252525;
-    border-radius: 9px;
-    font-family: normalSkrift;
-    color: lightgray;
-    padding: 12px;
-  }
-
-  #totalUrealiseretVærdi_box_id span{
-    font-size: 93%;
-  }
-
-  #samletVærdi_boks_id{
-    background-color: #252525;
-    border-radius: 9px;
-    width: 66%;
-    margin: auto;
-    margin-top: 2%;
-    padding: 10px;
-    color: lightgray;
-    font-family: normalSkrift;
-    display: grid;
-  }
-  canvas{
-    height: 300px !important;
-  }
-
-  #top5_boks_id{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    width: 67.5%;
-    gap: 2%;
-    
-    margin-top: 2%;
-    margin-left: 23.5%;
-  }
-
-  #top5Værdipapirer_tværsAfPorteføljer_id{
-    background-color: #252525;
-    border-radius: 10px;
-    color: lightgray;
-    font-family: normalSkrift;
-    padding: 15px;
-  }
-  #top5Værdipapirer_urealiseret_id{
-    background-color: #252525;
-    border-radius: 10px;
-    color: lightgray;
-    font-family: normalSkrift;
-    padding: 15px;
-  }
-
-  .material-symbols-outlined {
-    vertical-align: middle;
+/* Styling for værdibokse-container */
+#container_værdier_id {
+  display: grid; /* Bruger grid-layout */
+  grid-template-columns: repeat(3, 1fr); /* 3 kolonner med lige stor bredde */
+  margin: auto; /* Centrerer containeren */
+  padding: 0; /* Ingen indvendig afstand */
+  gap: 2%; /* Afstand mellem elementer */
+  width: 68%; /* Bredde på containeren */
+  margin-top: 2.5%; /* Afstand fra toppen */
 }
 
-  
-  hr{
-    background-color: darkslategray;
-    border: none;
-    height: 1px;
-  }
+/* Styling for boksen med total værdi */
+#totalVærdi_box_id {
+  background-color: #252525; /* Mørk baggrundsfarve */
+  border-radius: 9px; /* Afrundede hjørner */
+  font-family: normalSkrift; /* Bruger den brugerdefinerede skrifttype */
+  color: lightgray; /* Lys grå tekstfarve */
+  padding: 12px; /* Indvendig afstand */
+}
 
+/* Styling for teksten i boksen med total værdi */
+#totalVærdi_box_id span {
+  font-size: 93%; /* Mindre tekststørrelse */
+}
 
-  table {
-    font-family: normalSkrift;
-    border-collapse: collapse;
-    width: 100%;
-  }
-  
-  td, th {
-    border-bottom: 1px solid gray;
-    text-align: left;
-    padding: 10px;
-    font-size: 73%;
-  }
+/* Styling for boksen med realiseret værdi */
+#totalRealiseretVærdi_box_id {
+  background-color: #252525; /* Mørk baggrundsfarve */
+  border-radius: 9px; /* Afrundede hjørner */
+  font-family: normalSkrift; /* Bruger den brugerdefinerede skrifttype */
+  color: lightgray; /* Lys grå tekstfarve */
+  padding: 12px; /* Indvendig afstand */
+}
 
-  .apexcharts-tooltip {
-    background: black !important;
-    color: lightgray !important;
-    border: none !important;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3) !important;
-  }
+/* Styling for teksten i boksen med realiseret værdi */
+#totalRealiseretVærdi_box_id span {
+  font-size: 93%; /* Mindre tekststørrelse */
+}
+
+/* Styling for boksen med urealiseret værdi */
+#totalUrealiseretVærdi_box_id {
+  background-color: #252525; /* Mørk baggrundsfarve */
+  border-radius: 9px; /* Afrundede hjørner */
+  font-family: normalSkrift; /* Bruger den brugerdefinerede skrifttype */
+  color: lightgray; /* Lys grå tekstfarve */
+  padding: 12px; /* Indvendig afstand */
+}
+
+/* Styling for teksten i boksen med urealiseret værdi */
+#totalUrealiseretVærdi_box_id span {
+  font-size: 93%; /* Mindre tekststørrelse */
+}
+
+/* Styling for boksen med samlet værdi */
+#samletVærdi_boks_id {
+  background-color: #252525; /* Mørk baggrundsfarve */
+  border-radius: 9px; /* Afrundede hjørner */
+  width: 66%; /* Bredde på boksen */
+  margin: auto; /* Centrerer boksen */
+  margin-top: 2%; /* Afstand fra toppen */
+  padding: 10px; /* Indvendig afstand */
+  color: lightgray; /* Lys grå tekstfarve */
+  font-family: normalSkrift; /* Bruger den brugerdefinerede skrifttype */
+  display: grid; /* Bruger grid-layout */
+}
+
+/* Styling for canvas-elementer */
+canvas {
+  height: 300px !important; /* Sætter højden til 300px */
+}
+
+/* Styling for top 5 bokse */
+#top5_boks_id {
+  display: grid; /* Bruger grid-layout */
+  grid-template-columns: repeat(2, 1fr); /* 2 kolonner med lige stor bredde */
+  width: 67.5%; /* Bredde på containeren */
+  gap: 2%; /* Afstand mellem elementer */
+  margin-top: 2%; /* Afstand fra toppen */
+  margin-left: 23.5%; /* Indrykning fra venstre */
+}
+
+/* Styling for boksen med top 5 værdipapirer */
+#top5Værdipapirer_tværsAfPorteføljer_id {
+  background-color: #252525; /* Mørk baggrundsfarve */
+  border-radius: 10px; /* Afrundede hjørner */
+  color: lightgray; /* Lys grå tekstfarve */
+  font-family: normalSkrift; /* Bruger den brugerdefinerede skrifttype */
+  padding: 15px; /* Indvendig afstand */
+}
+
+/* Styling for boksen med top 5 urealiseret profit */
+#top5Værdipapirer_urealiseret_id {
+  background-color: #252525; /* Mørk baggrundsfarve */
+  border-radius: 10px; /* Afrundede hjørner */
+  color: lightgray; /* Lys grå tekstfarve */
+  font-family: normalSkrift; /* Bruger den brugerdefinerede skrifttype */
+  padding: 15px; /* Indvendig afstand */
+}
+
+/* Styling for material-symbols-outlined ikoner */
+.material-symbols-outlined {
+  vertical-align: middle; /* Justerer ikonerne vertikalt */
+}
+
+/* Styling for horisontale linjer */
+hr {
+  background-color: darkslategray; /* Mørk grå farve */
+  border: none; /* Ingen kant */
+  height: 1px; /* Højde på linjen */
+}
+
+/* Styling for tabeller */
+table {
+  font-family: normalSkrift; /* Bruger den brugerdefinerede skrifttype */
+  border-collapse: collapse; /* Fjerner mellemrum mellem celler */
+  width: 100%; /* Fylder hele bredden */
+}
+
+/* Styling for tabelceller og overskrifter */
+td, th {
+  border-bottom: 1px solid gray; /* Grå kant under celler */
+  text-align: left; /* Venstrejusterer tekst */
+  padding: 10px; /* Indvendig afstand */
+  font-size: 73%; /* Mindre tekststørrelse */
+}
+
+/* Styling for ApexCharts tooltip */
+.apexcharts-tooltip {
+  background: black !important; /* Sort baggrund */
+  color: lightgray !important; /* Lys grå tekstfarve */
+  border: none !important; /* Ingen kant */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) !important; /* Skyggeeffekt */
+}
