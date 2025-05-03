@@ -88,40 +88,15 @@
         <tr>
           <th>Name</th>
           <th>Portfolio</th>
-          <th>24h change</th>
           <th>Value</th>
         </tr>
-        <tr>
-          <td>Apple Inc.</td>
-          <td>Sushi</td>
-          <td>1.3%</td>
-          <td>12.000 DKK</td>
-        </tr>
-        <tr>
-          <td>Microsoft Cooperation</td>
-          <td>Hamburger</td>
-          <td>1.4%</td>
-          <td>19.000 DKK</td>
-        </tr>
-        <tr>
-          <td>Alhabet Inc.</td>
-          <td>Water</td>
-          <td>1.5%</td>
-          <td>9.000 DKK</td>
-        </tr>
-        <tr>
-          <td>Meta Inc.</td>
-          <td>Bottle of water</td>
-          <td>1.6%</td>
-          <td>10.000 DKK</td>
-        </tr>
-        <tr>
-          <td>Shopify</td>
-          <td>Hamburger</td>
-          <td>3.6%</td>
-          <td>2.000 DKK</td>
-        </tr>
-
+        <% top5Stocks.forEach(stock => { %>
+          <tr>
+            <td><%= stock.stockName %></td>
+            <td><%= stock.portfolioName %></td>
+            <td><%= stock.value %> DKK</td>
+          </tr>
+        <% }); %>
       </table>
     </div>
     <div id="top5Værdipapirer_urealiseret_id">
@@ -130,40 +105,15 @@
         <tr>
           <th>Name</th>
           <th>Portfolio</th>
-          <th>24h change</th>
-          <th>Value</th>
+          <th>Profit</th>
         </tr>
-        <tr>
-          <td>Apple Inc.</td>
-          <td>Sushi</td>
-          <td>1.3%</td>
-          <td>12.000 DKK</td>
-        </tr>
-        <tr>
-          <td>Microsoft Cooperation</td>
-          <td>Hamburger</td>
-          <td>1.4%</td>
-          <td>19.000 DKK</td>
-        </tr>
-        <tr>
-          <td>Alhabet Inc.</td>
-          <td>Water</td>
-          <td>1.5%</td>
-          <td>9.000 DKK</td>
-        </tr>
-        <tr>
-          <td>Meta Inc.</td>
-          <td>Bottle of water</td>
-          <td>1.6%</td>
-          <td>10.000 DKK</td>
-        </tr>
-        <tr>
-          <td>Shopify</td>
-          <td>Hamburger</td>
-          <td>3.6%</td>
-          <td>2.000 DKK</td>
-        </tr>
-
+        <% top5ProfitableStocks.forEach(stock => { %>
+          <tr>
+            <td><%= stock.stockName %></td>
+            <td><%= stock.portfolioName %></td>
+            <td><%= stock.profit %> DKK</td>
+          </tr>
+        <% }); %>
       </table>
     </div>
   </div>
