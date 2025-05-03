@@ -7,6 +7,7 @@
         <link href="trade_style.css" rel="stylesheet">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+        <link rel="icon" type="image/x-icon" href="/public/favicon.ico">
     </head>
 </html>
 
@@ -44,23 +45,29 @@
           <div id="myChart"></div>
         </div>
         <div id="StockPurchaseInfo_id">
-         
-            <input id="NumberOfStocks_id" type="number" max=99999 min=1 placeholder=1>
+        
+            <input id="NumberOfStocks_id" name="antalAktier" type="number" max="99999" min="1" placeholder="1" required />
             <span id="totalPrice_id">0.00 DKK</span>
-            <select name="Vælg portefølje" id="vælgPortefølje_id">
+            <select name="porteføljeSelect" id="vælgPortefølje_id" required>
               <option value="">Vælg portefølje</option>
-            </select>
-            <select name="vælg konto" id="vælgKonto_id">
-              <option value="">Vælg konto</option>
-          </select>
-          <button id="BuyStockButton_id">Purchase</button>
-        </div>
-      </div>      
-</body>
+              <!-- Dynamisk indhold her -->
+              </select>
+              
+              <select name="kontoSelect" id="vælgKonto_id" required>
+                <option value="">Vælg konto</option>
+                <!-- Dynamisk indhold her -->
+                </select>
+                
+                <input type="hidden" name="aktieTickerValgt" id="aktieTickerValgt" />
+                <input type="hidden" name="totalPris" id="totalPrisInput" />
+                <button id="BuyStockButton_id" onclick="købAktie_tjekForhold()">Purchase</button>
+            
+            </div>
+          </div>      
+        </body>
 
 
 <script>
-
 let stockName = "";
   let aktieData = ""; // Variabel der skal indeholde aktie data der kommer fra api
   let aktieTickerValgt = ""; // Variabel der skal gemme tickeren på aktien der er blevet valgt
@@ -102,12 +109,15 @@ lavListeMedAccounts();
 
 
 
-const købButton = document.getElementById("BuyStockButton_id");
-købButton.addEventListener("click", købAktie_tjekForhold);
+
+
+
+
+
 
 function købAktie_tjekForhold() {
-  const porteføljeSelect = document.getElementById("vælgPortefølje_id");
-  const kontoSelect = document.getElementById("vælgKonto_id");
+  porteføljeSelect = document.getElementById("vælgPortefølje_id");
+  kontoSelect = document.getElementById("vælgKonto_id");
 
   const porteføljeText = porteføljeSelect.options[porteføljeSelect.selectedIndex].text; // henter den valgte tekst
   const kontoText = kontoSelect.options[kontoSelect.selectedIndex].text; // henter den valgte tekst
@@ -134,37 +144,53 @@ function købAktie_tjekForhold() {
 }
 
 
+// VARIABLER DER SKAL BRUGES NÅR BRUGEREN KØBER AKTIE
 let antalAktier = 0; // Antallet af aktie brugeren har tastet ind
+let porteføljeSelect = "";
+let kontoSelect = "";
 
 
 function foretagAktiekøb() {
-  antalAktier = document.getElementById("NumberOfStocks_id").value;
-  aktieTickerValgt = "ALMB.CO";
+  antalAktier = parseInt(document.getElementById("NumberOfStocks_id").value);
+  porteføljeSelect = document.getElementById("vælgPortefølje_id").value;
+  kontoSelect = document.getElementById("vælgKonto_id").value;
+  
+ 
 
-  fetch('/trade', {
+  if (isNaN(antalAktier) || antalAktier <= 0 || !porteføljeSelect || !kontoSelect) {
+    alert("Udfyld alle felter korrekt og vælg en aktie først.");
+    return;
+  }
+
+
+  const totalPris = parseFloat((antalAktier * currentPrice).toFixed(2));
+
+  fetch('/trade/buy', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({ 
-      antalAktier: antalAktier,
-      aktieTickerValgt: aktieTickerValgt,
-      stockName: aktieTickerValgt // Send denne, så backenden kan bruge den
+      antalAktier,
+      porteføljeSelect,
+      kontoSelect,
+      aktieTickerValgt,
+      totalPris
     })
   })
   .then(response => {
-    if (!response.ok) {
-      throw new Error('Netværksfejl');
+    if (response.redirected) {
+      window.location.href = response.url; // håndter redirect til /portfolios
+    } else if (!response.ok) {
+      throw new Error("Fejl ved køb");
     }
-    return response.json();
-  })
-  .then(data => {
-    console.log("Server svar:", data.totalPris);
   })
   .catch(error => {
-    console.error('Fejl ved fetch:', error);
+    console.error("Fejl ved køb:", error);
+    alert("Noget gik galt under købet.");
   });
 }
+
 
 
 
@@ -318,9 +344,11 @@ function lavListMedAktier() {
 
         aktieData = await response.json();
         console.log("Server svar:", aktieData);
+        
+        aktieData.closes.reverse(); // Reverse priserne i arrayet 
 
         currentPrice = aktieData.closes[aktieData.closes.length - 1].toFixed(2);
-        document.getElementById("totalPrice_id").innerHTML = currentPrice;
+        document.getElementById("totalPrice_id").innerHTML = currentPrice + " DKK";
       } catch (error) {
         console.error('Fejl ved fetch:', error);
       }
@@ -432,11 +460,12 @@ const options = {
           }
         }
       },
-      
-      stroke: {
-        curve: 'smooth'
-      },
+    
 
+      stroke: {
+    curve: 'smooth',
+    width: 2.5  // Ændrer linjens tykkelse
+  },
 
       tooltip: {
         theme: 'dark',
