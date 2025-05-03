@@ -1,0 +1,57 @@
+/* Styling for topbar */
+#topBar_id {
+    position: relative; /* Gør det muligt at placere elementer relativt til topbaren */
+    width: 100%; /* Fylder hele bredden */
+    background-color: #5F45A0; /* Lilla baggrundsfarve */
+    display: block; /* Viser som en blok */
+  }
+  
+  #logoutButton {
+    position: absolute; /* Placerer knappen relativt til topbaren */
+    top: 50%; /* Centrerer knappen vertikalt */
+    right: 10px; /* Placerer knappen 10px fra højre kant */
+    transform: translateY(-50%); /* Justerer for vertikal centrering */
+    background: none; /* Ingen baggrund */
+    border: none; /* Ingen kant */
+    cursor: pointer; /* Ændrer markøren til en pointer */
+    color: white; /* Hvid tekstfarve */
+    font-size: 24px; /* Justerer tekststørrelsen */
+  }
+  
+  #logoutButton:hover {
+    color: #ff4d4d; /* Ændrer farven til rød ved hover */
+  }
+  
+  /* Styling for sidebar */
+  ul {
+    list-style-type: none; /* Fjerner punkttegn */
+    background-color: #252525; /* Mørk baggrundsfarve */
+    margin: 1%; /* Ydre afstand */
+    border-radius: 8px; /* Afrundede hjørner */
+    margin-top: 2.5%; /* Ekstra afstand fra toppen */
+    float: left; /* Placerer til venstre */
+    padding-left: 15px; /* Indvendig afstand til venstre */
+    padding-right: 15px; /* Indvendig afstand til højre */
+  }
+  
+  li a {
+    text-decoration: none; /* Fjerner understregning */
+    display: block; /* Viser som en blok */
+    font-family: normalSkrift; /* Bruger den brugerdefinerede skrifttype */
+    color: lightgray; /* Lys grå tekstfarve */
+  }
+  
+  li a span {
+    font-size: 100px; /* Stor tekststørrelse */
+    display: block; /* Viser som en blok */
+    color: lightgray; /* Lys grå tekstfarve */
+    font-size: 200% !important; /* Forstørrer teksten */
+    padding-right: 15px; /* Indvendig afstand til højre */
+    padding-top: 17px; /* Indvendig afstand til toppen */
+    padding-bottom: 17px; /* Indvendig afstand til bunden */
+  }
+  
+  li a:hover,
+  li a:hover span {
+    color: gray; /* Ændrer farven til grå ved hover */
+}

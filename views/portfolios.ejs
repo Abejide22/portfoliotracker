@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio Overview</title>
     <link rel="stylesheet" href="portfolios_style.css">
+    <link href="shared_components.css" rel="stylesheet"> <!-- Linker til en ekstern CSS-fil for at style siden -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
@@ -13,26 +14,10 @@
 
 <body>
     <!-- Top Bar og logout knap -->
-    <div id="topBar_id">
-        <h1>PORTFOLIOTRACKER</h1>
-        <form action="/logout" method="POST" style="display: inline;">
-            <button type="submit" id="logoutButton" title="Log ud">
-                <span class="material-symbols-outlined">
-                    account_circle_off
-                </span>
-            </button>
-        </form>
-    </div>
+    <%- include('partials/topbar') %>
 
     <!-- Side navigation -->
-    <ul>
-        <li><a href="/dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a></li>
-        <li><a href="/portfolios" style="color: gray;"><span class="material-symbols-outlined"
-                    style="color: gray;">folder_open</span>Portfolios</a></li>
-        <li><a href="/trade"><span class="material-symbols-outlined">query_stats</span>Market</a></li>
-        <li><a href="/accounts"><span class="material-symbols-outlined">account_balance_wallet</span>Accounts</a></li>
-        <li><a href="/profile"><span class="material-symbols-outlined">person</span>Profile</a></li>
-    </ul>
+    <%- include('partials/sidebar') %>
 
     <div class="container">
         <div class="header">
@@ -148,20 +133,24 @@
 </html>
 
 <script>
-    const chartOptions = {
+   const chartOptions = {
         chart: {
             type: 'pie',
             fontFamily: 'normalSkrift'
         },
         series: [
-            <% portfolios.forEach((portfolio, index) => { %>
-                <%= typeof portfolio.samletForventetVærdi === "number" ? portfolio.samletForventetVærdi.toFixed(2) : "0.00" %><%= index !== portfolios.length - 1 ? ',' : '' %>
-            <% }) %>
+            <% if (portfolios[0] && portfolios[0].stocks.length > 0) { %>
+                <% portfolios[0].stocks.forEach((stock, index) => { %>
+                    <%= stock.forventetVærdi.toFixed(2) %><%= index !== portfolios[0].stocks.length - 1 ? ',' : '' %>
+                <% }) %>
+            <% } else { %>0<% } %>
         ],
         labels: [
-            <% portfolios.forEach((portfolio, index) => { %>
-            '<%= typeof portfolio.name === "string" ? portfolio.name : "Ukendt" %>' <%= index !== portfolios.length - 1 ? ',' : '' %>
-            <% }) %>
+            <% if (portfolios[0] && portfolios[0].stocks.length > 0) { %>
+                <% portfolios[0].stocks.forEach((stock, index) => { %>
+                    '<%= stock.stockId %>'<%= index !== portfolios[0].stocks.length - 1 ? ',' : '' %>
+                <% }) %>
+            <% } else { %>'Ingen aktier'<% } %>
         ],
         colors: ['#00BFFF', '#9932CC', '#FFA500', '#90EE90', '#FF4040'],
         stroke: {
