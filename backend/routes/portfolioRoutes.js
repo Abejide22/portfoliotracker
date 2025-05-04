@@ -119,7 +119,7 @@ router.post("/create-portfolio", async (req, res) => {
               urealiseretGevinst,
             };
           })
-        );
+        ); 
   
         portfolio.stocks = stocksWithGAK;
       }

@@ -143,7 +143,6 @@ router.post("/trade", async (req, res) => {
 
       }
 
-
       if(kontoBalance < totalPris){
         let IkkeNokPenge = true;
         res.render("trade", { IkkeNokPenge });
@@ -257,41 +256,28 @@ router.get("/trade", async (req, res) => {
     ];
     const nuværendePriser = [];
 
+for (let i = 0; i < tickers.length; i++) {
+  try {
+    const historical = await yahooFinance.historical(tickers[i], {
+      period1: Math.floor(Date.now() / 1000) - 60 * 60 * 24 * 7, // sidste 7 dage
+      period2: Math.floor(Date.now() / 1000),
+      interval: '1d',
+    });
 
+    // Find seneste datapunkt – de er sorteret fra ældst til nyest
+    const latestData = historical.length > 0 ? historical[historical.length - 1] : null;
 
-    const today = new Date();
-    const period1 = Math.floor(today.setHours(0, 0, 0, 0) / 1000); // start: i dag 00:00
-    const period2 = Math.floor(Date.now() / 1000);                 // slut: nu
-    
-    for (let i = 0; i < tickers.length; i++) {
-      try {
-        const historical = await yahooFinance.historical(tickers[i], {
-          period1,
-          period2,
-          interval: '1d',
-        });
-    
-        const todayStr = new Date().toISOString().split('T')[0];
-    
-        // Find data for i dag, hvis det findes
-        let latestData = historical.find(d =>
-          d.date.toISOString().split('T')[0] === todayStr
-        );
-    
-        // Fallback til sidste tilgængelige datapunkt, fx gårsdagens
-        if (!latestData && historical.length > 0) {
-          latestData = historical[historical.length - 1];
-        }
-    
-        nuværendePriser.push({
-          symbol: tickers[i],
-          price: latestData ? latestData.close : 'N/A',
-        });
+    nuværendePriser.push({
+      symbol: tickers[i],
+      price: latestData ? latestData.close : 'Ingen data',
+    });
+
   } catch (err) {
     console.error(`Error fetching data for ${tickers[i]}`, err);
     nuværendePriser.push({ symbol: tickers[i], price: 'N/A' });
   }
 }
+
 
 
 
