@@ -32,11 +32,11 @@
             <div class="stacked">
                 <div class="card">
                     <h3>Total værdi i DKK</h3>
-                    <h2>224.543 DKK</h2>
+                    <h2><%= typeof totalValue === 'number' ? totalValue.toFixed(2) : "0.00" %> DKK</h2>
                 </div>
                 <div class="card">
                     <h3>Ændring sidste 30 dage</h3>
-                    <h2>+1.4%</h2>
+                    <h2><%= typeof ændring30dage === 'number' ? ændring30dage.toFixed(2) : "0.00" %>%</h2>
                 </div>
             </div>
             <div class="card">
