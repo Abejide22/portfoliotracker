@@ -73,7 +73,10 @@
                             <% portfolios.forEach(function(portfolio) { %>
                                 <tr>
                                     <td>
-                                        <%= portfolio.name %>
+                                        <a href="#" onclick='åbnModal(<%- JSON.stringify(portfolio) %>)'
+                                            style="color: white; text-decoration: underline; cursor: pointer;">
+                                            <%= portfolio.name %>
+                                        </a>
                                     </td>
 
                                     <td>
@@ -174,10 +177,23 @@
                     </table>
                 </div>
 
+                <div id="modal"
+                    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); z-index:1000; overflow:auto;">
+                    <div id="modal-content"
+                        style="position:relative; margin:auto; top:50px; width:90%; background-color: #1e1e2f; padding:20px; border-radius:8px; color:white;">
+                        <h2 id="modal-title"></h2>
+                        <div id="modal-chart"
+                            style="height:400px; margin-top: 20px; font-size: 18px; color: #ffffff; text-align: center;">
+                        </div>
+                        <button onclick="lukModal()"
+                            style="margin-top: 20px; padding: 10px 20px; background-color: #6a0dad; color: white; border: none; border-radius: 5px; cursor: pointer;">Luk</button>
+                    </div>
+                </div>
+
 </html>
 
 <script>
-    const førstePortefølje = <%- JSON.stringify(portfolios[0] || {}) %>;
+    const førstePortefølje = <% - JSON.stringify(portfolios[0] || {}) %>;
 
     let pieSeries = [];
     let pieLabels = [];
@@ -245,5 +261,42 @@
                 event.preventDefault(); // Stopper formularen
             }
         });
+    }
+
+    function åbnModal(portfolio) {
+        document.getElementById('modal').style.display = 'block';
+        document.getElementById('modal-title').innerText = "Udvikling for portefølje: " + portfolio.name;
+
+        // Fjern gammel graf hvis der findes en
+        document.getElementById('modal-chart').innerHTML = "";
+
+        if (!portfolio.stocks || portfolio.stocks.length === 0) {
+            document.getElementById('modal-chart').innerHTML = "<div style='font-size: 18px; color: #ffffff; text-align: center;'>Ingen aktier i denne portefølje.</div>";
+            return;
+        }
+
+        const labels = portfolio.stocks.map(stock => stock.stockId);
+        const data = portfolio.stocks.map(stock => stock.forventetVærdi);
+
+        const options = {
+            chart: {
+                type: 'bar',
+                height: 350
+            },
+            series: [{
+                name: 'Værdi',
+                data: data
+            }],
+            xaxis: {
+                categories: labels
+            }
+        };
+
+        const chart = new ApexCharts(document.querySelector("#modal-chart"), options);
+        chart.render();
+    }
+
+    function lukModal() {
+        document.getElementById('modal').style.display = 'none';
     }
 </script>
