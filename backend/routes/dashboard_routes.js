@@ -29,25 +29,31 @@ router.get("/dashboard", async (req, res) => {
     const tradesResult = await pool.request()
       .input("userId", sql.Int, userId)
       .query(`
-        SELECT s.name AS stock_name, p.name AS portfolio_name, 
-               t.quantity_bought, t.quantity_sold, t.buy_price, s.price AS current_price
-        FROM Trades t
-        JOIN Stocks s ON t.stock_id = s.id
-        JOIN Portfolios p ON s.portfolio_id = p.id
-        WHERE s.user_id = @userId
+        SELECT s.name AS stock_name, 
+           ISNULL(p.name, 'Ingen portefølje') AS portfolio_name, 
+           s.quantity AS quantity_bought, -- Hent 'quantity' fra Stocks-tabellen
+           ISNULL(t.quantity_sold, 0) AS quantity_sold, 
+           ISNULL(t.buy_price, 0) AS buy_price, 
+           s.price AS current_price
+    FROM Stocks s
+    LEFT JOIN Trades t ON t.stock_id = s.id
+    LEFT JOIN Portfolios p ON s.portfolio_id = p.id
+    WHERE s.user_id = @userId;
       `);
     const trades = tradesResult.recordset;
+    console.log("Hentede aktier fra databasen:", trades);
 
     // Beregn værdien af hver aktie og sorter efter værdi
     const stocksWithValue = trades.map(trade => {
       const quantity = trade.quantity_bought - trade.quantity_sold; // Kun urealiserede aktier
-      const value = trade.current_price * quantity;
+      const value = trade.current_price;
       return {
         stockName: trade.stock_name,
         portfolioName: trade.portfolio_name,
         value: value.toFixed(2), // Formatér til 2 decimaler
       };
     });
+    console.log("Aktier med værdi:", stocksWithValue);
 
     // Sorter aktierne efter værdi og vælg de 5 største
     const top5Stocks = stocksWithValue.length > 0
@@ -56,7 +62,7 @@ router.get("/dashboard", async (req, res) => {
           .sort((a, b) => b.value - a.value) // Sorter i faldende rækkefølge
           .slice(0, 5) // Vælg de 5 største
       : []; // Hvis der ikke er nogen aktier, returner en tom liste
-
+      console.log("Top 5 værdifulde aktier:", top5Stocks);
     // Beregn urealiseret profit for hver aktie
     const stocksWithProfit = trades.map(trade => {
       const unrealizedQuantity = trade.quantity_bought - trade.quantity_sold; // Kun urealiserede aktier
@@ -80,7 +86,7 @@ router.get("/dashboard", async (req, res) => {
 
     // Beregn den samlede værdi af aktier
     const totalStocksValue = trades.length > 0 ? trades.reduce((sum, trade) => {
-      const currentValue = trade.current_price * (trade.quantity_bought - trade.quantity_sold); // Kun urealiserede aktier
+      const currentValue = trade.current_price; // Kun urealiserede aktier
       return sum + currentValue;
     }, 0) : 0;
 
@@ -97,7 +103,7 @@ router.get("/dashboard", async (req, res) => {
     const totalUnrealizedValue = trades.reduce((sum, trade) => {
       const unrealizedQuantity = trade.quantity_bought - trade.quantity_sold; // Kun urealiserede aktier
       if (unrealizedQuantity > 0) {
-        const unrealizedProfitOrLoss = (trade.current_price - trade.buy_price) * unrealizedQuantity;
+        const unrealizedProfitOrLoss = (trade.current_price - trade.price) * unrealizedQuantity; // Brug 'price' fra Stocks
         return sum + unrealizedProfitOrLoss;
       }
       return sum;

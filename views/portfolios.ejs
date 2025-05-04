@@ -36,7 +36,7 @@
                 </div>
                 <div class="card">
                     <h3>Ændring sidste 30 dage</h3>
-                    <h2>+1.4%</h2>
+                    <h2><%= typeof ændring30dage === 'number' ? ændring30dage.toFixed(2) : "0.00" %>%</h2>
                 </div>
             </div>
             <div class="card">
