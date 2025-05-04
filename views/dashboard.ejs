@@ -84,20 +84,24 @@
     </div>
     <div id="top5Værdipapirer_urealiseret_id">
       <span>Top 5 værdipapirer baseret på profit</span>
-      <table>
-        <tr>
-          <th>Name</th>
-          <th>Portfolio</th>
-          <th>Profit</th>
-        </tr>
-        <% top5ProfitableStocks.forEach(stock => { %>
+      <% if (top5ProfitableStocks.length === 0) { %>
+        <p>Ingen aktier har profit endnu</p>
+      <% } else { %>
+        <table>
           <tr>
-            <td><%= stock.stockName %></td>
-            <td><%= stock.portfolioName %></td>
-            <td><%= stock.profit %> DKK</td>
+            <th>Name</th>
+            <th>Portfolio</th>
+            <th>Profit</th>
           </tr>
-        <% }); %>
-      </table>
+          <% top5ProfitableStocks.forEach(stock => { %>
+            <tr>
+              <td><%= stock.stockName %></td>
+              <td><%= stock.portfolioName %></td>
+              <td><%= stock.profit %> DKK</td>
+            </tr>
+          <% }); %>
+        </table>
+      <% } %>
     </div>
   </div>
   <br><br>

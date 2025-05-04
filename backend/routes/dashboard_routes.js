@@ -30,15 +30,16 @@ router.get("/dashboard", async (req, res) => {
       .input("userId", sql.Int, userId)
       .query(`
         SELECT s.name AS stock_name, 
-           ISNULL(p.name, 'Ingen portefølje') AS portfolio_name, 
-           s.quantity AS quantity_bought, -- Hent 'quantity' fra Stocks-tabellen
-           ISNULL(t.quantity_sold, 0) AS quantity_sold, 
-           ISNULL(t.buy_price, 0) AS buy_price, 
-           s.price AS current_price
-    FROM Stocks s
-    LEFT JOIN Trades t ON t.stock_id = s.id
-    LEFT JOIN Portfolios p ON s.portfolio_id = p.id
-    WHERE s.user_id = @userId;
+              ISNULL(p.name, 'Ingen portefølje') AS portfolio_name, 
+              ISNULL(s.quantity, 0) AS quantity_bought, 
+              ISNULL(t.quantity_sold, 0) AS quantity_sold, 
+              ISNULL(t.buy_price, 0) AS buy_price, 
+              ISNULL(s.price, 0) AS price, 
+              ISNULL(s.price, 0) AS current_price
+        FROM Stocks s
+        LEFT JOIN Trades t ON t.stock_id = s.id
+        LEFT JOIN Portfolios p ON s.portfolio_id = p.id
+        WHERE s.user_id = @userId; -- Hent aktier for den pågældende bruger
       `);
     const trades = tradesResult.recordset;
     console.log("Hentede aktier fra databasen:", trades);
@@ -63,11 +64,12 @@ router.get("/dashboard", async (req, res) => {
           .slice(0, 5) // Vælg de 5 største
       : []; // Hvis der ikke er nogen aktier, returner en tom liste
       console.log("Top 5 værdifulde aktier:", top5Stocks);
+
     // Beregn urealiseret profit for hver aktie
     const stocksWithProfit = trades.map(trade => {
       const unrealizedQuantity = trade.quantity_bought - trade.quantity_sold; // Kun urealiserede aktier
       const unrealizedProfit = unrealizedQuantity > 0
-        ? (trade.current_price - trade.buy_price) * unrealizedQuantity
+        ? (trade.current_price - trade.price) // Beregn kun stigningen
         : 0;
       return {
         stockName: trade.stock_name,
@@ -78,11 +80,16 @@ router.get("/dashboard", async (req, res) => {
 
     // Sorter aktierne efter urealiseret profit og vælg de 5 største
     const top5ProfitableStocks = stocksWithProfit.length > 0
-      ? stocksWithProfit
-          .filter(stock => stock.profit > 0) // Fjern aktier med 0 eller negativ profit
-          .sort((a, b) => b.profit - a.profit) // Sorter i faldende rækkefølge
-          .slice(0, 5) // Vælg de 5 største
-      : []; // Hvis der ikke er nogen aktier, returner en tom liste
+    ? stocksWithProfit
+      .filter(stock => stock.profit > 0) // Fjern aktier med 0 eller negativ profit
+      .sort((a, b) => b.profit - a.profit) // Sorter i faldende rækkefølge
+      .slice(0, 5) // Vælg de 5 største
+    : []; // Hvis der ikke er nogen aktier, returner en tom liste
+
+    // Tilføj besked, hvis der ikke er nogen aktier med profit
+    const profitMessage = top5ProfitableStocks.length === 0
+    ? "Ingen aktier har profit endnu"
+    : null;
 
     // Beregn den samlede værdi af aktier
     const totalStocksValue = trades.length > 0 ? trades.reduce((sum, trade) => {
@@ -99,11 +106,15 @@ router.get("/dashboard", async (req, res) => {
       return sum;
     }, 0);
 
-    // Beregn den totale urealiserede gevinst/tab
     const totalUnrealizedValue = trades.reduce((sum, trade) => {
       const unrealizedQuantity = trade.quantity_bought - trade.quantity_sold; // Kun urealiserede aktier
+      console.log(`Stock: ${trade.stock_name}`);
+      console.log(`Quantity Bought: ${trade.quantity_bought}, Quantity Sold: ${trade.quantity_sold}`);
+      console.log(`Current Price: ${trade.current_price}, Price: ${trade.price}`);
+      
       if (unrealizedQuantity > 0) {
-        const unrealizedProfitOrLoss = (trade.current_price - trade.price) * unrealizedQuantity; // Brug 'price' fra Stocks
+        const unrealizedProfitOrLoss = (trade.current_price - trade.price) * unrealizedQuantity;
+        console.log(`Unrealized Profit/Loss: ${unrealizedProfitOrLoss}`);
         return sum + unrealizedProfitOrLoss;
       }
       return sum;
@@ -120,6 +131,7 @@ router.get("/dashboard", async (req, res) => {
       totalUnrealizedValue,
       top5Stocks,
       top5ProfitableStocks,
+      profitMessage,
     });
   } catch (err) {
     console.error("Fejl ved hentning af data til dashboard:", err);
