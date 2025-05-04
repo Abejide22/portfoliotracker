@@ -16,142 +16,198 @@
     <!-- Top Bar og logout knap -->
     <%- include('partials/topbar') %>
 
-    <!-- Side navigation -->
-    <%- include('partials/sidebar') %>
+        <!-- Side navigation -->
+        <%- include('partials/sidebar') %>
 
-    <div class="container">
-        <div class="header">
-            <h2>Portfolios</h2>
-            <a href="/addportfolio" class="primary-btn" style="text-decoration: none; color: white;">
-                <span class="material-symbols-outlined">add</span> Tilføj Portefølje
-            </a>
-        </div>
-
-
-        <div class="grid-3">
-            <div class="stacked">
-                <div class="card">
-                    <h3>Total værdi i DKK</h3>
-                    <h2>224.543</h2>
+            <div class="container">
+                <div class="header">
+                    <h2>Portfolios</h2>
+                    <a href="/addportfolio" class="primary-btn" style="text-decoration: none; color: white;">
+                        <span class="material-symbols-outlined">add</span> Tilføj Portefølje
+                    </a>
                 </div>
-                <div class="card">
-                    <h3>Ændring sidste 30 dage</h3>
-                    <h2><%= typeof ændring30dage === 'number' ? ændring30dage.toFixed(2) : "0.00" %>%</h2>
+
+
+                <div class="grid-3">
+                    <div class="stacked">
+                        <div class="card">
+                            <h3>Total værdi i DKK</h3>
+                            <h2>
+                                <% if (typeof totalVærdi==="number" ) { %>
+                                    <%= totalVærdi.toFixed(2) %>
+                                        <% } else { %>
+                                            0.00
+                                            <% } %>
+                            </h2>
+                        </div>
+
+                        <div class="card">
+                            <h3>Ændring sidste 30 dage</h3>
+                            <h2>
+                                <% if (typeof ændring30dage==="number" ) { %>
+                                    <%= ændring30dage.toFixed(2) %>%
+                                        <% } else { %>
+                                            0.00%
+                                            <% } %>
+                            </h2>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Fordeling af værdi i porteføljer</h3>
+                        <div id="chart"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="card">
-                <h3>Fordeling af værdi i porteføljer</h3>
-                <div id="chart"></div>
-            </div>
-        </div>
 
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Portefølje Navn</th>
-                        <th>Samlet erhvervelsespris</th>
-                        <th>Samlet forventet værdi</th>
-                        <th>Urealiseret gevinst</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% portfolios.forEach(portfolio=> { %>
-                        <tr>
-                            <td>
-                                <%= portfolio.name %>
-                            </td>
-                            <td>
-                                <%= typeof portfolio.samletKøbspris==="number" ? portfolio.samletKøbspris.toFixed(2)
-                                    : "0.00" %> DKK
-                            </td>
-                            <td>
-                                <%= typeof portfolio.samletForventetVærdi==="number" ?
-                                    portfolio.samletForventetVærdi.toFixed(2) : "0.00" %> DKK
-                            </td>
-                            <td>
-                                <%= typeof portfolio.urealiseretGevinst==="number" ?
-                                    portfolio.urealiseretGevinst.toFixed(2) : "0.00" %> DKK
-                            </td>
-                        </tr>
-
-                        <% if (portfolio.stocks.length> 0) { %>
+                <div class="table-container">
+                    <table>
+                        <thead>
                             <tr>
-                                <td colspan="4">
-                                    <table style="width: 100%; background-color: #333; margin-top: 10px;">
-                                        <thead>
-                                            <tr>
-                                                <th>Aktie ID</th>
-                                                <th>Samlet antal aktier</th>
-                                                <th>Samlet erhvervelsespris</th>
-                                                <th>GAK</th>
-                                                <th>Forventet værdi</th>
-                                                <th>Urealiseret gevinst/tab</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <% portfolio.stocks.forEach(stock=> { %>
-                                                <tr>
-                                                    <td>
-                                                        <%= stock.stockId %>
-                                                    </td>
-                                                    <td>
-                                                        <%= stock.samletAntal %>
-                                                    </td>
-                                                    <td>
-                                                        <%= typeof stock.samletKøbspris==="number" ?
-                                                            stock.samletKøbspris.toFixed(2) : "0.00" %> DKK
-                                                    </td>
-                                                    <td>
-                                                        <%= typeof stock.gak==="number" ? stock.gak.toFixed(2) : "0.00"
-                                                            %> DKK
-                                                    </td>
-                                                    <td>
-                                                        <%= typeof stock.forventetVærdi==="number" ?
-                                                            stock.forventetVærdi.toFixed(2) : "0.00" %> DKK
-                                                    </td>
-                                                    <td>
-                                                        <%= typeof stock.urealiseretGevinst==="number" ?
-                                                            stock.urealiseretGevinst.toFixed(2) : "0.00" %> DKK
-                                                    </td>
-                                                </tr>
-                                                <% }) %>
-                                        </tbody>
-                                    </table>
-                                </td>
+                                <th>Portefølje Navn</th>
+                                <th>Samlet erhvervelsespris</th>
+                                <th>Samlet forventet værdi</th>
+                                <th>Urealiseret gevinst</th>
                             </tr>
-                            <% } else { %>
+                        </thead>
+                        <tbody>
+                            <% portfolios.forEach(function(portfolio) { %>
                                 <tr>
-                                    <td colspan="4" style="text-align: center; padding: 10px; color: gray;">
-                                        Der er endnu ingen aktier i denne portefølje.
+                                    <td>
+                                        <%= portfolio.name %>
+                                    </td>
+
+                                    <td>
+                                        <% if (typeof portfolio.samletKøbspris==="number" ) { %>
+                                            <%= portfolio.samletKøbspris.toFixed(2) %> DKK
+                                                <% } else { %>
+                                                    0.00 DKK
+                                                    <% } %>
+                                    </td>
+
+                                    <td>
+                                        <% if (typeof portfolio.samletForventetVærdi==="number" ) { %>
+                                            <%= portfolio.samletForventetVærdi.toFixed(2) %> DKK
+                                                <% } else { %>
+                                                    0.00 DKK
+                                                    <% } %>
+                                    </td>
+
+                                    <td>
+                                        <% if (typeof portfolio.urealiseretGevinst==="number" ) { %>
+                                            <%= portfolio.urealiseretGevinst.toFixed(2) %> DKK
+                                                <% } else { %>
+                                                    0.00 DKK
+                                                    <% } %>
                                     </td>
                                 </tr>
-                                <% } %>
-                                    <% }) %>
-                </tbody>
+
+                                <% if (portfolio.stocks && portfolio.stocks.length> 0) { %>
+                                    <tr>
+                                        <td colspan="4">
+                                            <table class="nested-stock-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Aktie ID</th>
+                                                        <th>Samlet antal aktier</th>
+                                                        <th>Samlet erhvervelsespris</th>
+                                                        <th>GAK</th>
+                                                        <th>Forventet værdi</th>
+                                                        <th>Urealiseret gevinst/tab</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% portfolio.stocks.forEach(function(stock) { %>
+                                                        <tr>
+                                                            <td>
+                                                                <%= stock.stockId %>
+                                                            </td>
+                                                            <td>
+                                                                <%= stock.samletAntal %>
+                                                            </td>
+
+                                                            <td>
+                                                                <% if (typeof stock.samletKøbspris==="number" ) { %>
+                                                                    <%= stock.samletKøbspris.toFixed(2) %> DKK
+                                                                        <% } else { %>
+                                                                            0.00 DKK
+                                                                            <% } %>
+                                                            </td>
+
+                                                            <td>
+                                                                <% if (typeof stock.gak==="number" ) { %>
+                                                                    <%= stock.gak.toFixed(2) %> DKK
+                                                                        <% } else { %>
+                                                                            0.00 DKK
+                                                                            <% } %>
+                                                            </td>
+
+                                                            <td>
+                                                                <% if (typeof stock.forventetVærdi==="number" ) { %>
+                                                                    <%= stock.forventetVærdi.toFixed(2) %> DKK
+                                                                        <% } else { %>
+                                                                            0.00 DKK
+                                                                            <% } %>
+                                                            </td>
+
+                                                            <td>
+                                                                <% if (typeof stock.urealiseretGevinst==="number" ) { %>
+                                                                    <%= stock.urealiseretGevinst.toFixed(2) %> DKK
+                                                                        <% } else { %>
+                                                                            0.00 DKK
+                                                                            <% } %>
+                                                            </td>
+                                                        </tr>
+                                                        <% }) %>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="4" class="no-stocks-message">
+                                                Der er endnu ingen aktier i denne portefølje.
+                                            </td>
+                                        </tr>
+                                        <% } %>
+                                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
 
 </html>
 
 <script>
-   const chartOptions = {
+    const førstePortefølje = <% - JSON.stringify(portfolios[0] || {}) %>;
+
+    let pieSeries = [];
+    let pieLabels = [];
+
+    if (førstePortefølje.stocks && førstePortefølje.stocks.length > 0) {
+        for (let i = 0; i < førstePortefølje.stocks.length; i++) {
+            const stock = førstePortefølje.stocks[i];
+
+            // Tilføj label
+            pieLabels.push(stock.stockId);
+
+            // Tilføj værdi (hvis tal, ellers 0)
+            if (typeof stock.forventetVærdi === "number") {
+                pieSeries.push(parseFloat(stock.forventetVærdi.toFixed(2)));
+            } else {
+                pieSeries.push(0);
+            }
+        }
+    } else {
+        pieSeries = [0];
+        pieLabels = ['Ingen aktier'];
+    }
+
+    const chartOptions = {
         chart: {
             type: 'pie',
             fontFamily: 'normalSkrift'
         },
-        series: [
-            <% if (portfolios[0] && portfolios[0].stocks.length > 0) { %>
-                <% portfolios[0].stocks.forEach((stock, index) => { %>
-                    <%= stock.forventetVærdi.toFixed(2) %><%= index !== portfolios[0].stocks.length - 1 ? ',' : '' %>
-                <% }) %>
-            <% } else { %>0<% } %>
-        ],
-        labels: [
-            <% if (portfolios[0] && portfolios[0].stocks.length > 0) { %>
-                <% portfolios[0].stocks.forEach((stock, index) => { %>
-                    '<%= stock.stockId %>'<%= index !== portfolios[0].stocks.length - 1 ? ',' : '' %>
-                <% }) %>
-            <% } else { %>'Ingen aktier'<% } %>
-        ],
+        series: pieSeries,
+        labels: pieLabels,
         colors: ['#00BFFF', '#9932CC', '#FFA500', '#90EE90', '#FF4040'],
         stroke: {
             show: false
