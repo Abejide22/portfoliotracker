@@ -88,8 +88,7 @@ router.get("/portfolios", async (req, res) => {
           };
         }
         stocksAggregated[stock.name].samletAntal += stock.quantity;
-        stocksAggregated[stock.name].samletKøbspris +=
-          stock.quantity * stock.price;
+        stocksAggregated[stock.name].samletKøbspris += stock.price;
       });
 
       const stocksWithGAK = await Promise.all(
