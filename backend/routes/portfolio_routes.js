@@ -71,29 +71,29 @@ router.get("/portfolios", async (req, res) => {
     let totalValue30DaysAgo = 0; // Ny: bruges til at beregne værdi for 30 dage siden
 
     for (const portfolio of portfolios) {
-      const tradesResult = await pool
+      const stocksResult = await pool
         .request()
         .input("portfolioId", sql.Int, portfolio.id)
-        .query("SELECT * FROM Trades WHERE portfolio_id = @portfolioId");
+        .query("SELECT * FROM Stocks WHERE portfolio_id = @portfolioId");
+  
+      const stocks = stocksResult.recordset;
 
-      const trades = tradesResult.recordset;
+      const stocksAggregated = {};
 
-      const stocks = {};
-
-      trades.forEach((trade) => {
-        if (!stocks[trade.stock_id]) {
-          stocks[trade.stock_id] = {
+      stocks.forEach((stock) => {
+        if (!stocksAggregated[stock.name]) {
+          stocksAggregated[stock.name] = {
             samletAntal: 0,
             samletKøbspris: 0,
           };
         }
-        stocks[trade.stock_id].samletAntal += trade.quantity_bought;
-        stocks[trade.stock_id].samletKøbspris +=
-          trade.quantity_bought * trade.buy_price;
+        stocksAggregated[stock.name].samletAntal += stock.quantity;
+        stocksAggregated[stock.name].samletKøbspris +=
+          stock.quantity * stock.price;
       });
 
       const stocksWithGAK = await Promise.all(
-        Object.entries(stocks).map(async ([stockId, data]) => {
+        Object.entries(stocksAggregated).map(async ([stockId, data]) => {
           const gak =
             data.samletAntal > 0 ? data.samletKøbspris / data.samletAntal : 0;
 

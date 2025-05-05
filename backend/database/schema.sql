@@ -63,5 +63,6 @@ CREATE TABLE Trades (
   quantity_sold INT CHECK (quantity_sold >= 0), -- antal solgte værdipapirer, må være NULL eller >= 0
   buy_date DATETIME DEFAULT GETDATE(), -- købsdato, default er nuværende tidspunkt
   sell_date DATETIME DEFAULT GETDATE(), -- salgsdato, default er nuværende tidspunkt
+  created_at DATETIME DEFAULT GETDATE(), -- tilføjet oprettelsesdato
   FOREIGN KEY (stock_id) REFERENCES Stocks(id) -- refererer til Stocks, stock_id skal være en gyldig id fra Stocks
 );

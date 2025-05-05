@@ -133,6 +133,29 @@ router.post("/trade", async (req, res) => {
         VALUES (@user_id, @portfolio_id, @name, @type, @quantity, @price, GETDATE());
       `);
 
+        // Find aktiens ID baseret på navn
+        const stockResult = await pool
+          .request()
+          .input("name", sql.NVarChar, aktieTickerValgt)
+          .query("SELECT id FROM Stocks WHERE name = @name");
+
+        if (!stockResult.recordset || stockResult.recordset.length === 0) {
+          return res.status(400).send("Aktien findes ikke i Stocks-tabellen.");
+        }
+        const stockId = stockResult.recordset[0].id;
+
+        // Indsæt også en transaktion i Trades-tabellen
+        await pool
+          .request()
+          .input("portfolio_id", sql.Int, portfolioId)
+          .input("stock_id", sql.Int, stockId)
+          .input("buy_price", sql.Decimal(18, 2), totalPris / antalAktier) // pris pr. aktie
+          .input("quantity_bought", sql.Int, antalAktier)
+          .query(`
+            INSERT INTO Trades (portfolio_id, stock_id, buy_price, quantity_bought, created_at)
+            VALUES (@portfolio_id, @stock_id, @buy_price, @quantity_bought, GETDATE());
+          `);
+
       await pool
       .request()
       .input("name", sql.NVarChar, kontoSelect)
