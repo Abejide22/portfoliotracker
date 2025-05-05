@@ -10,7 +10,6 @@
 <body>
   <h1>Transaktioner for konto: <%= account.name %>
   </h1>
-
   <table>
     <thead>
       <tr>
@@ -50,7 +49,9 @@
     </tbody>
   </table>
 
-  <a href="/accounts">Tilbage til konti</a>
+  <a href="/accounts">
+    <button type="button">Tilbage til konti</button>
+  </a>
   <script>
     // Find formularen med logud-knappen
     const logoutForm = document.querySelector('form[action="/logout"]');
