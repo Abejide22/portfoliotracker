@@ -46,3 +46,17 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+button {
+  background-color: #5F45A0; /* lilla baggrund */
+  color: white; /* Hvid tekst */
+  border: none; /* Fjern kant */
+  padding: 10px 20px; /* Indre afstand */
+  border-radius: 5px; /* Runde hjørner */
+  cursor: pointer; /* Markør som hånd */
+  font-size: 16px; /* Tekststørrelse */
+}
+
+button:hover {
+  background-color: #4a3680; /* Mørkere ved hover */
+}
