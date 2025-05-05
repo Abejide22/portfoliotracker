@@ -70,6 +70,10 @@ router.get("/portfolios", async (req, res) => {
     let totalValue = 0; // Ny: bruges til at beregne totalværdi i DKK
     let totalValue30DaysAgo = 0; // Ny: bruges til at beregne værdi for 30 dage siden
 
+    let totalSamletErhvervelsespris = 0;
+    let totalSamletForventetVærdi = 0;
+    let totalUrealiseretGevinst = 0;
+
     for (const portfolio of portfolios) {
       const stocksResult = await pool
         .request()
@@ -135,6 +139,23 @@ router.get("/portfolios", async (req, res) => {
       );
 
       portfolio.stocks = stocksWithGAK;
+      // Summer samlet erhvervelsespris, samlet forventet værdi og urealiseret gevinst pr. portefølje
+      portfolio.samletErhvervelsespris = 0;
+      portfolio.samletForventetVærdi = 0;
+      portfolio.urealiseretGevinst = 0;
+
+      for (const aktie of stocksWithGAK) {
+          portfolio.samletErhvervelsespris += aktie.samletKøbspris;
+          portfolio.samletForventetVærdi += aktie.forventetVærdi;
+          portfolio.urealiseretGevinst += aktie.urealiseretGevinst;
+      }
+      portfolio.totalSamletErhvervelsespris = portfolio.samletErhvervelsespris;
+      portfolio.totalSamletForventetVærdi = portfolio.samletForventetVærdi;
+      portfolio.totalUrealiseretGevinst = portfolio.urealiseretGevinst;
+
+      totalSamletErhvervelsespris += portfolio.samletErhvervelsespris;
+      totalSamletForventetVærdi += portfolio.samletForventetVærdi;
+      totalUrealiseretGevinst += portfolio.urealiseretGevinst;
     }
 
     // Ny: udregn ændring i procent
@@ -142,11 +163,20 @@ router.get("/portfolios", async (req, res) => {
       ? ((totalValue - totalValue30DaysAgo) / totalValue30DaysAgo) * 100
       : 0;
 
+    const pieChartData = portfolios.map((portfolio) => ({
+      name: portfolio.name,
+      value: portfolio.totalSamletForventetVærdi || 0
+    }));
+
     res.render("portfolios", {
       portfolios,
       userId,
       totalValue,
-      ændring30dage
+      ændring30dage,
+      totalSamletErhvervelsespris,
+      totalSamletForventetVærdi,
+      totalUrealiseretGevinst,
+      pieChartData
     });
   } catch (err) {
     console.error("Fejl ved hentning af porteføljer:", err);
