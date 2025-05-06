@@ -96,14 +96,6 @@ function lavListeMedAccounts(){
 }
 lavListeMedAccounts(); 
 
-
-
-
-
-
-
-
-
 function købAktie_tjekForhold() {
   porteføljeSelect = document.getElementById("vælgPortefølje_id");
   kontoSelect = document.getElementById("vælgKonto_id");
@@ -232,12 +224,13 @@ function foretagAktiesalg() {
     })
   })
   .then(response => {
-    if (response.redirected) {
-      window.location.href = response.url;
-    } else if (!response.ok) {
+    if (response.ok) {
+      window.location.href = "/portfolios";
+    } else {
       throw new Error("Fejl ved salg");
     }
   })
+  
   .catch(error => {
     console.error("Fejl ved salg:", error);
     alert("Noget gik galt under salget.");
