@@ -194,6 +194,7 @@ li a:hover span {
   width: 46%;
   margin-top: 3%;
 }
+
 #BuyStockButton_id{
   background-color: green;
   color: white;
@@ -205,11 +206,33 @@ li a:hover span {
   font-size: 15px;
   border-bottom-right-radius: 7px;
   border-top-right-radius: 7px;
+  width: 100px;
 }
 #BuyStockButton_id:hover{
   cursor: pointer;
   background-color: darkgreen;
 }
+
+#SellStockButton_id{
+  background-color: red;
+  color: white;
+  font-family: normalskrift;
+  outline: none;
+  border: none;
+  padding: 7.7px 20px 7px 20px;
+  margin-top: 1%;
+  font-size: 15px;
+  border-bottom-right-radius: 7px;
+  border-top-right-radius: 7px;
+  width: 100px;
+}
+
+#SellStockButton_id:hover{
+  cursor: pointer;
+  background-color: darkred;
+}
+
+
 #NumberOfStocks_id{
   width: 15%;
   font-family: normalskrift;

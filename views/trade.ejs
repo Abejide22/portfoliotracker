@@ -49,6 +49,7 @@
                 <input type="hidden" name="aktieTickerValgt" id="aktieTickerValgt" />
                 <input type="hidden" name="totalPris" id="totalPrisInput" />
                 <button id="BuyStockButton_id" onclick="købAktie_tjekForhold()">Purchase</button>
+                <button id="SellStockButton_id" onclick="sælgAktie_tjekForhold()">Sell</button>
             
             </div>
           </div>      
@@ -131,6 +132,30 @@ function købAktie_tjekForhold() {
   }
 }
 
+function sælgAktie_tjekForhold() {
+  porteføljeSelect = document.getElementById("vælgPortefølje_id");
+  kontoSelect = document.getElementById("vælgKonto_id");
+
+  const porteføljeText = porteføljeSelect.options[porteføljeSelect.selectedIndex].text;
+  const kontoText = kontoSelect.options[kontoSelect.selectedIndex].text;
+
+  if (kontoText == "Vælg konto" && porteføljeText == "Vælg portefølje" && aktieNavnValgt.length == 0) {
+    alert("Du mangler at vælge en aktie, en portefølje og en konto.");
+  }
+  else if (aktieNavnValgt.length == 0) {
+    alert("Du mangler at vælge en aktie.");
+  }
+  else if (porteføljeText == "Vælg portefølje") {
+    alert("Du mangler at vælge en portefølje.");
+  }
+  else if (kontoText == "Vælg konto") {
+    alert("Du mangler at vælge en konto.");
+  }
+  else {
+    foretagAktiesalg(); // Kald funktion til at sende POST til backend
+  }
+}
+
 
 // VARIABLER DER SKAL BRUGES NÅR BRUGEREN KØBER AKTIE
 let antalAktier = 0; // Antallet af aktie brugeren har tastet ind
@@ -181,12 +206,43 @@ function foretagAktiekøb() {
   });
 }
 
+function foretagAktiesalg() {
+  const antalAktier = parseInt(document.getElementById("NumberOfStocks_id").value);
+  const porteføljeSelect = document.getElementById("vælgPortefølje_id").value;
+  const kontoSelect = document.getElementById("vælgKonto_id").value;
 
+  if (isNaN(antalAktier) || antalAktier <= 0 || !porteføljeSelect || !kontoSelect) {
+    alert("Udfyld alle felter korrekt og vælg en aktie først.");
+    return;
+  }
 
+  const totalPris = parseFloat((antalAktier * currentPrice).toFixed(2));
 
-
-
-
+  fetch('/trade/sell', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ 
+      antalAktier,
+      porteføljeSelect,
+      kontoSelect,
+      aktieTickerValgt,
+      totalPris
+    })
+  })
+  .then(response => {
+    if (response.redirected) {
+      window.location.href = response.url;
+    } else if (!response.ok) {
+      throw new Error("Fejl ved salg");
+    }
+  })
+  .catch(error => {
+    console.error("Fejl ved salg:", error);
+    alert("Noget gik galt under salget.");
+  });
+}
 
 
 const tickers = [

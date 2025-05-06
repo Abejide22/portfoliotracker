@@ -178,15 +178,127 @@ router.post("/trade", async (req, res) => {
     }
   });
   
+
+// ------------------------------------------------------------------------------------//
+// 
+// FORETAG SALG AF AKTIE
+//
+// ------------------------------------------------------------------------------------//
+router.post("/trade/sell", async (req, res) => {
+  const { porteføljeSelect, aktieTickerValgt, kontoSelect, antalAktier, totalPris } = req.body;
+  const userId = req.session.userId;
+
+  if (!userId || !aktieTickerValgt || !antalAktier || !totalPris || !porteføljeSelect || !kontoSelect) {
+    return res.status(400).send("Mangler oplysninger for at kunne sælge");
+  }
+
+  try {
+    await poolConnect;
+
+    // 1. Find portfolio ID baseret på navn
+    const portfolioResult = await pool
+      .request()
+      .input("portfolio_name", sql.NVarChar, porteføljeSelect)
+      .input("user_id", sql.Int, userId)
+      .query(`
+        SELECT id FROM Portfolios WHERE name = @portfolio_name AND user_id = @user_id
+      `);
+
+    if (!portfolioResult.recordset.length) {
+      return res.status(400).send("Portefølje findes ikke.");
+    }
+
+    const portfolioId = portfolioResult.recordset[0].id;
+
+    // 2. Find aktien brugeren ejer – og vælg den med quantity > 0
+    const stockResult = await pool
+      .request()
+      .input("user_id", sql.Int, userId)
+      .input("portfolio_id", sql.Int, portfolioId)
+      .input("name", sql.NVarChar, aktieTickerValgt)
+      .query(`
+        SELECT TOP 1 id, quantity, price FROM Stocks 
+        WHERE user_id = @user_id AND portfolio_id = @portfolio_id AND name = @name AND quantity > 0
+        ORDER BY created_at DESC
+      `);
+
+    if (!stockResult.recordset.length) {
+      return res.status(400).send("Du ejer ikke denne aktie i den valgte portefølje.");
+    }
+
+    const stock = stockResult.recordset[0];
+
+    if (stock.quantity < antalAktier) {
+      return res.status(400).send("Du ejer ikke nok aktier til at sælge.");
+    }
+
+    const nyBeholdning = stock.quantity - antalAktier;
+
+    // 3. Opdater beholdning (eller behold linjen med ny mængde)
+    await pool
+      .request()
+      .input("quantity", sql.Int, nyBeholdning)
+      .input("id", sql.Int, stock.id)
+      .query(`
+        UPDATE Stocks SET quantity = @quantity WHERE id = @id
+      `);
+
+    // 4. Beregn gennemsnitlig købspris (bruges til buy_price i Trades)
+    const averageBuyPrice = stock.price / stock.quantity;
+
+    // 5. Indsæt salget i Trades-tabellen
+    await pool
+      .request()
+      .input("portfolio_id", sql.Int, portfolioId)
+      .input("stock_id", sql.Int, stock.id)
+      .input("buy_price", sql.Decimal(18, 2), averageBuyPrice)
+      .input("sell_price", sql.Decimal(18, 2), totalPris / antalAktier)
+      .input("quantity_bought", sql.Int, 0)
+      .input("quantity_sold", sql.Int, antalAktier)
+      .query(`
+        INSERT INTO Trades (portfolio_id, stock_id, buy_price, sell_price, quantity_bought, quantity_sold, sell_date, created_at)
+        VALUES (@portfolio_id, @stock_id, @buy_price, @sell_price, @quantity_bought, @quantity_sold, GETDATE(), GETDATE());
+      `);
+
+    // 6. Opdater konto (læg pengene ind)
+    await pool
+      .request()
+      .input("name", sql.NVarChar, kontoSelect)
+      .input("amount", sql.Decimal(10, 2), totalPris)
+      .query(`
+        UPDATE Accounts SET balance = balance + @amount WHERE name = @name;
+      `);
+
+    // 7. Find konto_id til transaktionen
+    const kontoResult = await pool
+    .request()
+    .input("name", sql.NVarChar, kontoSelect)
+    .query(`
+      SELECT id FROM Accounts WHERE name = @name
+    `);
   
-  
+  const kontoId = kontoResult.recordset[0].id;
 
+    //  8. Opret transaktionspost
+    await pool
+      .request()
+      .input("account_id", sql.Int, kontoId)
+      .input("amount", sql.Decimal(18, 2), totalPris)
+      .input("description", sql.NVarChar, `Salg af ${antalAktier} x ${aktieTickerValgt}`)
+      .input("transaction_type", sql.NVarChar, "credit")
+      .query(`
+        INSERT INTO Transactions (account_id, amount, description, transaction_type, created_at)
+        VALUES (@account_id, @amount, @description, @transaction_type, GETDATE());
+      `);
 
+    // 9. Returner korrekt svar så frontend ved det lykkedes
+    res.status(200).json({ message: "Salg gennemført" });
 
-
-
-
-
+  } catch (err) {
+    console.error("Fejl ved salg af aktie:", err);
+    res.status(500).send("Fejl ved salg.");
+  }
+});
 
 
 
