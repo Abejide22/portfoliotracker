@@ -45,9 +45,10 @@ router.get("/dashboard", async (req, res) => {
     console.log("Hentede aktier fra databasen:", trades);
 
     // Beregn værdien af hver aktie og sorter efter værdi
-    const stocksWithValue = trades.map(trade => {
-      const quantity = trade.quantity_bought - trade.quantity_sold; // Kun urealiserede aktier
-      const value = trade.current_price;
+    const stocksWithValue = trades
+    .filter(trade => (trade.quantity_bought - trade.quantity_sold) > 0) // Kun urealiserede aktier
+    .map(trade => {
+      const value = trade.current_price; // Beregn værdien baseret på urealiserede aktier
       return {
         stockName: trade.stock_name,
         portfolioName: trade.portfolio_name,
