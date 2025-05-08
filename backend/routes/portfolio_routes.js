@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { pool, poolConnect, sql } = require("../database/database");
+const Trade = require("../klasser/Trade");
 const fs = require("fs");
 const { getDataByKey } = require("../api_test"); // Tilføjet til at hente historiske data
 const request = require("request");
@@ -194,23 +195,32 @@ router.get("/portfoliotransactions", async (req, res) => {
     await poolConnect;
 
     const result = await pool
-  .request()
-  .input("user_id", sql.Int, userId)
-  .query(`
-   SELECT 
-  ISNULL(T.sell_date, T.created_at) AS dato,
-  T.buy_price, T.sell_price,
-  T.quantity_bought, T.quantity_sold,
-  P.name AS portfolio_name, 
-  S.name AS stock_name
-FROM Trades T
-LEFT JOIN Stocks S ON T.stock_id = S.id
-JOIN Portfolios P ON T.portfolio_id = P.id
-WHERE P.user_id = @user_id
-ORDER BY dato DESC
-  `);
+      .request()
+      .input("user_id", sql.Int, userId)
+      .query(`
+        SELECT 
+          ISNULL(T.sell_date, T.created_at) AS dato,
+          T.buy_price, T.sell_price,
+          T.quantity_bought, T.quantity_sold,
+          P.name AS portfolio_name, 
+          S.name AS stock_name
+        FROM Trades T
+        LEFT JOIN Stocks S ON T.stock_id = S.id
+        JOIN Portfolios P ON T.portfolio_id = P.id
+        WHERE P.user_id = @user_id
+        ORDER BY dato DESC
+      `);
 
-    res.render("portfoliotransactions", { transactions: result.recordset });
+    // Her bruger vi for-løkke 
+    const trades = [];
+    for (let i = 0; i < result.recordset.length; i++) {
+      const række = result.recordset[i];
+      const tradeObjekt = new Trade(række);  // laver objekt ud fra Trade-klassen
+      trades.push(tradeObjekt);              // læg det i listen
+    }
+
+    // send objekterne videre til .ejs-filen
+    res.render("portfoliotransactions", { transactions: trades });
 
   } catch (err) {
     console.error("Fejl ved hentning af portefølje-transaktioner:", err);

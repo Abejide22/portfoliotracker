@@ -202,7 +202,7 @@ router.post("/trade/sell", async (req, res) => {
   try {
     await poolConnect;
 
-    // 1. Find portfolio ID baseret på navn
+    // 1. Find portfolio ID
     const portfolioResult = await pool
       .request()
       .input("portfolio_name", sql.NVarChar, porteføljeSelect)
@@ -217,7 +217,7 @@ router.post("/trade/sell", async (req, res) => {
 
     const portfolioId = portfolioResult.recordset[0].id;
 
-    // 2. Find aktien brugeren ejer – og vælg den med quantity > 0
+    // 2. Find aktien brugeren ejer
     const stockResult = await pool
       .request()
       .input("user_id", sql.Int, userId)
@@ -240,11 +240,9 @@ router.post("/trade/sell", async (req, res) => {
     }
 
     const nyBeholdning = stock.quantity - antalAktier;
-
-    // 3. Beregn gennemsnitlig købspris – skal bruges i Trades (før vi evt. sletter aktien!)
     const averageBuyPrice = stock.price / stock.quantity;
 
-    // 4. Indsæt salget i Trades-tabellen – HER har vi ændret rækkefølgen
+    // 3. Indsæt salget i Trades-tabellen
     await pool
       .request()
       .input("portfolio_id", sql.Int, portfolioId)
@@ -258,21 +256,27 @@ router.post("/trade/sell", async (req, res) => {
         VALUES (@portfolio_id, @stock_id, @buy_price, @sell_price, @quantity_bought, @quantity_sold, GETDATE(), GETDATE());
       `);
 
-    // 5. Håndter beholdning (slet aktien hvis 0) – HER er den anden store ændring
+    // 4. Tjek og håndter beholdning
     if (nyBeholdning === 0) {
-      // Først slet alle Trades med denne aktie for at undgå foreign key fejl
-      await pool
+      const checkTrades = await pool
         .request()
         .input("stock_id", sql.Int, stock.id)
-        .query(`DELETE FROM Trades WHERE stock_id = @stock_id`);
+        .query(`SELECT COUNT(*) AS antal FROM Trades WHERE stock_id = @stock_id`);
 
-      // Slet derefter aktien fra Stocks
-      await pool
-        .request()
-        .input("id", sql.Int, stock.id)
-        .query(`DELETE FROM Stocks WHERE id = @id`);
+      const harTrades = checkTrades.recordset[0].antal > 0;
+
+      if (!harTrades) {
+        await pool
+          .request()
+          .input("id", sql.Int, stock.id)
+          .query(`DELETE FROM Stocks WHERE id = @id`);
+      } else {
+        await pool
+          .request()
+          .input("id", sql.Int, stock.id)
+          .query(`UPDATE Stocks SET quantity = 0 WHERE id = @id`);
+      }
     } else {
-      // Ellers opdater blot mængden
       await pool
         .request()
         .input("quantity", sql.Int, nyBeholdning)
@@ -280,14 +284,14 @@ router.post("/trade/sell", async (req, res) => {
         .query(`UPDATE Stocks SET quantity = @quantity WHERE id = @id`);
     }
 
-    // 6. Opdater konto – læg pengene ind
+    // 5. Opdater konto
     await pool
       .request()
       .input("name", sql.NVarChar, kontoSelect)
       .input("amount", sql.Decimal(10, 2), totalPris)
       .query(`UPDATE Accounts SET balance = balance + @amount WHERE name = @name;`);
 
-    // 7. Find konto ID
+    // 6. Find konto ID og opret transaktion
     const kontoResult = await pool
       .request()
       .input("name", sql.NVarChar, kontoSelect)
@@ -295,7 +299,6 @@ router.post("/trade/sell", async (req, res) => {
 
     const kontoId = kontoResult.recordset[0].id;
 
-    // 8. Opret transaktionspost
     await pool
       .request()
       .input("account_id", sql.Int, kontoId)
@@ -307,7 +310,6 @@ router.post("/trade/sell", async (req, res) => {
         VALUES (@account_id, @amount, @description, @transaction_type, GETDATE());
       `);
 
-    // 9. Returnér besked
     res.status(200).json({ message: "Salg gennemført" });
 
   } catch (err) {

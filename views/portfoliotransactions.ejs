@@ -24,51 +24,26 @@
             </tr>
         </thead>
         <tbody>
-            <% if (transactions.length === 0) { %>
+          <% if (transactions.length === 0) { %>
+            <tr>
+              <td colspan="8">Ingen transaktioner fundet.</td>
+            </tr>
+          <% } else { %>
+            <% for (var i = 0; i < transactions.length; i++) { 
+                 var t = transactions[i]; %>
               <tr>
-                <td colspan="8">Ingen transaktioner fundet.</td>
+                <td><%= t.getFormattedDate() %></td>
+                <td><%= t.portfolio %></td>
+                <td><%= t.stock %></td>
+                <td><%= t.buyPrice ? t.buyPrice.toFixed(2) + " DKK" : "-" %></td>
+                <td><%= t.sellPrice ? t.sellPrice.toFixed(2) + " DKK" : "-" %></td>
+                <td><%= t.bought %></td>
+                <td><%= t.sold %></td>
+                <td><%= t.getType() %></td>
               </tr>
-            <% } else { %>
-              <% for (var i = 0; i < transactions.length; i++) { %>
-                <% 
-                  var t = transactions[i];
-                  var dato = "Ukendt dato";
-                  if (t.dato) {
-                    dato = new Date(t.dato).toISOString().split("T")[0];
-                  }
-          
-                  var køb = "-";
-                  if (t.buy_price !== null && t.buy_price !== undefined) {
-                    køb = t.buy_price.toFixed(2) + " DKK";
-                  }
-          
-                  var salg = "-";
-                  if (t.sell_price !== null && t.sell_price !== undefined) {
-                    salg = t.sell_price.toFixed(2) + " DKK";
-                  }
-          
-                  var type = "-";
-                  if (t.quantity_bought > 0 && t.quantity_sold === 0) {
-                    type = "Køb";
-                  } else if (t.quantity_sold > 0 && t.quantity_bought === 0) {
-                    type = "Salg";
-                  } else {
-                    type = "Ukendt";
-                  }
-                %>
-                <tr>
-                  <td><%= dato %></td>
-                  <td><%= t.portfolio_name %></td>
-                  <td><%= t.stock_name %></td>
-                  <td><%= køb %></td>
-                  <td><%= salg %></td>
-                  <td><%= t.quantity_bought %></td>
-                  <td><%= t.quantity_sold %></td>
-                  <td><%= type %></td>
-                </tr>
-              <% } %>
             <% } %>
-          </tbody>
+          <% } %>
+        </tbody>
     </table>
 
     <a href="/portfolios">
