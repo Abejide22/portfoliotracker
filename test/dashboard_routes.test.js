@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const { getTop5Stocks } = require("../backend/routes/dashboard_routes");
 
 describe("getTop5Stocks", () => {
-  it("should return the top 5 most valuable stocks", () => {
+  it("skal returnere de 5 mest værdifulde aktier", () => {
     // Mock data
     const trades = [
       { stock_name: "DSV", portfolio_name: "Transport", quantity_bought: 1, quantity_sold: 0, current_price: 1500 },
@@ -13,17 +13,17 @@ describe("getTop5Stocks", () => {
       { stock_name: "Pandora", portfolio_name: "Smykker", quantity_bought: 1, quantity_sold: 0, current_price: 300 },
     ];
 
-    // kalder funktionen
+    // Kalder funktionen
     const result = getTop5Stocks(trades);
 
-    // Assert: Check the result
+    // Assert: Tjek resultatet
     expect(result).to.have.lengthOf(5);
     expect(result[0].stockName).to.equal("DSV"); // DSV er mest værdifulde
     expect(result[1].stockName).to.equal("Novo Nordisk"); // Novo Nordisk er næstmest værdifulde
     expect(result[4].stockName).to.equal("Pandora"); // Pandora er den femte mest værdifulde
   });
 
-  it("should return an empty array if no stocks have value", () => {
+  it("skal returnere et tomt array, hvis ingen aktier har værdi", () => {
     // Mock data
     const trades = [
       { stock_name: "DSV", portfolio_name: "Transport", quantity_bought: 0, quantity_sold: 0, current_price: 1500 },
@@ -32,10 +32,11 @@ describe("getTop5Stocks", () => {
     // Kalder funktionen
     const result = getTop5Stocks(trades);
 
-    // forventer et array og tjekker resultatet (arrayet) er tomt
+    // Forventer et array og tjekker, at resultatet (arrayet) er tomt
     expect(result).to.be.an("array").that.is.empty;
   });
-  it("should return only 2 stocks if there are only 2 stocks", () => {
+
+  it("skal returnere kun 2 aktier, hvis der kun er 2 aktier", () => {
     // Mock data
     const trades = [
       { stock_name: "DSV", portfolio_name: "Transport", quantity_bought: 1, quantity_sold: 0, current_price: 1500 },
@@ -45,7 +46,7 @@ describe("getTop5Stocks", () => {
     // Kalder funktionen
     const result = getTop5Stocks(trades);
 
-    // Assert: Check the result
+    // Assert: Tjek resultatet
     expect(result).to.have.lengthOf(2); // Der er kun 2 aktier
     expect(result[0].stockName).to.equal("DSV"); // DSV er mest værdifulde
     expect(result[1].stockName).to.equal("Tryg"); // Tryg er næstmest værdifulde
