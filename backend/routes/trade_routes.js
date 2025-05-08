@@ -234,19 +234,10 @@ router.post("/trade/sell", async (req, res) => {
 
     const nyBeholdning = stock.quantity - antalAktier;
 
-    // 3. Opdater beholdning (eller behold linjen med ny mængde)
-    await pool
-      .request()
-      .input("quantity", sql.Int, nyBeholdning)
-      .input("id", sql.Int, stock.id)
-      .query(`
-        UPDATE Stocks SET quantity = @quantity WHERE id = @id
-      `);
-
-    // 4. Beregn gennemsnitlig købspris (bruges til buy_price i Trades)
+    // 3. Beregn gennemsnitlig købspris – skal bruges i Trades (før vi evt. sletter aktien!)
     const averageBuyPrice = stock.price / stock.quantity;
 
-    // 5. Indsæt salget i Trades-tabellen
+    // 4. Indsæt salget i Trades-tabellen – HER har vi ændret rækkefølgen
     await pool
       .request()
       .input("portfolio_id", sql.Int, portfolioId)
@@ -260,26 +251,44 @@ router.post("/trade/sell", async (req, res) => {
         VALUES (@portfolio_id, @stock_id, @buy_price, @sell_price, @quantity_bought, @quantity_sold, GETDATE(), GETDATE());
       `);
 
-    // 6. Opdater konto (læg pengene ind)
+    // 5. Håndter beholdning (slet aktien hvis 0) – HER er den anden store ændring
+    if (nyBeholdning === 0) {
+      // Først slet alle Trades med denne aktie for at undgå foreign key fejl
+      await pool
+        .request()
+        .input("stock_id", sql.Int, stock.id)
+        .query(`DELETE FROM Trades WHERE stock_id = @stock_id`);
+
+      // Slet derefter aktien fra Stocks
+      await pool
+        .request()
+        .input("id", sql.Int, stock.id)
+        .query(`DELETE FROM Stocks WHERE id = @id`);
+    } else {
+      // Ellers opdater blot mængden
+      await pool
+        .request()
+        .input("quantity", sql.Int, nyBeholdning)
+        .input("id", sql.Int, stock.id)
+        .query(`UPDATE Stocks SET quantity = @quantity WHERE id = @id`);
+    }
+
+    // 6. Opdater konto – læg pengene ind
     await pool
       .request()
       .input("name", sql.NVarChar, kontoSelect)
       .input("amount", sql.Decimal(10, 2), totalPris)
-      .query(`
-        UPDATE Accounts SET balance = balance + @amount WHERE name = @name;
-      `);
+      .query(`UPDATE Accounts SET balance = balance + @amount WHERE name = @name;`);
 
-    // 7. Find konto_id til transaktionen
+    // 7. Find konto ID
     const kontoResult = await pool
-    .request()
-    .input("name", sql.NVarChar, kontoSelect)
-    .query(`
-      SELECT id FROM Accounts WHERE name = @name
-    `);
-  
-  const kontoId = kontoResult.recordset[0].id;
+      .request()
+      .input("name", sql.NVarChar, kontoSelect)
+      .query(`SELECT id FROM Accounts WHERE name = @name`);
 
-    //  8. Opret transaktionspost
+    const kontoId = kontoResult.recordset[0].id;
+
+    // 8. Opret transaktionspost
     await pool
       .request()
       .input("account_id", sql.Int, kontoId)
@@ -291,7 +300,7 @@ router.post("/trade/sell", async (req, res) => {
         VALUES (@account_id, @amount, @description, @transaction_type, GETDATE());
       `);
 
-    // 9. Returner korrekt svar så frontend ved det lykkedes
+    // 9. Returnér besked
     res.status(200).json({ message: "Salg gennemført" });
 
   } catch (err) {
@@ -299,7 +308,6 @@ router.post("/trade/sell", async (req, res) => {
     res.status(500).send("Fejl ved salg.");
   }
 });
-
 
 
 // GET: viser trade.ejs og initialiserer siden

@@ -78,7 +78,7 @@ router.get("/portfolios", async (req, res) => {
       const stocksResult = await pool
         .request()
         .input("portfolioId", sql.Int, portfolio.id)
-        .query("SELECT * FROM Stocks WHERE portfolio_id = @portfolioId");
+        .query("SELECT * FROM Stocks WHERE quantity > 0 AND portfolio_id = @portfolioId");
   
       const stocks = stocksResult.recordset;
 
