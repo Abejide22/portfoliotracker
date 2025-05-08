@@ -44,26 +44,9 @@ router.get("/dashboard", async (req, res) => {
     const trades = tradesResult.recordset;
     console.log("Hentede aktier fra databasen:", trades);
 
-    // Beregn værdien af hver aktie og sorter efter værdi
-    const stocksWithValue = trades.map(trade => {
-      const quantity = trade.quantity_bought - trade.quantity_sold; // Kun urealiserede aktier
-      const value = trade.current_price;
-      return {
-        stockName: trade.stock_name,
-        portfolioName: trade.portfolio_name,
-        value: value.toFixed(2), // Formatér til 2 decimaler
-      };
-    });
-    console.log("Aktier med værdi:", stocksWithValue);
-
-    // Sorter aktierne efter værdi og vælg de 5 største
-    const top5Stocks = stocksWithValue.length > 0
-      ? stocksWithValue
-          .filter(stock => stock.value > 0) // Fjern aktier med 0 værdi
-          .sort((a, b) => b.value - a.value) // Sorter i faldende rækkefølge
-          .slice(0, 5) // Vælg de 5 største
-      : []; // Hvis der ikke er nogen aktier, returner en tom liste
-      console.log("Top 5 værdifulde aktier:", top5Stocks);
+    // Kald funktionen for at beregne de 5 mest værdifulde aktier
+    const top5Stocks = getTop5Stocks(trades);
+    console.log("Top 5 værdifulde aktier:", top5Stocks);
 
     // Beregn urealiseret profit for hver aktie
     const stocksWithProfit = trades.map(trade => {
@@ -138,5 +121,27 @@ router.get("/dashboard", async (req, res) => {
     res.status(500).send("Noget gik galt ved hentning af data.");
   }
 });
+
+function getTop5Stocks(trades) {
+  const stocksWithValue = trades
+    .filter(trade => (trade.quantity_bought - trade.quantity_sold) > 0) // Kun urealiserede aktier
+    .map(trade => {
+      const value = trade.current_price; // Beregn værdien af aktien
+      return {
+        stockName: trade.stock_name,
+        portfolioName: trade.portfolio_name,
+        value: parseFloat(value.toFixed(2)), // Formatér til 2 decimaler som tal
+      };
+    });
+
+  const top5Stocks = stocksWithValue.length > 0
+    ? stocksWithValue
+        .filter(stock => stock.value > 0) // Fjern aktier med 0 værdi
+        .sort((a, b) => b.value - a.value) // Sorter i faldende rækkefølge
+        .slice(0, 5) // Vælg de 5 største
+    : []; // Hvis der ikke er nogen aktier, returner en tom liste
+
+  return top5Stocks;
+}
 
 module.exports = router;
