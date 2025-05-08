@@ -421,9 +421,10 @@ router.get("/trade", async (req, res) => {
         nuværendePriser.push({symbol: tickers[i], price: latestData ? latestData.close : 'Ingen data',});
       
       }
+
       catch (err) {
         // Udtræk statuskode hvis tilgængelig
-        let statusKode = err?.statusCode || err?.response?.status || null;
+        let statusKode = err?.statusCode || null; // finder statuskode
         
         console.error(`Fejl ved hentning af data for ${tickers[i]}`, {
           message: err.message,
@@ -442,8 +443,9 @@ router.get("/trade", async (req, res) => {
             errorBesked = 'Serverfejl';
           }
           
-          nuværendePriser.push({symbol: tickers[i], price: errorBesked,});
+          nuværendePriser.push({symbol: tickers[i], price: errorBesked,}); // indsætter den pgældende ticker og pågældende error besked i arrayet
         }
+
       }
       
       res.render("trade", { userId, dates, closes, portfolios, accounts, nuværendePriser });
