@@ -184,4 +184,38 @@ router.get("/portfolios", async (req, res) => {
   }
 });
 
+// Portfolio Transaction - route
+
+router.get("/portfoliotransactions", async (req, res) => {
+  const userId = req.session.userId;
+  if (!userId) return res.redirect("/login");
+
+  try {
+    await poolConnect;
+
+    const result = await pool
+  .request()
+  .input("user_id", sql.Int, userId)
+  .query(`
+   SELECT 
+  ISNULL(T.sell_date, T.created_at) AS dato,
+  T.buy_price, T.sell_price,
+  T.quantity_bought, T.quantity_sold,
+  P.name AS portfolio_name, 
+  S.name AS stock_name
+FROM Trades T
+LEFT JOIN Stocks S ON T.stock_id = S.id
+JOIN Portfolios P ON T.portfolio_id = P.id
+WHERE P.user_id = @user_id
+ORDER BY dato DESC
+  `);
+
+    res.render("portfoliotransactions", { transactions: result.recordset });
+
+  } catch (err) {
+    console.error("Fejl ved hentning af portefølje-transaktioner:", err);
+    res.status(500).send("Fejl ved hentning af portefølje-transaktioner.");
+  }
+});
+
 module.exports = router;

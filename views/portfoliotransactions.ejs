@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Portefølje Transaktioner</title>
+    <link rel="stylesheet" href="/portfoliotransactions_style.css">
+</head>
+
+<body>
+    <h1>Transaktioner i dine porteføljer</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Dato</th>
+                <th>Portefølje</th>
+                <th>Aktie</th>
+                <th>Købspris</th>
+                <th>Salgpris</th>
+                <th>Antal købt</th>
+                <th>Antal solgt</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (transactions.length === 0) { %>
+              <tr>
+                <td colspan="8">Ingen transaktioner fundet.</td>
+              </tr>
+            <% } else { %>
+              <% for (var i = 0; i < transactions.length; i++) { %>
+                <% 
+                  var t = transactions[i];
+                  var dato = "Ukendt dato";
+                  if (t.dato) {
+                    dato = new Date(t.dato).toISOString().split("T")[0];
+                  }
+          
+                  var køb = "-";
+                  if (t.buy_price !== null && t.buy_price !== undefined) {
+                    køb = t.buy_price.toFixed(2) + " DKK";
+                  }
+          
+                  var salg = "-";
+                  if (t.sell_price !== null && t.sell_price !== undefined) {
+                    salg = t.sell_price.toFixed(2) + " DKK";
+                  }
+          
+                  var type = "-";
+                  if (t.quantity_bought > 0 && t.quantity_sold === 0) {
+                    type = "Køb";
+                  } else if (t.quantity_sold > 0 && t.quantity_bought === 0) {
+                    type = "Salg";
+                  } else {
+                    type = "Ukendt";
+                  }
+                %>
+                <tr>
+                  <td><%= dato %></td>
+                  <td><%= t.portfolio_name %></td>
+                  <td><%= t.stock_name %></td>
+                  <td><%= køb %></td>
+                  <td><%= salg %></td>
+                  <td><%= t.quantity_bought %></td>
+                  <td><%= t.quantity_sold %></td>
+                  <td><%= type %></td>
+                </tr>
+              <% } %>
+            <% } %>
+          </tbody>
+    </table>
+
+    <a href="/portfolios">
+        <button type="button">Tilbage til porteføljer</button>
+    </a>
+</body>
+
+</html>

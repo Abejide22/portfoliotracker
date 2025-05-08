@@ -18,12 +18,15 @@
 
         <!-- Side navigation -->
         <%- include('partials/sidebar') %>
-
             <div class="container">
                 <div class="header">
                     <h2>Portfolios</h2>
                     <a href="/addportfolio" class="primary-btn" style="text-decoration: none; color: white;">
                         <span class="material-symbols-outlined">add</span> Tilføj Portefølje
+                    </a>
+
+                    <a href="/portfoliotransactions" class="secondary-btn" style="text-decoration: none; color: white;">
+                        <span class="material-symbols-outlined">add</span> Portfolios Transactions
                     </a>
                 </div>
 
@@ -79,7 +82,9 @@
                                             style="color: white; text-decoration: underline; cursor: pointer;">
                                             <%= portfolio.name %>
                                         </a>
-                                        <button onclick="toggleStocks(<%= portfolio.id %>)" style="margin-left: 10px; padding: 2px 8px; background-color: #6a0dad; color: white; border: none; border-radius: 3px; cursor: pointer;">Vis aktier</button>
+                                        <button onclick="toggleStocks(<%= portfolio.id %>)"
+                                            style="margin-left: 10px; padding: 2px 8px; background-color: #6a0dad; color: white; border: none; border-radius: 3px; cursor: pointer;">Vis
+                                            aktier</button>
                                     </td>
 
                                     <td>
@@ -112,9 +117,11 @@
 
                                 <tr>
                                     <td colspan="4" style="padding: 0; border: none;">
-                                        <div id="stocks-<%= portfolio.id %>" style="display:none; transition: all 0.3s ease; overflow: hidden; opacity: 0;">
+                                        <div id="stocks-<%= portfolio.id %>"
+                                            style="display:none; transition: all 0.3s ease; overflow: hidden; opacity: 0;">
                                             <% if (portfolio.stocks && portfolio.stocks.length> 0) { %>
-                                                <table class="nested-stock-table" style="margin: 10px 0 20px 20px; width: calc(100% - 20px);">
+                                                <table class="nested-stock-table"
+                                                    style="margin: 10px 0 20px 20px; width: calc(100% - 20px);">
                                                     <thead>
                                                         <tr>
                                                             <th>Aktie ID</th>
@@ -160,7 +167,8 @@
                                                                 </td>
 
                                                                 <td>
-                                                                    <% if (typeof stock.urealiseretGevinst==="number" ) { %>
+                                                                    <% if (typeof stock.urealiseretGevinst==="number" )
+                                                                        { %>
                                                                         <%= stock.urealiseretGevinst.toFixed(2) %> DKK
                                                                             <% } else { %>
                                                                                 0.00 DKK
@@ -170,15 +178,16 @@
                                                             <% }) %>
                                                     </tbody>
                                                 </table>
-                                            <% } else { %>
-                                                <div class="no-stocks-message" style="color: white; padding: 10px 20px;">
-                                                    Der er endnu ingen aktier i denne portefølje.
-                                                </div>
-                                            <% } %>
+                                                <% } else { %>
+                                                    <div class="no-stocks-message"
+                                                        style="color: white; padding: 10px 20px;">
+                                                        Der er endnu ingen aktier i denne portefølje.
+                                                    </div>
+                                                    <% } %>
                                         </div>
                                     </td>
                                 </tr>
-                            <% }) %>
+                                <% }) %>
                         </tbody>
                     </table>
                 </div>
@@ -199,7 +208,7 @@
 </html>
 
 <script>
-    const pieChartData = <%- JSON.stringify(pieChartData) %>;
+    const pieChartData = <% - JSON.stringify(pieChartData) %>;
     let pieSeries = [];
     let pieLabels = [];
 
@@ -316,5 +325,7 @@
             }, 10);
         }
     }
-</script></body>
+</script>
+</body>
+
 </html>

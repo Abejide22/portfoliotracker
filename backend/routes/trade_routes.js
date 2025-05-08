@@ -135,9 +135,14 @@ router.post("/trade", async (req, res) => {
 
         // Find aktiens ID baseret på navn
         const stockResult = await pool
-          .request()
-          .input("name", sql.NVarChar, aktieTickerValgt)
-          .query("SELECT id FROM Stocks WHERE name = @name");
+        .request()
+        .input("user_id", sql.Int, userId)
+        .input("portfolio_id", sql.Int, portfolioId)
+        .input("name", sql.NVarChar, aktieTickerValgt)
+        .query(`
+          SELECT id FROM Stocks 
+          WHERE user_id = @user_id AND portfolio_id = @portfolio_id AND name = @name
+        `);
 
         if (!stockResult.recordset || stockResult.recordset.length === 0) {
           return res.status(400).send("Aktien findes ikke i Stocks-tabellen.");
@@ -146,15 +151,17 @@ router.post("/trade", async (req, res) => {
 
         // Indsæt også en transaktion i Trades-tabellen
         await pool
-          .request()
-          .input("portfolio_id", sql.Int, portfolioId)
-          .input("stock_id", sql.Int, stockId)
-          .input("buy_price", sql.Decimal(18, 2), totalPris / antalAktier) // pris pr. aktie
-          .input("quantity_bought", sql.Int, antalAktier)
-          .query(`
-            INSERT INTO Trades (portfolio_id, stock_id, buy_price, quantity_bought, created_at)
-            VALUES (@portfolio_id, @stock_id, @buy_price, @quantity_bought, GETDATE());
-          `);
+        .request()
+        .input("portfolio_id", sql.Int, portfolioId)
+        .input("stock_id", sql.Int, stockId)
+        .input("buy_price", sql.Decimal(18, 2), totalPris / antalAktier)
+        .input("sell_price", sql.Decimal(18, 2), null) // vigtigt!
+        .input("quantity_bought", sql.Int, antalAktier)
+        .input("quantity_sold", sql.Int, 0) // vigtigt!
+        .query(`
+          INSERT INTO Trades (portfolio_id, stock_id, buy_price, sell_price, quantity_bought, quantity_sold, created_at)
+          VALUES (@portfolio_id, @stock_id, @buy_price, @sell_price, @quantity_bought, @quantity_sold, GETDATE());
+        `);
 
       await pool
       .request()
