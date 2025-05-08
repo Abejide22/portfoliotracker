@@ -144,4 +144,4 @@ function getTop5Stocks(trades) {
   return top5Stocks;
 }
 
-module.export = router;
+module.exports = router;
