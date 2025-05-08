@@ -35,4 +35,19 @@ describe("getTop5Stocks", () => {
     // forventer et array og tjekker resultatet (arrayet) er tomt
     expect(result).to.be.an("array").that.is.empty;
   });
+  it("should return only 2 stocks if there are only 2 stocks", () => {
+    // Mock data
+    const trades = [
+      { stock_name: "DSV", portfolio_name: "Transport", quantity_bought: 1, quantity_sold: 0, current_price: 1500 },
+      { stock_name: "Tryg", portfolio_name: "Forsikring", quantity_bought: 1, quantity_sold: 0, current_price: 700 },
+    ];
+
+    // Kalder funktionen
+    const result = getTop5Stocks(trades);
+
+    // Assert: Check the result
+    expect(result).to.have.lengthOf(2); // Der er kun 2 aktier
+    expect(result[0].stockName).to.equal("DSV"); // DSV er mest værdifulde
+    expect(result[1].stockName).to.equal("Tryg"); // Tryg er næstmest værdifulde
+  });
 });
