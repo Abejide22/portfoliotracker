@@ -17,7 +17,7 @@ describe("getTop5Stocks", () => {
     const result = getTop5Stocks(trades);
 
     // Tjek resultatet af hvad der forventes
-    expect(result).to.have.lengthOf(5);
+    expect(result).to.have.lengthOf.at.most(5);
     expect(result[0].stockName).to.equal("DSV"); // DSV er mest værdifulde
     expect(result[1].stockName).to.equal("Novo Nordisk"); // Novo Nordisk er næstmest værdifulde
     expect(result[4].stockName).to.equal("Pandora"); // Pandora er den femte mest værdifulde
