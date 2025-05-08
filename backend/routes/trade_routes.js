@@ -438,7 +438,7 @@ router.get("/trade", async (req, res) => {
         else if (statusKode === 429) {
           errorBesked = 'Klient side - for mange forespørgsler'; // i tilfælde af at API'en ikke kan holde til forespørgslerne
         }
-        else if (statusKode === 500) // i tifælde af at serveren er nede
+        else if (statusKode === 500) // i tifælde af fejl i serveren
           {
             errorBesked = 'Serverfejl';
           }
