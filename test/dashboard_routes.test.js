@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const { getTop5Stocks } = require("../backend/routes/dashboard_routes");
 
 describe("getTop5Stocks", () => {
-  it("skal returnere de 5 mest værdifulde aktier", () => {
+  it("skal returnere de 5 mest værdifulde aktier - selv hvis der er flere end 5 aktier", () => {
     // Mock data
     const trades = [
       { stock_name: "DSV", portfolio_name: "Transport", quantity_bought: 1, quantity_sold: 0, current_price: 1500 },
@@ -16,7 +16,7 @@ describe("getTop5Stocks", () => {
     // Kalder funktionen
     const result = getTop5Stocks(trades);
 
-    // Assert: Tjek resultatet
+    // Tjek resultatet af hvad der forventes
     expect(result).to.have.lengthOf(5);
     expect(result[0].stockName).to.equal("DSV"); // DSV er mest værdifulde
     expect(result[1].stockName).to.equal("Novo Nordisk"); // Novo Nordisk er næstmest værdifulde
@@ -46,7 +46,7 @@ describe("getTop5Stocks", () => {
     // Kalder funktionen
     const result = getTop5Stocks(trades);
 
-    // Assert: Tjek resultatet
+    // Tjek resultatet af hvad der forventes
     expect(result).to.have.lengthOf(2); // Der er kun 2 aktier
     expect(result[0].stockName).to.equal("DSV"); // DSV er mest værdifulde
     expect(result[1].stockName).to.equal("Tryg"); // Tryg er næstmest værdifulde
