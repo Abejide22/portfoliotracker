@@ -18,8 +18,8 @@ describe("getTop5Stocks", () => {
 
     // Assert: Check the result
     expect(result).to.have.lengthOf(5);
-    expect(result[0].stockName).to.equal("DSV"); // DSV er mest værdifuld
-    expect(result[1].stockName).to.equal("Novo Nordisk"); // Novo Nordisk er næstmest værdifuld
+    expect(result[0].stockName).to.equal("DSV"); // DSV er mest værdifulde
+    expect(result[1].stockName).to.equal("Novo Nordisk"); // Novo Nordisk er næstmest værdifulde
     expect(result[4].stockName).to.equal("Pandora"); // Pandora er den femte mest værdifulde
   });
 
@@ -32,7 +32,7 @@ describe("getTop5Stocks", () => {
     // Kalder funktionen
     const result = getTop5Stocks(trades);
 
-    // tjekker at resultatet er tomt
+    // forventer et array og tjekker resultatet (arrayet) er tomt
     expect(result).to.be.an("array").that.is.empty;
   });
 });
