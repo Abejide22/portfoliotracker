@@ -1,62 +1,62 @@
-const express = require("express");
-const router = express.Router();
-const { pool, poolConnect, sql } = require("../database/database");
+const express = require("express"); // Importer express
+const router = express.Router(); // Opretter en router
+const {pool, poolConnect, sql} = require("../database/database"); // Importerer databaseforbindelsen
 
-router.use(express.urlencoded({ extended: true }));
+router.use(express.urlencoded({extended: true})); // Middleware til at parse URL-encoded data
 
 // Funktion til at opdatere adgangskoden
 async function updatePassword(pool, userId, newPassword, confirmPassword) {
-  if (newPassword !== confirmPassword) {
-    return { success: false, error: "Adgangskoderne matcher ikke." };
+  if (newPassword !== confirmPassword) {  // hvis adgangskoderne ikke matcher
+    return {success: false, error: "Adgangskoderne matcher ikke."}; // returnerer fejlbesked
   }
 
-  try {
-    await pool
-      .request()
-      .input("userId", sql.Int, userId)
-      .input("password", sql.NVarChar, newPassword)
-      .query("UPDATE Users SET password = @password WHERE id = @userId");
+  try { // prøver følgende kode
+    await pool // venter på at poolConnect er klar
+      .request() // sender en forespørgsel til databasen
+      .input("userId", sql.Int, userId) // tilføjer inputparameteren userId
+      .input("password", sql.NVarChar, newPassword) // tilføjer inputparameteren password
+      .query("UPDATE Users SET password = @password WHERE id = @userId"); // opdaterer password i SQL-databasen
 
-    return { success: true, message: "Adgangskoden er opdateret!" };
-  } catch (err) {
-    console.error("Fejl ved opdatering af adgangskode:", err);
-    return { success: false, error: "Noget gik galt." };
+    return {success: true, message: "Adgangskoden er opdateret!"}; // returnerer succesbesked
+  } catch (err) { // hvis der opstår en fejl
+    console.error("Fejl ved opdatering af adgangskode:", err); // logger fejlen
+    return {success: false, error: "Noget gik galt."}; // returnerer fejlbesked
   }
 }
 
 // GET: Profile-side
 router.get("/profile", (req, res) => {
-  if (!req.session.userId) return res.redirect("/login");
-  const userId = req.session.userId;
-  res.render("profile", { userId, error: null, success: null });
+  if (!req.session.userId) return res.redirect("/login"); // Hvis brugeren ikke er logget ind, omdirigeres de til login-siden
+  const userId = req.session.userId; // Hent brugerens id fra sessionen
+  res.render("profile", {userId, error: null, success: null}); // Renderer profilen uden fejl eller succesbesked
 });
 
 // POST: Opdater adgangskode via form
 router.post("/profile/update-password", async (req, res) => {
-  const { userId, newPassword, confirmPassword } = req.body;
+  const { userId, newPassword, confirmPassword } = req.body; // Hent brugerens id og adgangskoder fra formularen
 
   // Brug funktionen updatePassword
   const result = await updatePassword(pool, userId, newPassword, confirmPassword);
 
-  if (!result.success) {
-    return res.render("profile", { userId, error: result.error, success: null });
+  if (!result.success) { // Hvis opdateringen fejler
+    return res.render("profile", {userId, error: result.error, success: null}); // Render profilen med fejlbesked
   }
 
-  res.render("profile", { userId, success: result.message, error: null });
+  res.render("profile", {userId, success: result.message, error: null}); // Render profilen med succesbesked
 });
 
 // PUT: Opdater adgangskode via JSON API
 router.put("/profile/update-password", async (req, res) => {
-  const { userId, newPassword, confirmPassword } = req.body;
+  const {userId, newPassword, confirmPassword} = req.body;
 
   // Brug funktionen updatePassword
   const result = await updatePassword(pool, userId, newPassword, confirmPassword);
 
-  if (!result.success) {
-    return res.status(400).json({ error: result.error });
+  if (!result.success) { // Hvis opdateringen fejler
+    return res.status(400).json({error: result.error}); // Returner fejlbesked som JSON
   }
 
-  res.status(200).json({ success: result.message });
+  res.status(200).json({success: result.message}); // Returner succesbesked som JSON
 });
 
 module.exports = router;

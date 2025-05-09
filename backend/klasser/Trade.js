@@ -6,7 +6,7 @@ class Trade {
       this.sellPrice = data.sell_price;
       this.bought = data.quantity_bought;
       this.sold = data.quantity_sold;
-      this.date = data.created_at || data.sell_date;
+      this.date = data.dato;
     }
   
     getType() {
