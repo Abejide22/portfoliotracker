@@ -135,9 +135,14 @@ router.post("/trade", async (req, res) => {
 
         // Find aktiens ID baseret på navn
         const stockResult = await pool
-          .request()
-          .input("name", sql.NVarChar, aktieTickerValgt)
-          .query("SELECT id FROM Stocks WHERE name = @name");
+        .request()
+        .input("user_id", sql.Int, userId)
+        .input("portfolio_id", sql.Int, portfolioId)
+        .input("name", sql.NVarChar, aktieTickerValgt)
+        .query(`
+          SELECT id FROM Stocks 
+          WHERE user_id = @user_id AND portfolio_id = @portfolio_id AND name = @name
+        `);
 
         if (!stockResult.recordset || stockResult.recordset.length === 0) {
           return res.status(400).send("Aktien findes ikke i Stocks-tabellen.");
@@ -146,15 +151,17 @@ router.post("/trade", async (req, res) => {
 
         // Indsæt også en transaktion i Trades-tabellen
         await pool
-          .request()
-          .input("portfolio_id", sql.Int, portfolioId)
-          .input("stock_id", sql.Int, stockId)
-          .input("buy_price", sql.Decimal(18, 2), totalPris / antalAktier) // pris pr. aktie
-          .input("quantity_bought", sql.Int, antalAktier)
-          .query(`
-            INSERT INTO Trades (portfolio_id, stock_id, buy_price, quantity_bought, created_at)
-            VALUES (@portfolio_id, @stock_id, @buy_price, @quantity_bought, GETDATE());
-          `);
+        .request()
+        .input("portfolio_id", sql.Int, portfolioId)
+        .input("stock_id", sql.Int, stockId)
+        .input("buy_price", sql.Decimal(18, 2), totalPris / antalAktier)
+        .input("sell_price", sql.Decimal(18, 2), null) // vigtigt!
+        .input("quantity_bought", sql.Int, antalAktier)
+        .input("quantity_sold", sql.Int, 0) // vigtigt!
+        .query(`
+          INSERT INTO Trades (portfolio_id, stock_id, buy_price, sell_price, quantity_bought, quantity_sold, created_at)
+          VALUES (@portfolio_id, @stock_id, @buy_price, @sell_price, @quantity_bought, @quantity_sold, GETDATE());
+        `);
 
       await pool
       .request()
@@ -195,7 +202,7 @@ router.post("/trade/sell", async (req, res) => {
   try {
     await poolConnect;
 
-    // 1. Find portfolio ID baseret på navn
+    // 1. Find portfolio ID
     const portfolioResult = await pool
       .request()
       .input("portfolio_name", sql.NVarChar, porteføljeSelect)
@@ -210,7 +217,7 @@ router.post("/trade/sell", async (req, res) => {
 
     const portfolioId = portfolioResult.recordset[0].id;
 
-    // 2. Find aktien brugeren ejer – og vælg den med quantity > 0
+    // 2. Find aktien brugeren ejer
     const stockResult = await pool
       .request()
       .input("user_id", sql.Int, userId)
@@ -233,11 +240,9 @@ router.post("/trade/sell", async (req, res) => {
     }
 
     const nyBeholdning = stock.quantity - antalAktier;
-
-    // 3. Beregn gennemsnitlig købspris – skal bruges i Trades (før vi evt. sletter aktien!)
     const averageBuyPrice = stock.price / stock.quantity;
 
-    // 4. Indsæt salget i Trades-tabellen – HER har vi ændret rækkefølgen
+    // 3. Indsæt salget i Trades-tabellen
     await pool
       .request()
       .input("portfolio_id", sql.Int, portfolioId)
@@ -251,21 +256,27 @@ router.post("/trade/sell", async (req, res) => {
         VALUES (@portfolio_id, @stock_id, @buy_price, @sell_price, @quantity_bought, @quantity_sold, GETDATE(), GETDATE());
       `);
 
-    // 5. Håndter beholdning (slet aktien hvis 0) – HER er den anden store ændring
+    // 4. Tjek og håndter beholdning
     if (nyBeholdning === 0) {
-      // Først slet alle Trades med denne aktie for at undgå foreign key fejl
-      await pool
+      const checkTrades = await pool
         .request()
         .input("stock_id", sql.Int, stock.id)
-        .query(`DELETE FROM Trades WHERE stock_id = @stock_id`);
+        .query(`SELECT COUNT(*) AS antal FROM Trades WHERE stock_id = @stock_id`);
 
-      // Slet derefter aktien fra Stocks
-      await pool
-        .request()
-        .input("id", sql.Int, stock.id)
-        .query(`DELETE FROM Stocks WHERE id = @id`);
+      const harTrades = checkTrades.recordset[0].antal > 0;
+
+      if (!harTrades) {
+        await pool
+          .request()
+          .input("id", sql.Int, stock.id)
+          .query(`DELETE FROM Stocks WHERE id = @id`);
+      } else {
+        await pool
+          .request()
+          .input("id", sql.Int, stock.id)
+          .query(`UPDATE Stocks SET quantity = 0 WHERE id = @id`);
+      }
     } else {
-      // Ellers opdater blot mængden
       await pool
         .request()
         .input("quantity", sql.Int, nyBeholdning)
@@ -273,14 +284,14 @@ router.post("/trade/sell", async (req, res) => {
         .query(`UPDATE Stocks SET quantity = @quantity WHERE id = @id`);
     }
 
-    // 6. Opdater konto – læg pengene ind
+    // 5. Opdater konto
     await pool
       .request()
       .input("name", sql.NVarChar, kontoSelect)
       .input("amount", sql.Decimal(10, 2), totalPris)
       .query(`UPDATE Accounts SET balance = balance + @amount WHERE name = @name;`);
 
-    // 7. Find konto ID
+    // 6. Find konto ID og opret transaktion
     const kontoResult = await pool
       .request()
       .input("name", sql.NVarChar, kontoSelect)
@@ -288,7 +299,6 @@ router.post("/trade/sell", async (req, res) => {
 
     const kontoId = kontoResult.recordset[0].id;
 
-    // 8. Opret transaktionspost
     await pool
       .request()
       .input("account_id", sql.Int, kontoId)
@@ -300,7 +310,6 @@ router.post("/trade/sell", async (req, res) => {
         VALUES (@account_id, @amount, @description, @transaction_type, GETDATE());
       `);
 
-    // 9. Returnér besked
     res.status(200).json({ message: "Salg gennemført" });
 
   } catch (err) {
@@ -398,33 +407,50 @@ router.get("/trade", async (req, res) => {
       "VWS.CO"
     ];
     const nuværendePriser = [];
+    
+    
+    for (let i = 0; i < tickers.length; i++) {
+      
+      try {
+        const historical = await yahooFinance.historical(tickers[i], {
+          period1: Math.floor(Date.now() / 1000) - 60 * 60 * 24 * 7, // sidste 7 dage
+          period2: Math.floor(Date.now() / 1000),
+          interval: '1d',
+        });
+        
+        const latestData = historical.length > 0 ? historical[historical.length - 1] : null;
+        
+        nuværendePriser.push({symbol: tickers[i], price: latestData ? latestData.close : 'Ingen data',});
+      
+      }
 
-for (let i = 0; i < tickers.length; i++) {
-  try {
-    const historical = await yahooFinance.historical(tickers[i], {
-      period1: Math.floor(Date.now() / 1000) - 60 * 60 * 24 * 7, // sidste 7 dage
-      period2: Math.floor(Date.now() / 1000),
-      interval: '1d',
-    });
+      catch (err) {
+        // Udtræk statuskode hvis tilgængelig
+        let statusKode = err?.statusCode || null; // finder statuskode
+        
+        console.error(`Fejl ved hentning af data for ${tickers[i]}`, {
+          message: err.message,
+          statusKode,
+        });
+        let errorBesked = 'Fejl'; // Definere fejlbesked
+        if (statusKode === 404) // I tilfælde af at tickeren er blevet ændret eller fjernet fra markedet
+          {
+          errorBesked = 'Ticker ikke fundet';
+        }
+        else if (statusKode === 429) {
+          errorBesked = 'Klient side - for mange forespørgsler'; // i tilfælde af at API'en ikke kan holde til forespørgslerne
+        }
+        else if (statusKode === 500) // i tifælde af fejl i serveren
+          {
+            errorBesked = 'Serverfejl';
+          }
+          
+          nuværendePriser.push({symbol: tickers[i], price: errorBesked,}); // indsætter den pgældende ticker og pågældende error besked i arrayet
+        }
 
-    // Find seneste datapunkt – de er sorteret fra ældst til nyest
-    const latestData = historical.length > 0 ? historical[historical.length - 1] : null;
-
-    nuværendePriser.push({
-      symbol: tickers[i],
-      price: latestData ? latestData.close : 'Ingen data',
-    });
-
-  } catch (err) {
-    console.error(`Error fetching data for ${tickers[i]}`, err);
-    nuværendePriser.push({ symbol: tickers[i], price: 'N/A' });
-  }
-}
-
-
-
-
-res.render("trade", { userId, dates, closes, portfolios, accounts, nuværendePriser });
+      }
+      
+      res.render("trade", { userId, dates, closes, portfolios, accounts, nuværendePriser });
 
 
   });

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Portefølje Transaktioner</title>
+    <link rel="stylesheet" href="/portfoliotransactions_style.css">
+</head>
+
+<body>
+    <h1>Transaktioner i dine porteføljer</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Dato</th>
+                <th>Portefølje</th>
+                <th>Aktie</th>
+                <th>Købspris</th>
+                <th>Salgpris</th>
+                <th>Antal købt</th>
+                <th>Antal solgt</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+          <% if (transactions.length === 0) { %>
+            <tr>
+              <td colspan="8">Ingen transaktioner fundet.</td>
+            </tr>
+          <% } else { %>
+            <% for (var i = 0; i < transactions.length; i++) { 
+                 var t = transactions[i]; %>
+              <tr>
+                <td><%= t.getFormattedDate() %></td>
+                <td><%= t.portfolio %></td>
+                <td><%= t.stock %></td>
+                <td><%= t.buyPrice ? t.buyPrice.toFixed(2) + " DKK" : "-" %></td>
+                <td><%= t.sellPrice ? t.sellPrice.toFixed(2) + " DKK" : "-" %></td>
+                <td><%= t.bought %></td>
+                <td><%= t.sold %></td>
+                <td><%= t.getType() %></td>
+              </tr>
+            <% } %>
+          <% } %>
+        </tbody>
+    </table>
+
+    <a href="/portfolios">
+        <button type="button">Tilbage til porteføljer</button>
+    </a>
+</body>
+
+</html>
