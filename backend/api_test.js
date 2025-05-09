@@ -1,3 +1,5 @@
+// api_test.js
+
 const yahooFinance = require('yahoo-finance2').default; // Importerer pakken som gør at man kan hente live aktiekurser
 
 // Function to fetch data by key
