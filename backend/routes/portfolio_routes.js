@@ -3,7 +3,6 @@ const router = express.Router();
 const { pool, poolConnect, sql } = require("../database/database");
 const Trade = require("../klasser/Trade");
 const fs = require("fs");
-const { getDataByKey } = require("../api_test"); // Tilføjet til at hente historiske data
 const request = require("request");
 const yahooFinance = require("yahoo-finance2").default; // Tilføjet for at kunne hente aktiekurser
 

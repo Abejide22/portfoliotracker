@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const { pool, poolConnect, sql } = require("../database/database");
 const fs = require("fs");
-const { getDataByKey } = require("../api_test");
 const request = require("request");
 
 router.use(express.urlencoded({ extended: true }));
