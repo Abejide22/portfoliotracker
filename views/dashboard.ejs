@@ -59,6 +59,7 @@
 
   <!-- Graf over samlet værdi -->
   <div id="samletVærdi_boks_id">
+    <span id="tilfældigAktie_id">Tilfældig aktie</span>
     <div id="chart"></div>
 
   </div>
@@ -128,6 +129,25 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
 <script>
+   // Server-side data gjort tilgængelig i browser-JS
+  const priserOgDatoer = <%- JSON.stringify(priserOgDatoer) %>;
+  const tickerNavn = <%- JSON.stringify(tilfældigAktieResultat) %>;
+
+  // log hele listen i konsollen
+  console.log("Priser og datoer for aktien:", priserOgDatoer);
+
+  // Eksempel: adgang til specifik dag
+  if (priserOgDatoer.length > 0) {
+    const førsteDag = priserOgDatoer[0];
+    console.log(`Første dag: ${førsteDag.dato}, pris: ${førsteDag.pris}`);
+  }
+
+  // Eksempel: Lave separate arrays til graf
+  const datoer = priserOgDatoer.map(d => d.dato);
+const priser = priserOgDatoer.map(d => d.pris.toFixed(2)); // her formateres hver enkelt pristil to decimaler
+
+  console.log("Datoer:", datoer);
+  console.log("Priser:", priser);
 
 
   // Get the current date
@@ -139,8 +159,8 @@
   // Loop from 0-13 days ago up to the current date
   for (let i = 0; i <= 13; i++) {
     const tempDate = new Date();
-    tempDate.setDate(currentDate.getDate() - i); // Set the date to be `i` days before today
-    datesArray.push(tempDate.toISOString().split('T')[0]); // Add the date to the array in YYYY-MM-DD format
+    tempDate.setDate(currentDate.getDate() - i); // Set the date to be i days before today
+    datesArray.push(tempDate.toISOString().split('T')[0]); // Add the date to the array in y-m-d format
   }
   console.log(datesArray);
 
@@ -160,17 +180,17 @@
 
     series: [{
       name: 'Aktiekurs',
-      data: [150, 152, 149, 155, 160, 162, 158, 161, 150, 155, 143, 148, 167, 169]
+      data: priser
     }],
     xaxis: {
-      categories: xValues,
+      categories: datoer,
       labels: {
         style: {
           colors: '#fff' // Tekstfarve på x-aksen
         }
       },
       title: {
-        text: 'Ugedage',
+
         style: {
           color: 'lightgray'
         }
@@ -190,14 +210,15 @@
       }
     },
     title: {
-      text: 'Samlet værdi',
+      text: tickerNavn[0].name,
       align: 'left',
       style: {
         color: 'lightgray'
       }
     },
     stroke: {
-      curve: 'smooth'
+      curve: 'smooth',
+      width: 2
     },
 
 

@@ -141,10 +141,11 @@ li a:hover span {
   width: 66%; /* Bredde på boksen */
   margin: auto; /* Centrerer boksen */
   margin-top: 2%; /* Afstand fra toppen */
-  padding: 10px; /* Indvendig afstand */
+  padding: 15px; /* Indvendig afstand */
   color: lightgray; /* Lys grå tekstfarve */
   font-family: normalSkrift; /* Bruger den brugerdefinerede skrifttype */
   display: grid; /* Bruger grid-layout */
+  padding-bottom: 0;
 }
 
 /* Styling for canvas-elementer */
@@ -213,4 +214,8 @@ td, th {
   color: lightgray !important; /* Lys grå tekstfarve */
   border: none !important; /* Ingen kant */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) !important; /* Skyggeeffekt */
+}
+#tilfældigAktie_id{
+  font-size: 115%;
+  margin-bottom: 15px;
 }

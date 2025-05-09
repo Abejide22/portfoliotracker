@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { pool, poolConnect, sql } = require("../database/database");
 const dashboard_Klasser = require("../klasser/dashboard_klasser");
+const yahooFinance = require('yahoo-finance2').default;
 
 router.get("/dashboard", async (req, res) => {
   if (!req.session.userId) return res.redirect("/login");
@@ -47,6 +48,64 @@ router.get("/dashboard", async (req, res) => {
     const totalRealizedValue = dashboard.getTotalRealizedValue();
     const top5ProfitableStocks = dashboard.getTop5ProfitableStocks();
 
+
+
+   const tilfældigAktie = await pool.request()
+   // Her defineres en parameter 'userId', som vi beskytter mod SQL injection
+   .input("userId", sql.Int, userId)
+   // Denne SQL-forespørgsel vælger én tilfældig aktie tilhørende brugeren
+  .query(`
+    SELECT TOP 1 name 
+    FROM Stocks 
+    WHERE user_id = @userId 
+    ORDER BY NEWID()  -- Sorterer rækker tilfældigt, så vi får en tilfældig en med TOP 1
+  `);
+  
+  // resultatet fra SQL-forespørgslen kommer som et array i recordset
+  // selvom vi kun får en række, bliver det stadig et array med et objekt
+  const tilfældigAktieResultat = tilfældigAktie.recordset; 
+
+
+
+
+  let priserOgDatoer = []; // objekt der skal indeholde datoer og priser
+  try {
+  // 1. Hent symbolet på aktien fra den tilfældige aktie valgt tidligere
+  const aktie = tilfældigAktieResultat[0]; // fx { name: "AAPL" }
+  const aktieSymbol = aktie.name;
+  
+
+  // 2. Sæt datointerval: Fra i dag minus 1 år, til i dag
+  const dagsDato = new Date();
+  const sidsteAar = new Date();
+  sidsteAar.setFullYear(dagsDato.getFullYear() - 1);
+
+  // 3. Opsæt forespørgselsindstillinger
+  const forespørgsel = {
+    period1: sidsteAar,   // Startdato
+    period2: dagsDato,    // Slutdato (i dag)
+    interval: '1d'        // Dagligt interval
+  };
+
+  // 4. Hent historiske data for aktien
+  const historiskeData = await yahooFinance.historical(aktieSymbol, forespørgsel);
+
+  // 5. Udtræk dato og slutpris for hver dag
+  priserOgDatoer = historiskeData.map(dag => ({
+    dato: dag.date.toISOString().split('T')[0], // Kun dato i format "ÅÅÅÅ-MM-DD"
+    pris: dag.close                              // Slutkurs den dag (regular market price)
+  }));
+  
+  // 6. Udskriv data
+  console.log("Aktiedata for det seneste år:", priserOgDatoer);
+}
+catch (fejl) {
+  console.error("Fejl ved hentning af aktiedata:", fejl);
+}
+    
+
+
+
     // Send data til dashboardet
     res.render("dashboard", {
       userId,
@@ -55,6 +114,8 @@ router.get("/dashboard", async (req, res) => {
       totalRealizedValue,
       top5Stocks,
       top5ProfitableStocks,
+      tilfældigAktieResultat,
+      priserOgDatoer
     });
   } catch (err) {
     console.error("Fejl ved hentning af data til dashboard:", err);
