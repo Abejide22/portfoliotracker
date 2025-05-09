@@ -407,34 +407,40 @@ router.get("/trade", async (req, res) => {
       "VWS.CO"
     ];
     const nuværendePriser = [];
+    
+    for (let i = 0; i < tickers.length; i++) 
+      try {
+      // Henter den seneste markedspris
+      const quote = await yahooFinance.quote(tickers[i]);
 
-for (let i = 0; i < tickers.length; i++) {
-  try {
-    // Henter den seneste markedspris
-    const quote = await yahooFinance.quote(tickers[i]);
+      nuværendePriser.push({
+        symbol: tickers[i],
+        price: quote?.regularMarketPrice ?? 'Ingen data',
+      });
+    } 
+    catch (err)
+    {
+      // Udtræk statuskode hvis tilgængelig
+      let statusKode = err?.statusCode || null;
 
-    nuværendePriser.push({
-      symbol: tickers[i],
-      price: quote?.regularMarketPrice ?? 'Ingen data',
-    });
+      console.error(`Fejl ved hentning af data for ${tickers[i]}`, {
+        message: err.message,
+        statusKode,
+      });
 
-  } catch (err) {
-    // Udtræk statuskode hvis tilgængelig
-    let statusKode = err?.statusCode || null;
-
-    console.error(`Fejl ved hentning af data for ${tickers[i]}`, {
-      message: err.message,
-      statusKode,
-    });
-
-    let errorBesked = 'Fejl';
-    if (statusKode === 404) {
-      errorBesked = 'Ticker ikke fundet';
-    } else if (statusKode === 429) {
-      errorBesked = 'Klientside – for mange forespørgsler';
-    } else if (statusKode === 500) {
-      errorBesked = 'Serverfejl';
-    }
+      let errorBesked = 'Fejl';
+      if (statusKode === 404)
+        {
+          errorBesked = 'Ticker ikke fundet';
+        }
+        else if (statusKode === 429)
+          {
+            errorBesked = 'Klientside – for mange forespørgsler';
+          }
+        else if (statusKode === 500)
+          {
+            errorBesked = 'Serverfejl';
+          }
 
     nuværendePriser.push({
       symbol: tickers[i],
