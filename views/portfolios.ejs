@@ -208,59 +208,61 @@
 </html>
 
 <script>
-    const pieChartData = <% - JSON.stringify(pieChartData) %>;
-    let pieSeries = [];
-    let pieLabels = [];
+    window.addEventListener("DOMContentLoaded", () => {
+        const pieChartData = <%- JSON.stringify(pieChartData) %>;
+        let pieSeries = [];
+        let pieLabels = [];
 
-    if (pieChartData && pieChartData.length > 0) {
-        pieChartData.forEach(entry => {
-            pieLabels.push(entry.name);
-            pieSeries.push(entry.value);
-        });
-    } else {
-        pieSeries = [0];
-        pieLabels = ['Ingen porteføljer'];
-    }
-
-    const chartOptions = {
-        chart: {
-            type: 'pie',
-            fontFamily: 'normalSkrift',
-            width: 380
-        },
-        series: pieSeries,
-        labels: pieLabels,
-        colors: ['#4E79A7', '#F28E2B', '#E15759', '#76B7B2', '#59A14F'],
-        stroke: {
-            show: false
-        },
-        legend: {
-            position: 'bottom',
-            labels: {
-                colors: '#ffffff',
-                useSeriesColors: false,
-                fontSize: '14px',
-                fontFamily: 'normalSkrift'
-            }
-        },
-        dataLabels: {
-            enabled: false,
-            style: {
-                colors: ['#ffffff'],
-                fontFamily: 'normalSkrift',
-                fontWeight: 'normal'
-            }
-        },
-        tooltip: {
-            style: {
-                fontSize: '14px',
-                fontFamily: 'Arial, sans-serif'
-            }
+        if (pieChartData && pieChartData.length > 0) {
+            pieChartData.forEach(entry => {
+                pieLabels.push(entry.name);
+                pieSeries.push(entry.value);
+            });
+        } else {
+            pieSeries = [0];
+            pieLabels = ['Ingen porteføljer'];
         }
-    };
 
-    const chart = new ApexCharts(document.querySelector("#chart"), chartOptions);
-    chart.render();
+        const chartOptions = {
+            chart: {
+                type: 'pie',
+                fontFamily: 'normalSkrift',
+                width: 380
+            },
+            series: pieSeries,
+            labels: pieLabels,
+            colors: ['#4E79A7', '#F28E2B', '#E15759', '#76B7B2', '#59A14F'],
+            stroke: {
+                show: false
+            },
+            legend: {
+                position: 'bottom',
+                labels: {
+                    colors: '#ffffff',
+                    useSeriesColors: false,
+                    fontSize: '14px',
+                    fontFamily: 'normalSkrift'
+                }
+            },
+            dataLabels: {
+                enabled: false,
+                style: {
+                    colors: ['#ffffff'],
+                    fontFamily: 'normalSkrift',
+                    fontWeight: 'normal'
+                }
+            },
+            tooltip: {
+                style: {
+                    fontSize: '14px',
+                    fontFamily: 'Arial, sans-serif'
+                }
+            }
+        };
+
+        const chart = new ApexCharts(document.querySelector("#chart"), chartOptions);
+        chart.render();
+    });
 </script>
 
 <script>

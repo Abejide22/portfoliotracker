@@ -7,7 +7,7 @@ async function getDataByKey(key) {
   const symbol = key;
   const endDate = new Date();
   const startDate = new Date();
-  startDate.setDate(endDate.getDate() - 14); // 14 days ago
+  startDate.setDate(endDate.getDate() - 30); // Denne del sætter startdatoen til 30 dage før slutdatoen
 
   try {
     const historicalData = await yahooFinance.historical(symbol, {
