@@ -407,48 +407,41 @@ router.get("/trade", async (req, res) => {
       "VWS.CO"
     ];
     const nuværendePriser = [];
-    
-    
-    for (let i = 0; i < tickers.length; i++) {
-      
-      try {
-        const historical = await yahooFinance.historical(tickers[i], {
-          period1: Math.floor(Date.now() / 1000) - 60 * 60 * 24 * 7, // sidste 7 dage
-          period2: Math.floor(Date.now() / 1000),
-          interval: '1d',
-        });
-        
-        const latestData = historical.length > 0 ? historical[historical.length - 1] : null;
-        
-        nuværendePriser.push({symbol: tickers[i], price: latestData ? latestData.close : 'Ingen data',});
-      
-      }
 
-      catch (err) {
-        // Udtræk statuskode hvis tilgængelig
-        let statusKode = err?.statusCode || null; // finder statuskode
-        
-        console.error(`Fejl ved hentning af data for ${tickers[i]}`, {
-          message: err.message,
-          statusKode,
-        });
-        let errorBesked = 'Fejl'; // Definere fejlbesked
-        if (statusKode === 404) // I tilfælde af at tickeren er blevet ændret eller fjernet fra markedet
-          {
-          errorBesked = 'Ticker ikke fundet';
-        }
-        else if (statusKode === 429) {
-          errorBesked = 'Klient side - for mange forespørgsler'; // i tilfælde af at API'en ikke kan holde til forespørgslerne
-        }
-        else if (statusKode === 500) // i tifælde af fejl i serveren
-          {
-            errorBesked = 'Serverfejl';
-          }
-          
-          nuværendePriser.push({symbol: tickers[i], price: errorBesked,}); // indsætter den pgældende ticker og pågældende error besked i arrayet
-        }
+for (let i = 0; i < tickers.length; i++) {
+  try {
+    // Henter den seneste markedspris
+    const quote = await yahooFinance.quote(tickers[i]);
 
-      }
+    nuværendePriser.push({
+      symbol: tickers[i],
+      price: quote?.regularMarketPrice ?? 'Ingen data',
+    });
+
+  } catch (err) {
+    // Udtræk statuskode hvis tilgængelig
+    let statusKode = err?.statusCode || null;
+
+    console.error(`Fejl ved hentning af data for ${tickers[i]}`, {
+      message: err.message,
+      statusKode,
+    });
+
+    let errorBesked = 'Fejl';
+    if (statusKode === 404) {
+      errorBesked = 'Ticker ikke fundet';
+    } else if (statusKode === 429) {
+      errorBesked = 'Klientside – for mange forespørgsler';
+    } else if (statusKode === 500) {
+      errorBesked = 'Serverfejl';
+    }
+
+    nuværendePriser.push({
+      symbol: tickers[i],
+      price: errorBesked,
+    });
+  }
+}
       
       res.render("trade", { userId, dates, closes, portfolios, accounts, nuværendePriser });
 
