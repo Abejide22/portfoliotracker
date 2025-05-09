@@ -50,16 +50,21 @@ router.get("/dashboard", async (req, res) => {
     const top5ProfitableStocks = dashboard.getTop5ProfitableStocks();
 
 
+    // ----------------------------------------------------------------------------------
+    //
+    // VÆLG TILFÆLDIG AKTIE
+    //
+    // -----------------------------------------------------------------------------------
 
    const tilfældigAktie = await pool.request()
    // Her defineres en parameter 'userId', som vi beskytter mod SQL injection
    .input("userId", sql.Int, userId)
    // Denne SQL-forespørgsel vælger én tilfældig aktie tilhørende brugeren
-  .query(`
-    SELECT TOP 1 name 
-    FROM Stocks 
-    WHERE user_id = @userId 
-    ORDER BY NEWID()  -- Sorterer rækker tilfældigt, så vi får en tilfældig en med TOP 1
+   .query(`
+    SELECT TOP 1 name, created_at
+    FROM Stocks
+    WHERE user_id = @userId
+    ORDER BY NEWID();  -- Sorterer rækker tilfældigt, så vi får en tilfældig en med TOP 1
   `);
   
   // resultatet fra SQL-forespørgslen kommer som et array i recordset
@@ -69,11 +74,14 @@ router.get("/dashboard", async (req, res) => {
 
 
 
+
+
   let priserOgDatoer = []; // objekt der skal indeholde datoer og priser
   try {
   // 1. Hent symbolet på aktien fra den tilfældige aktie valgt tidligere
   const aktie = tilfældigAktieResultat[0]; // fx { name: "AAPL" }
   const aktieSymbol = aktie.name;
+  
   
 
   // 2. Sæt datointerval: Fra i dag minus 1 år, til i dag
@@ -99,6 +107,7 @@ router.get("/dashboard", async (req, res) => {
   
   // 6. Udskriv data
   console.log("Aktiedata for det seneste år:", priserOgDatoer);
+  
 }
 catch (fejl) {
   console.error("Fejl ved hentning af aktiedata:", fejl);

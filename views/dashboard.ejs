@@ -59,7 +59,7 @@
 
   <!-- Graf over samlet værdi -->
   <div id="samletVærdi_boks_id">
-    <span id="tilfældigAktie_id">Tilfældig aktie</span>
+    <span id="tilfældigAktie_id">Tilfældig valgt aktie du ejer</span>
     <div id="chart"></div>
 
   </div>
@@ -149,7 +149,6 @@ const priser = priserOgDatoer.map(d => d.pris.toFixed(2)); // her formateres hve
   console.log("Datoer:", datoer);
   console.log("Priser:", priser);
 
-
   // Get the current date
   const currentDate = new Date();
 
@@ -168,95 +167,92 @@ const priser = priserOgDatoer.map(d => d.pris.toFixed(2)); // her formateres hve
 
   const xValues = flippedArray;
   console.log(xValues);
+const options = {
+  chart: {
+    type: 'line',
+    height: 350,
+    fontFamily: 'normalSkrift'
+  },
+  colors: ['blue'], // Graflinje farve
 
-
-  const options = {
-    chart: {
-      type: 'line',
-      height: 350,
-      fontFamily: 'normalSkrift'
-    },
-    colors: ['blue'], // Graflinje farve
-
-    series: [{
-      name: 'Aktiekurs',
-      data: priser
-    }],
-    xaxis: {
-      categories: datoer,
-      labels: {
-        style: {
-          colors: '#fff' // Tekstfarve på x-aksen
-        }
-      },
-      title: {
-
-        style: {
-          color: 'lightgray'
-        }
-      }
-    },
-    yaxis: {
-      labels: {
-        style: {
-          colors: 'lightgray' // Tekstfarve på y-aksen
-        }
-      },
-      title: {
-        text: 'Kurs (DKK)',
-        style: {
-          color: 'lightgray'
-        }
+  series: [{
+    name: 'Aktiekurs',
+    data: priser
+  }],
+  xaxis: {
+    categories: datoer,  // Dine datoer
+    labels: {
+      style: {
+        colors: '#fff' // Tekstfarve på x-aksen
       }
     },
     title: {
-      text: tickerNavn[0].name,
-      align: 'left',
       style: {
         color: 'lightgray'
       }
-    },
-    stroke: {
-      curve: 'smooth',
-      width: 2
-    },
-
-
-    tooltip: {
-      theme: 'dark',
+    }
+  },
+  yaxis: {
+    labels: {
       style: {
-        fontSize: '14px',
-        fontFamily: 'normalSkrift',
-        backgroundColor: 'black'
-      },
-      marker: {
-        show: true,
-        fillColors: ['blue']
-      },
-      y: {
-        formatter: function (value) {
-          return value + " DKK";
-        }
+        colors: 'lightgray' // Tekstfarve på y-aksen
       }
     },
-
-    grid: {
-      show: true, // sæt til false hvis du vil skjule alle gitterlinjer
-      borderColor: 'gray', // farven på linjerne
-      strokeDashArray: 4, // gør dem stiplede (0 = fuldt optrukket)
-      xaxis: {
-        lines: {
-          show: false // fjerner vertikale linjer
-        }
-      },
-      yaxis: {
-        lines: {
-          show: true // viser horisontale linjer
-        }
+    title: {
+      text: 'Kurs (DKK)',
+      style: {
+        color: 'lightgray'
       }
     }
+  },
+  title: {
+    text: tickerNavn[0].name,
+    align: 'left',
+    style: {
+      color: 'lightgray'
+    }
+  },
+  stroke: {
+    curve: 'smooth',
+    width: 2
+  },
 
-  };
+  tooltip: {
+    theme: 'dark',
+    style: {
+      fontSize: '14px',
+      fontFamily: 'normalSkrift',
+      backgroundColor: 'black'
+    },
+    marker: {
+      show: true,
+      fillColors: ['blue']
+    },
+    y: {
+      formatter: function (value) {
+        return value + " DKK";
+      }
+    }
+  },
+
+  grid: {
+    show: true, // sæt til false hvis du vil skjule alle gitterlinjer
+    borderColor: 'gray', // farven på linjerne
+    strokeDashArray: 4, // gør dem stiplede (0 = fuldt optrukket)
+    xaxis: {
+      lines: {
+        show: false // fjerner vertikale linjer
+      }
+    },
+    yaxis: {
+      lines: {
+        show: true // viser horisontale linjer
+      }
+    }
+  },
+
+};
+
 
   const chart = new ApexCharts(document.querySelector("#chart"), options);
   chart.render();
