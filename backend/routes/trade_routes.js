@@ -408,7 +408,7 @@ router.get("/trade", async (req, res) => {
     ];
     const nuværendePriser = [];
     
-    for (let i = 0; i < tickers.length; i++) 
+    for (let i = 0; i < tickers.length; i++) {
       try {
       // Henter den seneste markedspris
       const quote = await yahooFinance.quote(tickers[i]);
@@ -448,6 +448,7 @@ router.get("/trade", async (req, res) => {
     });
   }
 }
+
       
       res.render("trade", { userId, dates, closes, portfolios, accounts, nuværendePriser });
 
