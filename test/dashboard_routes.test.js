@@ -1,5 +1,5 @@
 const { expect } = require("chai");
-const { getTop5Stocks } = require("../backend/routes/dashboard_routes");
+const dashboard_Klasser = require("../backend/klasser/dashboard_klasser");
 
 describe("getTop5Stocks", () => {
   it("skal returnere de 5 mest værdifulde aktier - selv hvis der er flere end 5 aktier", () => {
@@ -13,8 +13,11 @@ describe("getTop5Stocks", () => {
       { stock_name: "Pandora", portfolio_name: "Smykker", quantity_bought: 1, quantity_sold: 0, current_price: 300 },
     ];
 
-    // Kalder funktionen
-    const result = getTop5Stocks(trades);
+    // Opret en instans af dashboard_Klasser
+    const dashboard = new dashboard_Klasser(trades, 0);
+
+    // Kalder metoden
+    const result = dashboard.getTop5Stocks();
 
     // Tjek resultatet af hvad der forventes
     expect(result).to.have.lengthOf.at.most(5);
@@ -29,8 +32,11 @@ describe("getTop5Stocks", () => {
       { stock_name: "DSV", portfolio_name: "Transport", quantity_bought: 0, quantity_sold: 0, current_price: 1500 },
     ];
 
-    // Kalder funktionen
-    const result = getTop5Stocks(trades);
+    // Opret en instans af dashboard_Klasser
+    const dashboard = new dashboard_Klasser(trades, 0);
+
+    // Kalder metoden
+    const result = dashboard.getTop5Stocks();
 
     // Forventer et array og tjekker, at resultatet (arrayet) er tomt
     expect(result).to.be.an("array").that.is.empty;
@@ -43,8 +49,11 @@ describe("getTop5Stocks", () => {
       { stock_name: "Tryg", portfolio_name: "Forsikring", quantity_bought: 1, quantity_sold: 0, current_price: 700 },
     ];
 
-    // Kalder funktionen
-    const result = getTop5Stocks(trades);
+    // Opret en instans af dashboard_Klasser
+    const dashboard = new dashboard_Klasser(trades, 0);
+
+    // Kalder metoden
+    const result = dashboard.getTop5Stocks();
 
     // Tjek resultatet af hvad der forventes
     expect(result).to.have.lengthOf(2); // Der er kun 2 aktier
