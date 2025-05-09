@@ -30,25 +30,26 @@ class dashboard_Klasser {
     let totalCurrentValue = 0; // Samlet nuværende værdi for alle aktier
 
     this.trades.forEach(trade => {
-      const unrealizedQuantity = trade.quantity_bought - trade.quantity_sold; // Kun urealiserede aktier
-      if (unrealizedQuantity > 0) {
-        const costForTrade = trade.price * unrealizedQuantity; // Købspris for denne aktie
-        const currentValueForTrade = trade.current_price * unrealizedQuantity; // Nuværende værdi for denne aktie
+      // Beregn antallet af aktier, der stadig er i besiddelse
+      const remainingQuantity = trade.quantity_bought - trade.quantity_sold;
 
-        totalCost += costForTrade; // Læg til den samlede købspris
-        totalCurrentValue += currentValueForTrade; // Læg til den samlede nuværende værdi
+      if (remainingQuantity > 0) {
+        // Beregn den samlede købspris for de tilbageværende aktier
+        const costForTrade = trade.price * remainingQuantity;
+
+        // Beregn den nuværende værdi for de tilbageværende aktier
+        const currentValueForTrade = trade.current_price * remainingQuantity;
+
+        // Tilføj til de samlede værdier
+        totalCost += costForTrade;
+        totalCurrentValue += currentValueForTrade;
       }
     });
-
-    // Hvis der ikke er nogen aktier, returner 0
-    if (totalCost === 0) {
-      return 0;
-    }
 
     // Beregn urealiseret gevinst/tab
     const unrealizedProfit = totalCurrentValue - totalCost;
 
-    return unrealizedProfit; // Returner resultatet som et tal
+    return unrealizedProfit; // Returner resultatet
   }
 
   // Beregn de 5 mest værdifulde aktier

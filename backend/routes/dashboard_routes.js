@@ -42,6 +42,7 @@ router.get("/dashboard", async (req, res) => {
     const dashboard = new dashboard_Klasser(trades, totalCash);
 
     const totalUnrealizedValue = dashboard.getTotalUnrealizedProfit();
+    console.log("Total Unrealized Profit:", totalUnrealizedValue);
     const top5Stocks = dashboard.getTop5Stocks();
     const totalValue = dashboard.getTotalValue();
     const totalRealizedValue = dashboard.getTotalRealizedValue();
