@@ -23,12 +23,14 @@ h1 {
 
 /* Main Content */
 #mainContent {
-  margin-left: 20%;
+  margin-left: 21.25%;
   margin-right: 8%; /* Tilføjet for at skabe symmetri */
   padding: 20px;
+  margin-top: -14px;
 }
 
 #accountsContainer {
+  margin-top:0px;
   margin-bottom: 20px;
 }
 
@@ -37,25 +39,45 @@ h1 {
   padding: 15px;
   margin-bottom: 15px;
   border-radius: 8px;
+  border: none;
+}
+.account input{
+  font-family: normalSkrift;
+  border: none;
+  padding: 5px;
+  width: 190px;
+  border-radius: 5px;
+}
+.account input:focus{
+  outline: none
 }
 
 .account h3 {
   margin: 0;
   font-size: 20px;
+  
 }
 
 .account p {
   margin: 5px 0;
+  font-size: 90%;
+  
+}
+
+h2{
+  font-size: 200%;
+  margin-left: 10px;
 }
 
 .account button {
   margin-right: 10px;
-  padding: 10px 15px;
+  padding: 5px 15px;
   background-color: #5F45A0;
   color: white;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
+  padding-bottom: 6.5px;
+  
 }
 
 .account button:hover {
