@@ -108,6 +108,7 @@ router.get("/portfolios", async (req, res) => {
             currentPrice = quote.regularMarketPrice || 0;
 
             const priceHistory = await getDataByKey(stockId); // Ny: henter sidste 14 dages priser
+            console.log(`Prisdata for ${stockId}:`, priceHistory);
             if (priceHistory.length > 0) {
               price30DaysAgo = priceHistory[0]; // Bruger ældste datapunkt som "30 dage siden"
             }
@@ -158,6 +159,8 @@ router.get("/portfolios", async (req, res) => {
       totalUrealiseretGevinst += portfolio.urealiseretGevinst;
     }
 
+    console.log("Forventet værdi i dag:", totalValue);
+    console.log("Forventet værdi for 30 dage siden:", totalValue30DaysAgo);
     // Ny: udregn ændring i procent
     const ændring30dage = totalValue30DaysAgo > 0
       ? ((totalValue - totalValue30DaysAgo) / totalValue30DaysAgo) * 100
@@ -167,6 +170,7 @@ router.get("/portfolios", async (req, res) => {
       name: portfolio.name,
       value: portfolio.totalSamletForventetVærdi || 0
     }));
+    console.log("PIE DATA", pieChartData);
 
     res.render("portfolios", {
       portfolios,
