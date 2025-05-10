@@ -60,7 +60,6 @@
     
 
     // LAV PORTEFØLJE DROPDOWN
-
     function lavListeMedPorteføljer()
     {
       const portfolios = <%- JSON.stringify(portfolios) %>; // Importere portfolios arrayet
@@ -78,8 +77,8 @@
     }
     lavListeMedPorteføljer(); // kør funktion automatisk
     
+
     // LAV KONTO DROPDOWN
-    
     function lavListeMedAccounts(){
       const accounts = <%- JSON.stringify(accounts) %>;
       
@@ -93,109 +92,111 @@
         accountsDropdown.appendChild(nyOption);
       }
     }
-    lavListeMedAccounts(); 
-
-function købAktie_tjekForhold() {
-  porteføljeSelect = document.getElementById("vælgPortefølje_id");
-  kontoSelect = document.getElementById("vælgKonto_id");
-
-  const porteføljeText = porteføljeSelect.options[porteføljeSelect.selectedIndex].text; // henter den valgte tekst
-  const kontoText = kontoSelect.options[kontoSelect.selectedIndex].text; // henter den valgte tekst
-
-  if (kontoText == "Vælg konto" && porteføljeText == "Vælg portefølje" && aktieNavnValgt.length == 0)
-  {
-    alert("Du mangler at vælge en aktie, en portefølje og en konto.");
-  }
-  if (aktieNavnValgt.length == 0){
-    alert("Du mangler at vælge en aktie.");
-  }
-  if (porteføljeText == "Vælg portefølje")
-  {
-    alert("Du mangler at vælge en portefølje.");
-  }
-  if (kontoText == "Vælg konto")
-  {
-    alert("Du mangler at vælge en konto.");
-  } 
-  else
-  {
-    foretagAktiekøb();
-  }
-}
-
-function sælgAktie_tjekForhold() {
-  porteføljeSelect = document.getElementById("vælgPortefølje_id");
-  kontoSelect = document.getElementById("vælgKonto_id");
-
-  const porteføljeText = porteføljeSelect.options[porteføljeSelect.selectedIndex].text;
-  const kontoText = kontoSelect.options[kontoSelect.selectedIndex].text;
-
-  if (kontoText == "Vælg konto" && porteføljeText == "Vælg portefølje" && aktieNavnValgt.length == 0) {
-    alert("Du mangler at vælge en aktie, en portefølje og en konto.");
-  }
-  else if (aktieNavnValgt.length == 0) {
-    alert("Du mangler at vælge en aktie.");
-  }
-  else if (porteføljeText == "Vælg portefølje") {
-    alert("Du mangler at vælge en portefølje.");
-  }
-  else if (kontoText == "Vælg konto") {
-    alert("Du mangler at vælge en konto.");
-  }
-  else {
-    foretagAktiesalg(); // Kald funktion til at sende POST til backend
-  }
-}
-
-
-// VARIABLER DER SKAL BRUGES NÅR BRUGEREN KØBER AKTIE
-let antalAktier = 0; // Antallet af aktie brugeren har tastet ind
-let porteføljeSelect = "";
-let kontoSelect = "";
-
-
-function foretagAktiekøb() {
-  antalAktier = parseInt(document.getElementById("NumberOfStocks_id").value);
-  porteføljeSelect = document.getElementById("vælgPortefølje_id").value;
-  kontoSelect = document.getElementById("vælgKonto_id").value;
-  
- 
-
-  if (isNaN(antalAktier) || antalAktier <= 0 || !porteføljeSelect || !kontoSelect) {
-    alert("Udfyld alle felter korrekt og vælg en aktie først.");
-    return;
-  }
-
-
-  const totalPris = parseFloat((antalAktier * currentPrice).toFixed(2));
-
-  fetch('/trade/buy', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ 
-      antalAktier,
-      porteføljeSelect,
-      kontoSelect,
-      aktieTickerValgt,
-      totalPris
-    })
-  })
-  .then(response => {
-    if (response.redirected)
-    {
-      window.location.href = response.url; // håndter redirect til /portfolios
-    } else if (!response.ok) {
-      throw new Error("Fejl ved køb");
-    }
-  })
-  .catch(error => {
-    console.error("Fejl ved køb:", error);
-    alert("Noget gik galt under købet.");
+    lavListeMedAccounts(); // afspiller funktion automatisk
     
-  });
-}
+
+    // FUNKTION DER TJEKKER OM FORHOLD FOR AT KØBØE AKTIER ER OPFYLDT 
+    function købAktie_tjekForhold() 
+    {
+      porteføljeSelect = document.getElementById("vælgPortefølje_id");
+      kontoSelect = document.getElementById("vælgKonto_id");
+      
+      const porteføljeText = porteføljeSelect.options[porteføljeSelect.selectedIndex].text; // henter den valgte porteføljer fra dropdown
+      const kontoText = kontoSelect.options[kontoSelect.selectedIndex].text; // henter den valgte konto fra drodown
+      
+      if (kontoText == "Vælg konto" && porteføljeText == "Vælg portefølje" && aktieNavnValgt.length == 0) // Tjekker om både konto og portefølje mangler
+      {
+        alert("Du mangler at vælge en aktie, en portefølje og en konto.");
+      }
+      if (aktieNavnValgt.length == 0) // tjekker om der mangle at blive valgt en aktie
+      {
+        alert("Du mangler at vælge en aktie.");
+      }
+      if (porteføljeText == "Vælg portefølje") // Tjekker om der kun mangler at blive valgt portefølje
+      {
+        alert("Du mangler at vælge en portefølje.");
+      }
+      if (kontoText == "Vælg konto") // Tjek om der kun mangler konto
+      {
+        alert("Du mangler at vælge en konto.");
+      }
+      else
+      {
+        foretagAktiekøb(); // Afspil funktion der foretager købet
+      }
+    }
+    
+    // FUNKTION DER FORETAGER KØB AF AKTIE
+    function sælgAktie_tjekForhold()
+    {
+      porteføljeSelect = document.getElementById("vælgPortefølje_id"); // Henter hvilken portefølje der er valgt
+      kontoSelect = document.getElementById("vælgKonto_id"); // Henter navn på konto der er valgt
+      
+      const porteføljeText = porteføljeSelect.options[porteføljeSelect.selectedIndex].text;
+      const kontoText = kontoSelect.options[kontoSelect.selectedIndex].text;
+      
+      if (kontoText == "Vælg konto" && porteføljeText == "Vælg portefølje" && aktieNavnValgt.length == 0)
+      {
+        alert("Du mangler at vælge en aktie, en portefølje og en konto.");
+      }
+      else if (aktieNavnValgt.length == 0)
+      {
+        alert("Du mangler at vælge en aktie.");
+      }
+      else if (porteføljeText == "Vælg portefølje")
+      {
+        alert("Du mangler at vælge en portefølje.");
+      }
+      else if (kontoText == "Vælg konto")
+      {
+        alert("Du mangler at vælge en konto.");
+      }
+      else
+      {
+        foretagAktiesalg(); // Kald funktion til at sende POST til backend
+      }
+    }
+    
+
+    // VARIABLER DER SKAL BRUGES NÅR BRUGEREN KØBER AKTIE
+    let antalAktier = 0; // Antallet af aktie brugeren har tastet ind
+    let porteføljeSelect = "";
+    let kontoSelect = "";
+    
+    function foretagAktiekøb()
+    {
+      antalAktier = parseInt(document.getElementById("NumberOfStocks_id").value); // får antallet af aktier man ønsker købt
+      porteføljeSelect = document.getElementById("vælgPortefølje_id").value; // får portføljen valgt
+      kontoSelect = document.getElementById("vælgKonto_id").value; // får kontoen valgt
+      
+      const totalPris = parseFloat((antalAktier * currentPrice).toFixed(2)); // Beregner den samlede købspris og begrænser til 2 decimaler
+       
+      fetch('/trade/buy', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ 
+          antalAktier,
+          porteføljeSelect,
+          kontoSelect,
+          aktieTickerValgt,
+          totalPris
+        })
+      })
+      .then(response => {
+        if (response.redirected)
+        {
+          window.location.href = response.url; // håndter redirect til /portfolios
+        }
+        else if (!response.ok)
+        {
+          throw new Error("Fejl ved køb");
+        }
+      })
+      .catch(error => {
+        console.error("Fejl ved køb:", error);
+        alert("Noget gik galt under købet.");
+      });
+    }
 
 function foretagAktiesalg() {
   const antalAktier = parseInt(document.getElementById("NumberOfStocks_id").value);
@@ -237,50 +238,12 @@ function foretagAktiesalg() {
 }
 
 
-const tickers = [
-      "ALMB.CO",
-      "AMBU-B.CO",
-      "MAERSK-A.CO",
-      "MAERSK-B.CO",
-      "AQP.CO",
-      "ATLA-DKK.CO",
-      "BO.CO",
-      "BAVA.CO",
-      "AOJ-B.CO",
-      "CARL-A.CO",
-      "CARL-B.CO",
-      // "CHR.CO",
-      "COLO-B.CO",
-      "DANSKE.CO",
-      "DEMANT.CO",
-      "DFDS.CO",
-      "DNORD.CO",
-      "DSV.CO",
-      "FLS.CO",
-      "GMAB.CO",
-      "GN.CO",
-      "HLUN-B.CO",
-      // "HYDRCT.CO",
-      "ISS.CO",
-      "JYSK.CO",
-      "NETC.CO",
-      "NKT.CO",
-      "NORTHM.CO",
-      "NSIS-B.CO",
-      "NOVO-B.CO",
-      "NTG.CO",
-      "ORSTED.CO",  // Kun én forekomst
-      "PNDORA.CO",
-      "RBREW.CO",
-      "ROCK-B.CO",
-      "SPNO.CO",
-      "STG.CO",
-      "STRAP.CO",
-      "SPKSJF.CO",
-      // "SIM.CO",
-      "TRYG.CO",
-      "VWS.CO"
-    ];
+// LISTE MED AKTIE SYMBOLER
+const tickers = 
+["ALMB.CO","AMBU-B.CO","MAERSK-A.CO","MAERSK-B.CO","AQP.CO","ATLA-DKK.CO","BO.CO","BAVA.CO","AOJ-B.CO","CARL-A.CO","CARL-B.CO",
+"COLO-B.CO","DANSKE.CO","DEMANT.CO","DFDS.CO","DNORD.CO","DSV.CO","FLS.CO","GMAB.CO","GN.CO","HLUN-B.CO","ISS.CO","JYSK.CO",
+"NETC.CO","NKT.CO","NORTHM.CO","NSIS-B.CO","NOVO-B.CO","NTG.CO","ORSTED.CO", "PNDORA.CO","RBREW.CO","ROCK-B.CO","SPNO.CO",
+"STG.CO","STRAP.CO","SPKSJF.CO","TRYG.CO","VWS.CO"];
 
 const aktienavne = [
   "Alm. Brand A/S",
@@ -294,7 +257,6 @@ const aktienavne = [
   "Brdr. A&O Johansen A/S (B)",
   "Carlsberg A/S (A)",
   "Carlsberg A/S (B)",
-  // "Chr. Hansen Holding A/S",
   "Coloplast A/S (B)",
   "Danske Bank A/S",
   "Demant A/S",
@@ -305,7 +267,6 @@ const aktienavne = [
   "Genmab A/S",
   "GN Store Nord A/S",
   "H. Lundbeck A/S",
-  // "Hydract A/S",
   "ISS A/S",
   "Jyske Bank A/S",
   "Netcompany Group A/S",
@@ -322,21 +283,21 @@ const aktienavne = [
   "Scandinavian Tobacco Group A/S",
   "Strategic Partners A/S",
   "Sparekassen Sjælland",
-  // "SimCorp A/S",
   "Tryg A/S",
   "Vestas Wind Systems A/S"
 ];
 
 
 
-const nuværendePriser = <%- JSON.stringify(nuværendePriser) %>;
-  console.log(nuværendePriser); // Nu kan du bruge det i browserens JS
-
+const nuværendePriser = <%- JSON.stringify(nuværendePriser) %>; // Nuværende pris for hver enkelt aktie
 
 let currentPrice = 0; // Nuværende pris på den valgte aktie - værdi tildeles i lavListMedAktier
 
-function lavListMedAktier() {
-  for (let i = 0; i < aktienavne.length; i++) {
+// LAVER LISTE MED AKTIER MED NAVN OG PRIS
+function lavListMedAktier()
+{
+  for (let i = 0; i < aktienavne.length; i++)
+  {
     const button = document.createElement("button");
     button.type = "button";
     button.value = tickers[i];
