@@ -105,14 +105,16 @@ router.get("/portfolios", async (req, res) => {
 
       // Gennemgår alle aktier og summerer antal og købspris for hver aktietype
       stocks.forEach((stock) => {
-        if (!stocksAggregated[stock.name]) {
-          stocksAggregated[stock.name] = {
-            samletAntal: 0, // Samlet antal aktier af denne type
-            samletKøbspris: 0, // Samlet købspris for denne aktietype
-          };
+        if (stock.quantity > 0) {
+          if (!stocksAggregated[stock.name]) {
+            stocksAggregated[stock.name] = {
+              samletAntal: 0,
+              samletKøbspris: 0,
+            };
+          }
+          stocksAggregated[stock.name].samletAntal += stock.quantity;
+          stocksAggregated[stock.name].samletKøbspris += stock.price * stock.quantity;
         }
-        stocksAggregated[stock.name].samletAntal += stock.quantity; // Lægger antal til totalen
-        stocksAggregated[stock.name].samletKøbspris += stock.price; // Lægger købspris til totalen
       });
 
       // For hver aktietype beregnes GAK, nuværende kurs, værdi og gevinst/tab

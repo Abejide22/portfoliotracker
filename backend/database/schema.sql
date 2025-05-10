@@ -37,7 +37,7 @@ CREATE TABLE Stocks (
   name NVARCHAR(100) NOT NULL, -- navn på værdipapiret, må ikke være NULL
   type NVARCHAR(50) CHECK (type IN ('aktie', 'obligation', 'fond')), -- type af værdipapir, må ikke være NULL og skal være enten 'aktie', 'obligation' eller 'fond'
   quantity INT NOT NULL CHECK (quantity >= 0), -- antal værdipapirer, må ikke være NULL og skal være >= 0
-  price DECIMAL(18,2) NOT NULL CHECK (price >= 0), -- pris pr. værdipapir, må ikke være NULL og skal være >= 0
+  price DECIMAL(18,2) NOT NULL CHECK (price >= 0), -- samlet købspris for hele posten (pris * antal)
   created_at DATETIME DEFAULT GETDATE(), -- oprettelsesdato, default er nuværende tidspunkt 
   FOREIGN KEY (user_id) REFERENCES Users(id), -- refererer til Users, user_id skal være en gyldig id fra Users
   FOREIGN KEY (portfolio_id) REFERENCES Portfolios(id) -- refererer til Portfolios, portfolio_id skal være en gyldig id fra Portfolios
