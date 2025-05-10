@@ -80,7 +80,7 @@ router.get("/dashboard", async (req, res) => {
     const aktieDataRealiseretSell = await pool.request()
     .query(`SELECT SUM(sell_price) AS total FROM Trades WHERE portfolio_id IN (${portfolioIds})`);
 
-    const aktieDataRealiseretResultat = aktieDataRealiseretBuy.recordset[0].total - aktieDataRealiseretSell.recordset[0].total;
+    const aktieDataRealiseretResultat =  aktieDataRealiseretSell.recordset[0].total - aktieDataRealiseretBuy.recordset[0].total;
 
     console.log("Total realiseret aktie-køb:", aktieDataRealiseretResultat);
 
