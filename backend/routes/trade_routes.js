@@ -131,7 +131,7 @@ router.post("/trade", async (req, res) => {
         .query(`
         INSERT INTO Stocks (user_id, portfolio_id, name, type, quantity, price, created_at)
         VALUES (@user_id, @portfolio_id, @name, @type, @quantity, @price, GETDATE());
-      `);
+        `);
 
         // Find aktiens ID baseret på navn
         const stockResult = await pool

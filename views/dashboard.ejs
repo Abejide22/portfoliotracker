@@ -132,9 +132,15 @@
    // Server-side data gjort tilgængelig i browser-JS
   const priserOgDatoer = <%- JSON.stringify(priserOgDatoer) %>;
   const tickerNavn = <%- JSON.stringify(tilfældigAktieResultat) %>;
+  let aktieKøbsdato = <%- JSON.stringify(tilfældigAktieKøbsdato) %>
+
 
   // log hele listen i konsollen
   console.log("Priser og datoer for aktien:", priserOgDatoer);
+
+
+  aktieKøbsdato = aktieKøbsdato.split("T")[0];
+  console.log(aktieKøbsdato); // Output: "2025-05-03"
 
   // Eksempel: adgang til specifik dag
   if (priserOgDatoer.length > 0) {
@@ -152,21 +158,12 @@ const priser = priserOgDatoer.map(d => d.pris.toFixed(2)); // her formateres hve
   // Get the current date
   const currentDate = new Date();
 
-  // Create an array to hold the dates
-  const datesArray = [];
 
-  // Loop from 0-13 days ago up to the current date
-  for (let i = 0; i <= 13; i++) {
-    const tempDate = new Date();
-    tempDate.setDate(currentDate.getDate() - i); // Set the date to be i days before today
-    datesArray.push(tempDate.toISOString().split('T')[0]); // Add the date to the array in y-m-d format
-  }
-  console.log(datesArray);
+  const specifiktDato = aktieKøbsdato;
+  const specifiktPris = priser[datoer.indexOf(specifiktDato)];
 
-  const flippedArray = datesArray.reverse();
 
-  const xValues = flippedArray;
-  console.log(xValues);
+
 const options = {
   chart: {
     type: 'line',
@@ -250,6 +247,49 @@ const options = {
       }
     }
   },
+
+  annotations: {
+  // Punktmarkering (prik + label)
+  points: [
+    {
+      x: specifiktDato,         // Datoen, du vil markere
+      y: specifiktPris,         // Den præcise aktiekurs på denne dato
+      marker: {
+        size: 3,
+        fillColor: "#32CD32",     // Farve på markør
+        strokeColor: "#32CD32	",    // Farve på markørens kant
+        strokeWidth: 3,
+      },
+      label: {
+        borderColor: "#32CD32	",  // Farve på labelens kant
+        offsetY: 0,            // Justering af labelens position
+        style: {
+          color: "#fff",       // Farve på labelens tekst
+          background: "#32CD32", // Baggrundsfarve for labelen
+          fontSize: '12px',     // Skriftstørrelse for label
+        },
+        text: "Købsdato",      // Tekst til labelen
+      },
+    }
+  ],
+
+  // Lodret linje annotation ved x-aksen
+  xaxis: [
+    {
+      x: specifiktDato,         // Datoen, hvor linjen skal være
+      borderColor: "green",     // Farve på linjen
+      strokeDashArray: 4,       // Gør linjen stiplet (0 for solid linje)
+      label: {
+        text: "",               // Ingen tekst på linjen, bare linjen
+        style: {
+          color: "#fff",        // Farve på label (hvis den havde tekst)
+          background: "green"
+        }
+      }
+    }
+  ]
+}
+
 
 };
 
