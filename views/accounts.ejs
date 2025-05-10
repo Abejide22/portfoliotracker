@@ -33,6 +33,7 @@
             <div class="account">
               <h3>Konto Navn: <%= account.name %>
               </h3>
+              <hr>
               <p>Valuta: <%= account.currency %>
               </p>
               <p>Saldo: <%= account.balance %>
@@ -50,28 +51,30 @@
                     <!-- Indbetalingsformular. -->
                     <form action="/deposit" method="POST" style="display:inline;">
                       <input type="hidden" name="accountId" value="<%= account.id %>">
-                      <input type="number" name="amount" placeholder="Beløb" required>
-                      <button type="submit" class="deposit-account">Indbetal</button>
+                    
+                      <input type="number" name="amount" placeholder="Beløb" required style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">
+                      <button type="submit" class="deposit-account" style="border-top-right-radius: 5px; border-bottom-right-radius: 5px;">Indbetal</button>
                     </form>
                     <!-- Udbetalingsformular. -->
                     <form action="/withdraw" method="POST" style="display:inline;">
                       <input type="hidden" name="accountId" value="<%= account.id %>">
-                      <input type="number" name="amount" placeholder="Beløb" step="0.01" required>
-                      <button type="submit" class="withdraw-account">Udbetal</button>
+                      <input type="number" name="amount" placeholder="Beløb" step="0.01" required style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">
+                      <button type="submit" class="withdraw-account" style="border-top-right-radius: 5px; border-bottom-right-radius: 5px;">Udbetal</button>
                     </form>
                     <% } %>
                       <form action="/close-account" method="POST" style="display:inline;">
                         <input type="hidden" name="accountId" value="<%= account.id %>">
-                        <button type="submit" class="close-account">Luk Konto</button>
+                        <button type="submit" class="close-account" style="border-radius: 5px;">Luk Konto</button>
                       </form>
                       <form action="/reopen-account" method="POST" style="display:inline;">
                         <input type="hidden" name="accountId" value="<%= account.id %>">
-                        <button type="submit" class="reopen-account">Genåbn Konto</button>
+                        <button type="submit" class="reopen-account" style="border-radius: 5px;">Genåbn Konto</button>
                       </form>
                       <!-- Se transaktioner-knap -->
                       <form action="/transactions" method="GET" style="display:inline;">
                         <input type="hidden" name="accountId" value="<%= account.id %>">
-                        <button type="submit">Se transaktioner</button>
+                        <br><br>
+                        <button type="submit" style="border-radius: 5px;">Se transaktioner</button>
                       </form>
             </div>
             <% }) %>

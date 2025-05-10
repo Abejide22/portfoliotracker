@@ -59,6 +59,7 @@
 
   <!-- Graf over samlet værdi -->
   <div id="samletVærdi_boks_id">
+    <span id="tilfældigAktie_id">Tilfældig valgt aktie du ejer</span>
     <div id="chart"></div>
 
   </div>
@@ -128,114 +129,170 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 
 <script>
+   // Server-side data gjort tilgængelig i browser-JS
+  const priserOgDatoer = <%- JSON.stringify(priserOgDatoer) %>;
+  const tickerNavn = <%- JSON.stringify(tilfældigAktieResultat) %>;
+  let aktieKøbsdato = <%- JSON.stringify(tilfældigAktieKøbsdato) %>
 
+
+  // log hele listen i konsollen
+  console.log("Priser og datoer for aktien:", priserOgDatoer);
+
+
+  aktieKøbsdato = aktieKøbsdato.split("T")[0];
+  console.log(aktieKøbsdato); // Output: "2025-05-03"
+
+  // Eksempel: adgang til specifik dag
+  if (priserOgDatoer.length > 0) {
+    const førsteDag = priserOgDatoer[0];
+    console.log(`Første dag: ${førsteDag.dato}, pris: ${førsteDag.pris}`);
+  }
+
+  // Eksempel: Lave separate arrays til graf
+  const datoer = priserOgDatoer.map(d => d.dato);
+const priser = priserOgDatoer.map(d => d.pris.toFixed(2)); // her formateres hver enkelt pristil to decimaler
+
+  console.log("Datoer:", datoer);
+  console.log("Priser:", priser);
 
   // Get the current date
   const currentDate = new Date();
 
-  // Create an array to hold the dates
-  const datesArray = [];
 
-  // Loop from 0-13 days ago up to the current date
-  for (let i = 0; i <= 13; i++) {
-    const tempDate = new Date();
-    tempDate.setDate(currentDate.getDate() - i); // Set the date to be `i` days before today
-    datesArray.push(tempDate.toISOString().split('T')[0]); // Add the date to the array in YYYY-MM-DD format
-  }
-  console.log(datesArray);
-
-  const flippedArray = datesArray.reverse();
-
-  const xValues = flippedArray;
-  console.log(xValues);
+  const specifiktDato = aktieKøbsdato;
+  const specifiktPris = priser[datoer.indexOf(specifiktDato)];
 
 
-  const options = {
-    chart: {
-      type: 'line',
-      height: 350,
-      fontFamily: 'normalSkrift'
-    },
-    colors: ['blue'], // Graflinje farve
 
-    series: [{
-      name: 'Aktiekurs',
-      data: [150, 152, 149, 155, 160, 162, 158, 161, 150, 155, 143, 148, 167, 169]
-    }],
-    xaxis: {
-      categories: xValues,
-      labels: {
-        style: {
-          colors: '#fff' // Tekstfarve på x-aksen
-        }
-      },
-      title: {
-        text: 'Ugedage',
-        style: {
-          color: 'lightgray'
-        }
-      }
-    },
-    yaxis: {
-      labels: {
-        style: {
-          colors: 'lightgray' // Tekstfarve på y-aksen
-        }
-      },
-      title: {
-        text: 'Kurs (DKK)',
-        style: {
-          color: 'lightgray'
-        }
+const options = {
+  chart: {
+    type: 'line',
+    height: 350,
+    fontFamily: 'normalSkrift'
+  },
+  colors: ['blue'], // Graflinje farve
+
+  series: [{
+    name: 'Aktiekurs',
+    data: priser
+  }],
+  xaxis: {
+    categories: datoer,  // Dine datoer
+    labels: {
+      style: {
+        colors: '#fff' // Tekstfarve på x-aksen
       }
     },
     title: {
-      text: 'Samlet værdi',
-      align: 'left',
       style: {
         color: 'lightgray'
       }
-    },
-    stroke: {
-      curve: 'smooth'
-    },
-
-
-    tooltip: {
-      theme: 'dark',
+    }
+  },
+  yaxis: {
+    labels: {
       style: {
-        fontSize: '14px',
-        fontFamily: 'normalSkrift',
-        backgroundColor: 'black'
-      },
-      marker: {
-        show: true,
-        fillColors: ['blue']
-      },
-      y: {
-        formatter: function (value) {
-          return value + " DKK";
-        }
+        colors: 'lightgray' // Tekstfarve på y-aksen
       }
     },
+    title: {
+      text: 'Kurs (DKK)',
+      style: {
+        color: 'lightgray'
+      }
+    }
+  },
+  title: {
+    text: tickerNavn[0].name,
+    align: 'left',
+    style: {
+      color: 'lightgray'
+    }
+  },
+  stroke: {
+    curve: 'smooth',
+    width: 2
+  },
 
-    grid: {
-      show: true, // sæt til false hvis du vil skjule alle gitterlinjer
-      borderColor: 'gray', // farven på linjerne
-      strokeDashArray: 4, // gør dem stiplede (0 = fuldt optrukket)
-      xaxis: {
-        lines: {
-          show: false // fjerner vertikale linjer
-        }
+  tooltip: {
+    theme: 'dark',
+    style: {
+      fontSize: '14px',
+      fontFamily: 'normalSkrift',
+      backgroundColor: 'black'
+    },
+    marker: {
+      show: true,
+      fillColors: ['blue']
+    },
+    y: {
+      formatter: function (value) {
+        return value + " DKK";
+      }
+    }
+  },
+
+  grid: {
+    show: true, // sæt til false hvis du vil skjule alle gitterlinjer
+    borderColor: 'gray', // farven på linjerne
+    strokeDashArray: 4, // gør dem stiplede (0 = fuldt optrukket)
+    xaxis: {
+      lines: {
+        show: false // fjerner vertikale linjer
+      }
+    },
+    yaxis: {
+      lines: {
+        show: true // viser horisontale linjer
+      }
+    }
+  },
+
+  annotations: {
+  // Punktmarkering (prik + label)
+  points: [
+    {
+      x: specifiktDato,         // Datoen, du vil markere
+      y: specifiktPris,         // Den præcise aktiekurs på denne dato
+      marker: {
+        size: 3,
+        fillColor: "#32CD32",     // Farve på markør
+        strokeColor: "#32CD32	",    // Farve på markørens kant
+        strokeWidth: 3,
       },
-      yaxis: {
-        lines: {
-          show: true // viser horisontale linjer
+      label: {
+        borderColor: "#32CD32	",  // Farve på labelens kant
+        offsetY: 0,            // Justering af labelens position
+        style: {
+          color: "#fff",       // Farve på labelens tekst
+          background: "#32CD32", // Baggrundsfarve for labelen
+          fontSize: '12px',     // Skriftstørrelse for label
+        },
+        text: "Købsdato",      // Tekst til labelen
+      },
+    }
+  ],
+
+  // Lodret linje annotation ved x-aksen
+  xaxis: [
+    {
+      x: specifiktDato,         // Datoen, hvor linjen skal være
+      borderColor: "green",     // Farve på linjen
+      strokeDashArray: 4,       // Gør linjen stiplet (0 for solid linje)
+      label: {
+        text: "",               // Ingen tekst på linjen, bare linjen
+        style: {
+          color: "#fff",        // Farve på label (hvis den havde tekst)
+          background: "green"
         }
       }
     }
+  ]
+}
 
-  };
+
+};
+
 
   const chart = new ApexCharts(document.querySelector("#chart"), options);
   chart.render();
