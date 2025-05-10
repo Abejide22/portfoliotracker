@@ -79,17 +79,19 @@ router.post("/trade", async (req, res) => {
   // ------------------------------------------------------------------------------------//
 
   router.post("/trade/buy", async (req, res) => {
+    // Her modtager vi data fra formularen på trade.ejs og derefter bliver brugerens ID hentet fra sessionen og gemt i en variabel
     const { porteføljeSelect, aktieTickerValgt, kontoSelect, antalAktier, totalPris } = req.body;
     const userId = req.session.userId;
   
+    // Tjekker om alle nødvendige oplysninger er givet, hvis ikke returnerer vi en fejl
     if (!userId || !aktieTickerValgt || !antalAktier || !totalPris || !porteføljeSelect || !kontoSelect) {
       return res.status(400).send("Mangler oplysninger for at kunne købe");
     }
   
     try {
-      await poolConnect;
+      await poolConnect; // Opretter forbindelse til databasen
   
-      // Hent portfolio id baseret på porteføljenavnet
+      // Her hentes portefølje ID fra databasen baseret på brugerens ID og den valgte portefølje
       const portfolioResult = await pool
         .request()
         .input("portfolio_name", sql.NVarChar, porteføljeSelect)  // Forbered portfolio_name
@@ -100,23 +102,27 @@ router.post("/trade", async (req, res) => {
           WHERE name = @portfolio_name AND user_id = @user_id
         `);
   
+      // Tjekker om porteføljen findes
       if (!portfolioResult.recordset || portfolioResult.recordset.length === 0) {
         return res.status(400).send("Portefølje findes ikke.");
       }
+      // Henter portefølje ID
       const portfolioId = portfolioResult.recordset[0].id;
 
 
-      // Check om der er penge på valgt konto
+      // Her finder vi balancen på den valgte konto
       const kontoResult = await pool
       .request()
       .input("name", sql.NVarChar, kontoSelect) // tildel name værdien kontoSelect
       .query(`SELECT balance FROM Accounts WHERE name = @name`)
 
+      // Tjekker om kontoen findes
       if (!kontoResult.recordset || kontoResult.recordset.length === 0) {
         return res.status(400).send("Konto findes ikke");
       }
       const kontoBalance = kontoResult.recordset[0].balance;
 
+      // Tjekker om der er penge nok på kontoen til at købe aktien
       if(kontoBalance > totalPris)
         {
         // Udfør INSERT i Stocks-tabellen
@@ -163,16 +169,17 @@ router.post("/trade", async (req, res) => {
           VALUES (@portfolio_id, @stock_id, @buy_price, @sell_price, @quantity_bought, @quantity_sold, GETDATE());
         `);
 
+        // Opdater saldoen på kontoen
       await pool
       .request()
       .input("name", sql.NVarChar, kontoSelect)
       .input("amount", sql.Decimal(10, 2), totalPris)
       .query(`UPDATE Accounts SET balance = balance - @amount WHERE name = @name;`);
       
-      res.redirect("/portfolios");
+      res.redirect("/portfolios"); // Redirect til porteføljeoversigt
 
       }
-
+// Hvis der ikke er penge nok på kontoen, vis en fejlbesked
       if(kontoBalance < totalPris){
         let IkkeNokPenge = true;
         res.render("trade", { IkkeNokPenge });
@@ -192,17 +199,21 @@ router.post("/trade", async (req, res) => {
 //
 // ------------------------------------------------------------------------------------//
 router.post("/trade/sell", async (req, res) => {
+
+  // Her modtager vi data fra formularen på trade.ejs og derefter bliver brugerens ID hentet fra sessionen og gemt i en variabel
   const { porteføljeSelect, aktieTickerValgt, kontoSelect, antalAktier, totalPris } = req.body;
   const userId = req.session.userId;
 
+// Tjekker om alle nødvendige oplysninger er givet, hvis ikke returnerer vi en fejl
   if (!userId || !aktieTickerValgt || !antalAktier || !totalPris || !porteføljeSelect || !kontoSelect) {
     return res.status(400).send("Mangler oplysninger for at kunne sælge");
   }
 
-  try {
-    await poolConnect;
 
-    // 1. Find portfolio ID
+  try {
+    await poolConnect; // Opretter forbindelse til databasen
+
+    // Tjekker om aktien findes i Stocks-tabellen og finder portefølje ID
     const portfolioResult = await pool
       .request()
       .input("portfolio_name", sql.NVarChar, porteføljeSelect)
@@ -210,12 +221,14 @@ router.post("/trade/sell", async (req, res) => {
       .query(`
         SELECT id FROM Portfolios WHERE name = @portfolio_name AND user_id = @user_id
       `);
-
+// Tjekker om porteføljen findes
     if (!portfolioResult.recordset.length) {
       return res.status(400).send("Portefølje findes ikke.");
     }
-
+    
+// Gemmer portefølje ID
     const portfolioId = portfolioResult.recordset[0].id;
+
 
     // 2. Find aktien brugeren ejer
     const stockResult = await pool
