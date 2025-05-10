@@ -58,31 +58,39 @@ router.get("/dashboard", async (req, res) => {
     // ----------------------------------------------------------------------------------
 
     // Hent alle portfolio ID'er for brugeren
-    const fåBrugerensPortfolioIder = await pool.request()
-    .input("user_id", sql.Int, userId)
-    .query(`SELECT id FROM dbo.Portfolios WHERE user_id = @user_id`);
-    
-    const brugerensPortfolioId = fåBrugerensPortfolioIder.recordset.map(row => row.id);
-    
-    // Hvis der ikke er nogen portfolier, returner 0 som resultat
-    if (brugerensPortfolioId.length === 0) {
-      console.log("Ingen portfolier fundet for brugeren.");
-      return;
-    }
-    
-    // Lav en kommasepareret liste til sql IN-udtryk
-    const portfolioIds = brugerensPortfolioId.join(",");
-    
-    // Hent summen af buy_price for de fundne portfolio id'er
-    const aktieDataRealiseretBuy = await pool.request()
-    .query(`SELECT SUM(buy_price) AS total FROM Trades WHERE portfolio_id IN (${portfolioIds}) AND quantity_sold != 0`);
-    
-    const aktieDataRealiseretSell = await pool.request()
-    .query(`SELECT SUM(sell_price) AS total FROM Trades WHERE portfolio_id IN (${portfolioIds})`);
+    // Hent alle portfolio ID'er for brugeren
+const fåBrugerensPortfolioIder = await pool.request()
+  .input("user_id", sql.Int, userId)
+  .query(`SELECT id FROM dbo.Portfolios WHERE user_id = @user_id`);
 
-    const aktieDataRealiseretResultat = aktieDataRealiseretSell.recordset[0].total - aktieDataRealiseretBuy.recordset[0].total;
+const brugerensPortfolioId = fåBrugerensPortfolioIder.recordset.map(row => row.id);
 
-    console.log("Total realiseret aktie-køb:", aktieDataRealiseretResultat);
+let aktieDataRealiseretResultat = 0; // Standardværdi, hvis der ingen data er
+
+if (brugerensPortfolioId.length > 0) {
+  // Lav en kommasepareret liste til sql IN-udtryk
+  const portfolioIds = brugerensPortfolioId.join(",");
+
+  // Hent summen af buy_price for de fundne portfolio id'er
+  const aktieDataRealiseretBuy = await pool.request()
+    .query(`SELECT ISNULL(SUM(buy_price), 0) AS total FROM Trades WHERE portfolio_id IN (${portfolioIds}) AND quantity_sold != 0`);
+
+  const aktieDataRealiseretSell = await pool.request()
+    .query(`SELECT ISNULL(SUM(sell_price), 0) AS total FROM Trades WHERE portfolio_id IN (${portfolioIds})`);
+
+  const totalBuy = aktieDataRealiseretBuy.recordset[0].total || 0;
+  const totalSell = aktieDataRealiseretSell.recordset[0].total || 0;
+
+  aktieDataRealiseretResultat = totalSell - totalBuy;
+} else {
+  console.log("Ingen portfolier fundet for brugeren.");
+}
+
+console.log("Total realiseret aktie-køb:", aktieDataRealiseretResultat);
+
+// resten af din kode fortsætter uanset om der var portfolier eller ej
+
+
 
 
 
@@ -92,63 +100,56 @@ router.get("/dashboard", async (req, res) => {
     //
     // -----------------------------------------------------------------------------------
 
-   const tilfældigAktie = await pool.request()
-   // Her defineres en parameter 'userId', som vi beskytter mod SQL injection
-   .input("userId", sql.Int, userId)
-   // Denne SQL-forespørgsel vælger én tilfældig aktie tilhørende brugeren
-   .query(`
+  const tilfældigAktie = await pool.request()
+  .input("userId", sql.Int, userId)
+  .query(`
     SELECT TOP 1 name, created_at
     FROM Stocks
     WHERE user_id = @userId
-    ORDER BY NEWID();  -- Sorterer rækker tilfældigt, så vi får en tilfældig en med TOP 1
+    ORDER BY NEWID();
   `);
-  
-  // resultatet fra SQL-forespørgslen kommer som et array i recordset
-  // selvom vi kun får en række, bliver det stadig et array med et objekt
-  const tilfældigAktieResultat = tilfældigAktie.recordset; 
 
-  let tilfældigAktieKøbsdato = tilfældigAktieResultat[0].created_at;
-  console.log(tilfældigAktieResultat[0].created_at);
+const tilfældigAktieResultat = tilfældigAktie.recordset;
 
+let tilfældigAktieKøbsdato = 0; // variabel til at gemme købsdatoen
 
+let priserOgDatoer = []; // objekt der skal indeholde datoer og priser
 
+if (tilfældigAktieResultat.length === 0) {
+  console.log("Ingen aktier fundet for brugeren.");
+} else {
+  tilfældigAktieKøbsdato = tilfældigAktieResultat[0].created_at;
+  console.log(tilfældigAktieKøbsdato);
 
-  let priserOgDatoer = []; // objekt der skal indeholde datoer og priser
   try {
-  // 1. Hent symbolet på aktien fra den tilfældige aktie valgt tidligere
-  const aktie = tilfældigAktieResultat[0]; // fx { name: "AAPL" }
-  const aktieSymbol = aktie.name;
-  
-  
-// 2. Sæt datointerval: Fra i dag minus 1 måned, til i dag
-const dagsDato = new Date();
-const sidsteMåned = new Date();
-sidsteMåned.setMonth(dagsDato.getMonth() - 1); // Træk én måned fra dags dato
+    const aktie = tilfældigAktieResultat[0];
+    const aktieSymbol = aktie.name;
 
-// 3. Opsæt forespørgselsindstillinger
-const forespørgsel = {
-  period1: sidsteMåned,   // Startdato: en måned tilbage
-  period2: dagsDato,      // Slutdato: i dag
-  interval: '1d'          // Dagligt interval
-};
+    const dagsDato = new Date();
+    const sidsteMåned = new Date();
+    sidsteMåned.setMonth(dagsDato.getMonth() - 1);
 
+    const forespørgsel = {
+      period1: sidsteMåned,
+      period2: dagsDato,
+      interval: '1d'
+    };
 
-  // 4. Hent historiske data for aktien
-  const historiskeData = await yahooFinance.historical(aktieSymbol, forespørgsel);
+    const historiskeData = await yahooFinance.historical(aktieSymbol, forespørgsel);
 
-  // 5. Udtræk dato og slutpris for hver dag
-  priserOgDatoer = historiskeData.map(dag => ({
-    dato: dag.date.toISOString().split('T')[0], // Kun dato i format "ÅÅÅÅ-MM-DD"
-    pris: dag.close                              // Slutkurs den dag (regular market price)
-  }));
-  
-  // 6. Udskriv data
-  console.log("Aktiedata for det seneste år:", priserOgDatoer);
-  
+    priserOgDatoer = historiskeData.map(dag => ({
+      dato: dag.date.toISOString().split('T')[0],
+      pris: dag.close
+    }));
+
+    console.log("Aktiedata for den seneste måned:", priserOgDatoer);
+  } catch (error) {
+    console.error("Fejl under hentning af aktiedata:", error);
+  }
 }
-catch (fejl) {
-  console.error("Fejl ved hentning af aktiedata:", fejl);
-}
+
+// Programmet fortsætter her uanset om der fandtes en aktie eller ej
+
     
 
 
