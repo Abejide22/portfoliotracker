@@ -71,7 +71,8 @@ router.get("/dashboard", async (req, res) => {
   // selvom vi kun får en række, bliver det stadig et array med et objekt
   const tilfældigAktieResultat = tilfældigAktie.recordset; 
 
-
+  let tilfældigAktieKøbsdato = tilfældigAktieResultat[0].created_at;
+  console.log(tilfældigAktieResultat[0].created_at);
 
 
 
@@ -83,18 +84,18 @@ router.get("/dashboard", async (req, res) => {
   const aktieSymbol = aktie.name;
   
   
+// 2. Sæt datointerval: Fra i dag minus 1 måned, til i dag
+const dagsDato = new Date();
+const sidsteMåned = new Date();
+sidsteMåned.setMonth(dagsDato.getMonth() - 1); // Træk én måned fra dags dato
 
-  // 2. Sæt datointerval: Fra i dag minus 1 år, til i dag
-  const dagsDato = new Date();
-  const sidsteAar = new Date();
-  sidsteAar.setFullYear(dagsDato.getFullYear() - 1);
+// 3. Opsæt forespørgselsindstillinger
+const forespørgsel = {
+  period1: sidsteMåned,   // Startdato: en måned tilbage
+  period2: dagsDato,      // Slutdato: i dag
+  interval: '1d'          // Dagligt interval
+};
 
-  // 3. Opsæt forespørgselsindstillinger
-  const forespørgsel = {
-    period1: sidsteAar,   // Startdato
-    period2: dagsDato,    // Slutdato (i dag)
-    interval: '1d'        // Dagligt interval
-  };
 
   // 4. Hent historiske data for aktien
   const historiskeData = await yahooFinance.historical(aktieSymbol, forespørgsel);
@@ -124,8 +125,9 @@ catch (fejl) {
       totalRealizedValue,
       top5Stocks,
       top5ProfitableStocks,
-      tilfældigAktieResultat,
-      priserOgDatoer
+      tilfældigAktieResultat, // navn på aktie der er blevet valgt
+      priserOgDatoer, // priser og datoer på valgt aktie
+      tilfældigAktieKøbsdato  // dato for hvornår aktien er blevet købt
     });
   } catch (err) {
     console.error("Fejl ved hentning af data til dashboard:", err);

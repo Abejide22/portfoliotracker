@@ -1,17 +1,16 @@
 const { expect } = require("chai");
-const express = require("express");
+const portfolioRoutes = require("../backend/routes/portfolio_routes");
 const { pool } = require("../backend/database/database");
-const accountRoutes = require("../backend/routes/account_routes");
 
-describe("POST /deposit", () => {
-  let req, res, next;
+describe("POST /create-portfolio", () => {
+  let req, res;
 
   beforeEach(() => {
-    // Mock req, res og next
+    // Mock req og res
     req = {
       body: {
+        portfolioName: "Min Nye Portefølje", // Mock porteføljenavn
         accountId: 1, // Mock konto-id
-        amount: 1000.0, // Mock beløb
       },
       session: {
         userId: 123, // Mock bruger-id
@@ -32,16 +31,12 @@ describe("POST /deposit", () => {
         this.message = msg; // Gemmer beskeden
       },
     };
-    next = () => {}; // Mock next-metoden
 
     // Mock databaseforespørgsler
     pool.request = () => ({
       input: () => ({
         query: async (query) => {
-          if (query.includes("UPDATE Accounts SET balance = balance +")) {
-            return { rowsAffected: [1] }; // Simuler en vellykket opdatering
-          }
-          if (query.includes("INSERT INTO Transactions")) {
+          if (query.includes("INSERT INTO Portfolios")) {
             return { rowsAffected: [1] }; // Simuler en vellykket indsættelse
           }
           throw new Error("Uventet forespørgsel"); // Hvis forespørgslen ikke matcher
@@ -50,20 +45,23 @@ describe("POST /deposit", () => {
     });
   });
 
-  it("skal indsætte penge på kontoen og opdatere saldoen", async () => {
-    // Find ruten for /deposit
-    const depositRoute = accountRoutes.stack.find(
-      (layer) => layer.route && layer.route.path === "/deposit" && layer.route.methods.post
+  it("skal oprette en ny portefølje og redirecte til /portfolios", async () => {
+    // Find ruten for /create-portfolio
+    const createPortfolioRoute = portfolioRoutes.stack.find(
+        (layer) =>
+        layer.route &&
+        layer.route.path === "/create-portfolio" &&
+        layer.route.methods.post
     );
 
     // Kald ruten direkte
-    await depositRoute.route.stack[0].handle(req, res, next);
+    await createPortfolioRoute.route.stack[0].handle(req, res);
 
     // Tjek at redirect blev kaldt korrekt
-    expect(res.redirectPath).to.equal("/accounts");
-  });
+    expect(res.redirectPath).to.equal("/portfolios");
+    });
 
-  it("skal returnere en fejl, hvis der opstår en databasefejl", async () => {
+  it("skal returnere en fejl, hvis databaseforespørgslen fejler", async () => {
     // Mock databaseforespørgsel til at simulere en fejl
     pool.request = () => ({
       input: () => ({
@@ -73,18 +71,21 @@ describe("POST /deposit", () => {
       }),
     });
 
-    // Find ruten for /deposit
-    const depositRoute = accountRoutes.stack.find(
-      (layer) => layer.route && layer.route.path === "/deposit" && layer.route.methods.post
+    // Find ruten for /create-portfolio
+    const createPortfolioRoute = portfolioRoutes.stack.find(
+      (layer) =>
+        layer.route &&
+        layer.route.path === "/create-portfolio" &&
+        layer.route.methods.post
     );
 
     // Kald ruten direkte
-    await depositRoute.route.stack[0].handle(req, res, next);
+    await createPortfolioRoute.route.stack[0].handle(req, res);
 
     // Tjek at status 500 blev sendt
     expect(res.statusCode).to.equal(500);
 
     // Tjek at send blev kaldt med en fejlbesked
-    expect(res.message).to.equal("Noget gik galt ved indbetaling.");
+    expect(res.message).to.equal("Noget gik galt ved oprettelse af portefølje.");
   });
 });
