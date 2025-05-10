@@ -7,7 +7,7 @@ const fs = require("fs");
 const request = require("request");
 const yahooFinance = require("yahoo-finance2").default; // Tilføjet for at kunne hente aktiekurser
 
-router.use(express.urlencoded({ extended: true })); // Gør det muligt at læse data fra formularer
+router.use(express.urlencoded({extended: true})); // Gør det muligt at læse data fra formularer
 
 // Portfolio - Routes
 
@@ -223,7 +223,7 @@ router.get("/portfolios", async (req, res) => {
     // Endelig log af det data, der sendes til EJS-templaten
     console.log("SENDT PIECHARTDATA TIL EJS:", filteredPieChartData);
 
-    // Renderer 'portfolios'-siden med alle beregnede data til brug i UI
+    // Renderer 'portfolios'-siden med alle beregnede data
     res.render("portfolios", {
       portfolios,
       userId,
@@ -242,37 +242,35 @@ router.get("/portfolios", async (req, res) => {
 });
 
 // Portfolio Transaction - route
-
 router.get("/portfoliotransactions", async (req, res) => {
-// Her tjekkes om brugeren er logget ind, hvis ikke sendes brugeren til login siden.
+  // Her tjekkes om brugeren er logget ind, hvis ikke sendes brugeren til login siden.
   const userId = req.session.userId;
   if (!userId) return res.redirect("/login");
 
   try {
     await poolConnect;
-// Her forbindes der til databasen og der hentes alle handler til brugerens porteføljer
+    // Her forbindes der til databasen og der hentes alle handler til brugerens porteføljer
     const result = await pool
       .request()
       .input("user_id", sql.Int, userId)
       .query(`
-      SELECT 
-  ISNULL(Trades.sell_date, Trades.created_at) AS dato,
-  Trades.buy_price,
-  Trades.sell_price,
-  Trades.quantity_bought,
-  Trades.quantity_sold,
-  Portfolios.name AS portfolio_name,
-  Stocks.name AS stock_name
-FROM Trades
-LEFT JOIN Stocks ON Trades.stock_id = Stocks.id
-JOIN Portfolios ON Trades.portfolio_id = Portfolios.id
-WHERE Portfolios.user_id = @user_id
-ORDER BY dato DESC;
+        SELECT 
+          ISNULL(Trades.sell_date, Trades.created_at) AS dato,
+          Trades.buy_price,
+          Trades.sell_price,
+          Trades.quantity_bought,
+          Trades.quantity_sold,
+          Portfolios.name AS portfolio_name,
+          Stocks.name AS stock_name
+        FROM Trades
+        LEFT JOIN Stocks ON Trades.stock_id = Stocks.id
+        JOIN Portfolios ON Trades.portfolio_id = Portfolios.id
+        WHERE Portfolios.user_id = @user_id
+        ORDER BY dato DESC;
       `);
 
-    // Her bruger vi for-løkke
     const trades = [];
-    for (let i = 0; i < result.recordset.length; i++) {
+    for (let i = 0; i < result.recordset.length; i++) { // Gennemgår alle rækker i resultatet
       const række = result.recordset[i]; // henter én række fra databasen
       const tradeObjekt = new Trade(række); // laver objekt ud fra rækken
       trades.push(tradeObjekt); // lægger objektet i listen
