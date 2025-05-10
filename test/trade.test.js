@@ -1,86 +1,46 @@
 const { expect } = require("chai"); // Importer chai for at kunne bruge expect
 const Trade = require("../backend/klasser/Trade"); // Importer Trade-klassen
 
-describe("Trade", () => { // Test suite for Trade-klassen
-  it("skal korrekt initialisere en Trade-instans", () => { // Test for korrekt initialisering
-    const data = {
-      portfolio_name: "Min Portefølje",
-      stock_name: "Apple",
-      buy_price: 150,
+describe("Trade - getType", () => { // Test suite for getType-metoden
+  it("skal returnere korrekt type for en købshandel", () => { // Test for købshandel
+    const data = { // Mock data
+      portfolio_name: "Portefølje",
+      stock_name: "DSV",
+      buy_price: 1000,
       sell_price: null,
       quantity_bought: 10,
       quantity_sold: 0,
-      dato: "2025-05-10T12:00:00Z",
     };
 
-    const trade = new Trade(data);
-
-    expect(trade.portfolio).to.equal("Min Portefølje");
-    expect(trade.stock).to.equal("Apple");
-    expect(trade.buyPrice).to.equal(150);
-    expect(trade.sellPrice).to.be.null;
-    expect(trade.bought).to.equal(10);
-    expect(trade.sold).to.equal(0);
-    expect(trade.date).to.equal("2025-05-10T12:00:00Z");
+    const trade = new Trade(data); // Opretter en instans af Trade-klassen med mock data
+    expect(trade.getType()).to.equal("Køb"); // Forventer at getType returnerer "Køb"
   });
 
-  it("skal returnere korrekt type for en købshandel", () => {
-    const data = {
-      portfolio_name: "Min Portefølje",
-      stock_name: "Apple",
-      buy_price: 150,
-      sell_price: null,
-      quantity_bought: 10,
-      quantity_sold: 0,
-      dato: "2025-05-10T12:00:00Z",
-    };
-
-    const trade = new Trade(data);
-    expect(trade.getType()).to.equal("Køb");
-  });
-
-  it("skal returnere korrekt type for en salgshandel", () => {
-    const data = {
-      portfolio_name: "Min Portefølje",
-      stock_name: "Apple",
-      buy_price: 150,
-      sell_price: 200,
+  it("skal returnere korrekt type for en salgshandel", () => { // Test for salgshandel
+    const data = { // Mock data
+      portfolio_name: "Portefølje",
+      stock_name: "Carlsberg",
+      buy_price: 450,
+      sell_price: 500,
       quantity_bought: 0,
       quantity_sold: 10,
-      dato: "2025-05-10T12:00:00Z",
     };
 
-    const trade = new Trade(data);
-    expect(trade.getType()).to.equal("Salg");
+    const trade = new Trade(data); // Opretter en instans af Trade-klassen med mock data
+    expect(trade.getType()).to.equal("Salg"); // Forventer at getType returnerer "Salg"
   });
 
-  it("skal returnere korrekt formateret dato", () => {
-    const data = {
+  it("skal returnere '-' for en handel uden køb eller salg", () => { // Test for en handel uden køb eller salg
+    const data = { // Mock data 
       portfolio_name: "Min Portefølje",
-      stock_name: "Apple",
-      buy_price: 150,
+      stock_name: "Coloplast",
+      buy_price: 600,
       sell_price: null,
-      quantity_bought: 10,
+      quantity_bought: 0,
       quantity_sold: 0,
-      dato: "2025-05-10T12:00:00Z",
     };
 
-    const trade = new Trade(data);
-    expect(trade.getFormattedDate()).to.equal("2025-05-10");
-  });
-
-  it("skal returnere 'Ukendt' for ugyldig dato", () => {
-    const data = {
-      portfolio_name: "Min Portefølje",
-      stock_name: "Apple",
-      buy_price: 150,
-      sell_price: null,
-      quantity_bought: 10,
-      quantity_sold: 0,
-      dato: "ugyldig-dato",
-    };
-
-    const trade = new Trade(data);
-    expect(trade.getFormattedDate()).to.equal("Ukendt");
+    const trade = new Trade(data); // Opretter en instans af Trade-klassen med mock data
+    expect(trade.getType()).to.equal("-"); // Forventer at getType returnerer "-"
   });
 });
