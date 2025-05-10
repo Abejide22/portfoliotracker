@@ -119,35 +119,60 @@ router.post("/trade", async (req, res) => {
 
       if(kontoBalance > totalPris)
         {
-        // Udfør INSERT i Stocks-tabellen
-        await pool
-        .request()
-        .input("user_id", sql.Int, userId)  // Input user_id
-        .input("portfolio_id", sql.Int, portfolioId)  // Input portfolio_id
-        .input("name", sql.NVarChar, aktieTickerValgt)
-        .input("type", sql.NVarChar, "aktie")
-        .input("quantity", sql.Int, antalAktier)
-        .input("price", sql.Decimal(10, 2), totalPris)
-        .query(`
-        INSERT INTO Stocks (user_id, portfolio_id, name, type, quantity, price, created_at)
-        VALUES (@user_id, @portfolio_id, @name, @type, @quantity, @price, GETDATE());
-        `);
+        // Check if stock already exists
+        const existingStockResult = await pool
+          .request()
+          .input("user_id", sql.Int, userId)
+          .input("portfolio_id", sql.Int, portfolioId)
+          .input("name", sql.NVarChar, aktieTickerValgt)
+          .query(`
+            SELECT id, quantity, price FROM Stocks
+            WHERE user_id = @user_id AND portfolio_id = @portfolio_id AND name = @name
+          `);
 
-        // Find aktiens ID baseret på navn
-        const stockResult = await pool
-        .request()
-        .input("user_id", sql.Int, userId)
-        .input("portfolio_id", sql.Int, portfolioId)
-        .input("name", sql.NVarChar, aktieTickerValgt)
-        .query(`
-          SELECT id FROM Stocks 
-          WHERE user_id = @user_id AND portfolio_id = @portfolio_id AND name = @name
-        `);
+        let stockId;
 
-        if (!stockResult.recordset || stockResult.recordset.length === 0) {
-          return res.status(400).send("Aktien findes ikke i Stocks-tabellen.");
+        if (existingStockResult.recordset.length > 0) {
+          const existingStock = existingStockResult.recordset[0];
+          const updatedQuantity = existingStock.quantity + antalAktier;
+          const updatedPrice = parseFloat(existingStock.price) + parseFloat(totalPris);
+
+          await pool.request()
+            .input("id", sql.Int, existingStock.id)
+            .input("quantity", sql.Int, updatedQuantity)
+            .input("price", sql.Decimal(10, 2), updatedPrice)
+            .query(`
+              UPDATE Stocks SET quantity = @quantity, price = @price WHERE id = @id
+            `);
+
+          stockId = existingStock.id;
+        } else {
+          await pool
+            .request()
+            .input("user_id", sql.Int, userId)
+            .input("portfolio_id", sql.Int, portfolioId)
+            .input("name", sql.NVarChar, aktieTickerValgt)
+            .input("type", sql.NVarChar, "aktie")
+            .input("quantity", sql.Int, antalAktier)
+            .input("price", sql.Decimal(10, 2), totalPris)
+            .query(`
+              INSERT INTO Stocks (user_id, portfolio_id, name, type, quantity, price, created_at)
+              VALUES (@user_id, @portfolio_id, @name, @type, @quantity, @price, GETDATE());
+            `);
+
+          // retrieve new stock ID
+          const stockResult = await pool
+            .request()
+            .input("user_id", sql.Int, userId)
+            .input("portfolio_id", sql.Int, portfolioId)
+            .input("name", sql.NVarChar, aktieTickerValgt)
+            .query(`
+              SELECT id FROM Stocks 
+              WHERE user_id = @user_id AND portfolio_id = @portfolio_id AND name = @name
+            `);
+          
+          stockId = stockResult.recordset[0].id;
         }
-        const stockId = stockResult.recordset[0].id;
 
         // Indsæt også en transaktion i Trades-tabellen
         await pool
@@ -240,7 +265,7 @@ router.post("/trade/sell", async (req, res) => {
     }
 
     const nyBeholdning = stock.quantity - antalAktier;
-    const averageBuyPrice = stock.price / stock.quantity;
+    const averageBuyPrice = parseFloat((stock.price / stock.quantity).toFixed(2));
 
     // 3. Indsæt salget i Trades-tabellen
     await pool
@@ -277,11 +302,14 @@ router.post("/trade/sell", async (req, res) => {
           .query(`UPDATE Stocks SET quantity = 0 WHERE id = @id`);
       }
     } else {
+      const nyPris = parseFloat((averageBuyPrice * nyBeholdning).toFixed(2));
+
       await pool
         .request()
         .input("quantity", sql.Int, nyBeholdning)
+        .input("price", sql.Decimal(10, 2), nyPris)
         .input("id", sql.Int, stock.id)
-        .query(`UPDATE Stocks SET quantity = @quantity WHERE id = @id`);
+        .query(`UPDATE Stocks SET quantity = @quantity, price = @price WHERE id = @id`);
     }
 
     // 5. Opdater konto
