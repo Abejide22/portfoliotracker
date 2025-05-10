@@ -31,12 +31,12 @@
         <span>Total realiseret værdi</span>
         <hr>
         <span>
-          <% if (totalRealizedValue >= 0) { %>
+          <% if (aktieDataRealiseretResultat >= 0) { %>
             <span class="material-symbols-outlined" style="color: limegreen">arrow_upward_alt</span>
-            <span style="color: limegreen;"><%= totalRealizedValue.toFixed(2) %> DKK</span>
+            <span style="color: limegreen;"><%= aktieDataRealiseretResultat.toFixed(2) %> DKK</span>
           <% } else { %>
             <span class="material-symbols-outlined" style="color: red">arrow_downward_alt</span>
-            <span style="color: red;"><%= totalRealizedValue.toFixed(2) %> DKK</span>
+            <span style="color: red;"><%= aktieDataRealiseretResultat.toFixed(2) %> DKK</span>
           <% } %>
         </span>
       </div>
@@ -132,7 +132,9 @@
    // Server-side data gjort tilgængelig i browser-JS
   const priserOgDatoer = <%- JSON.stringify(priserOgDatoer) %>;
   const tickerNavn = <%- JSON.stringify(tilfældigAktieResultat) %>;
-  let aktieKøbsdato = <%- JSON.stringify(tilfældigAktieKøbsdato) %>
+  let aktieKøbsdato = <%- JSON.stringify(tilfældigAktieKøbsdato) %>;
+  let aktieDataRealiseretResultat = <%- JSON.stringify(aktieDataRealiseretResultat) %>;
+
 
 
   // log hele listen i konsollen

@@ -47,7 +47,43 @@ router.get("/dashboard", async (req, res) => {
     const top5Stocks = dashboard.getTop5Stocks();
     const totalValue = dashboard.getTotalValue();
     const totalRealizedValue = dashboard.getTotalRealizedValue();
+    console.log(totalRealizedValue);
     const top5ProfitableStocks = dashboard.getTop5ProfitableStocks();
+
+
+    // ----------------------------------------------------------------------------------
+    //
+    // BEREGN TOTAL REALISERET VÆRDI
+    //
+    // ----------------------------------------------------------------------------------
+
+    // Hent alle portfolio ID'er for brugeren
+    const fåBrugerensPortfolioIder = await pool.request()
+    .input("user_id", sql.Int, userId)
+    .query(`SELECT id FROM dbo.Portfolios WHERE user_id = @user_id`);
+    
+    const brugerensPortfolioId = fåBrugerensPortfolioIder.recordset.map(row => row.id);
+    
+    // Hvis der ikke er nogen portfolier, returner 0 som resultat
+    if (brugerensPortfolioId.length === 0) {
+      console.log("Ingen portfolier fundet for brugeren.");
+      return;
+    }
+    
+    // Lav en kommasepareret liste til sql IN-udtryk
+    const portfolioIds = brugerensPortfolioId.join(",");
+    
+    // Hent summen af buy_price for de fundne portfolio id'er
+    const aktieDataRealiseretBuy = await pool.request()
+    .query(`SELECT SUM(buy_price) AS total FROM Trades WHERE portfolio_id IN (${portfolioIds}) AND quantity_sold != 0`);
+    
+    const aktieDataRealiseretSell = await pool.request()
+    .query(`SELECT SUM(sell_price) AS total FROM Trades WHERE portfolio_id IN (${portfolioIds})`);
+
+    const aktieDataRealiseretResultat = aktieDataRealiseretBuy.recordset[0].total - aktieDataRealiseretSell.recordset[0].total;
+
+    console.log("Total realiseret aktie-køb:", aktieDataRealiseretResultat);
+
 
 
     // ----------------------------------------------------------------------------------
@@ -127,7 +163,8 @@ catch (fejl) {
       top5ProfitableStocks,
       tilfældigAktieResultat, // navn på aktie der er blevet valgt
       priserOgDatoer, // priser og datoer på valgt aktie
-      tilfældigAktieKøbsdato  // dato for hvornår aktien er blevet købt
+      tilfældigAktieKøbsdato,  // dato for hvornår aktien er blevet købt
+      aktieDataRealiseretResultat // boi dette er bare en episk test
     });
   } catch (err) {
     console.error("Fejl ved hentning af data til dashboard:", err);
