@@ -1,4 +1,7 @@
+// Her definerer vi klassen Trade, som repræsenterer en handel med aktier.
 class Trade {
+  
+  // Konstruktøren tager et objekt som parameter, der indeholder oplysninger om handlen.
     constructor(data) {
       this.portfolio = data.portfolio_name;
       this.stock = data.stock_name;
@@ -9,12 +12,14 @@ class Trade {
       this.date = data.dato;
     }
   
+  // Metode der returnerer hvilken handelstype det er (køb eller salg)
     getType() {
       if (this.bought > 0) return "Køb";
       if (this.sold > 0) return "Salg";
       return "-";
     }
-  
+
+    // Metode der returnerer daten for handlen
     getFormattedDate() {
         if (!this.date) return "Ukendt";
         const dato = new Date(this.date);
@@ -23,5 +28,6 @@ class Trade {
       }
   }
   
+// Exporterer Trade klassen, så den kan bruges i andre filer
   module.exports = Trade;
 
