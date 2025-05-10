@@ -17,9 +17,9 @@ describe("POST /create-portfolio", () => { // laver en test suite for /create-po
       },
     };
     res = {
-      redirectPath: "/portfolios", // Mocker en redirect-sti - ellers vil den være undefined
-      statusCode: null, // Mocker statuskoden
-      message: null, // Mocker beskeden
+      redirectPath: "/portfolios", // Mocker en redirect-sti til portfolios
+      statusCode: null,
+      message: null, 
       redirect(path) {
         this.redirectPath = path; // Gemmer redirect-stien
       },
@@ -64,14 +64,16 @@ describe("POST /create-portfolio", () => { // laver en test suite for /create-po
   });
 
   it("skal returnere en fejl, hvis databaseforespørgslen fejler", async () => {
-    // Mock databaseforespørgsel til at simulere en fejl
-    pool.request = () => ({
-      input: () => ({
+  // Mock databaseforespørgsler til at simulere en fejl
+  pool.request = () => {
+      const mockRequest = {
+        input: () => mockRequest, // Returner samme objekt for at understøtte kædede kald
         query: async () => {
-          throw new Error("Databasefejl"); 
+          throw new Error("Databasefejl"); // Simuler en databasefejl
         },
-      }),
-    });
+      };
+      return mockRequest;
+    };
 
     // Kald ruten direkte
     await createPortfolioRoute.route.stack[0].handle(req, res);
