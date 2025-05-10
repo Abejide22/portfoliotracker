@@ -1,6 +1,6 @@
-const { expect } = require("chai"); // import chai for at kunne bruge expect
+const {expect} = require("chai"); // import chai for at kunne bruge expect
 const portfolioRoutes = require("../backend/routes/portfolio_routes"); // import portfolio_routes
-const { pool } = require("../backend/database/database"); // import databaseforbindelse
+const {pool} = require("../backend/database/database"); // import databaseforbindelse
 
 describe("POST /create-portfolio", () => { // laver en test suite for /create-portfolio
   let req, res, createPortfolioRoute; // definerer req, res og createPortfolioRoute som variabler
@@ -32,12 +32,12 @@ describe("POST /create-portfolio", () => { // laver en test suite for /create-po
       },
     };
 
-    // Find ruten for /create-portfolio
+    // Find ruten for /create-portfolio i portfolioRoutes. vi skal finde den korrekte rute. 
     createPortfolioRoute = portfolioRoutes.stack.find(
-      (layer) =>
-        layer.route &&
-        layer.route.path === "/create-portfolio" &&
-        layer.route.methods.post
+      (ledEfter) =>
+        ledEfter.route &&
+        ledEfter.route.path === "/create-portfolio" &&
+        ledEfter.route.methods.post
     );
   });
 
@@ -56,7 +56,7 @@ describe("POST /create-portfolio", () => { // laver en test suite for /create-po
       return mockRequest;
     };
 
-    // Kald ruten direkte
+    // Kald ruten direkte 
     await createPortfolioRoute.route.stack[0].handle(req, res);
 
     // Tjek at redirect blev kaldt korrekt
@@ -78,7 +78,7 @@ describe("POST /create-portfolio", () => { // laver en test suite for /create-po
     // Kald ruten direkte
     await createPortfolioRoute.route.stack[0].handle(req, res);
 
-    // Tjek at status 500 blev sendt
+    // Tjek at status 500 (internal server error) blev sendt
     expect(res.statusCode).to.equal(500);
 
     // Tjek at send blev kaldt med en fejlbesked
