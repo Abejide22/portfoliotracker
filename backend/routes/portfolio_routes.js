@@ -80,7 +80,7 @@ router.get("/portfolios", async (req, res) => {
 
     const portfolios = portfoliosResult.recordset; // Gemmer portefølje-data i et array
 
-    // Initialiserer variabler til at holde totalværdier på tværs af alle porteføljer
+    // variabler til at holde totalværdier på tværs af alle porteføljer
     let totalValue = 0; // Samlet forventet værdi af alle aktier i dag
     let totalValue30DaysAgo = 0; // Samlet forventet værdi for 30 dage siden
 
