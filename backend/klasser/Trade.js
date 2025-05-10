@@ -1,5 +1,5 @@
-class Trade {
-    constructor(data) {
+class Trade { // opretter en klasse
+    constructor(data) { // konstruktør
       this.portfolio = data.portfolio_name;
       this.stock = data.stock_name;
       this.buyPrice = data.buy_price;
