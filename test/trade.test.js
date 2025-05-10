@@ -2,7 +2,7 @@ const { expect } = require("chai"); // Importer chai for at kunne bruge expect
 const Trade = require("../backend/klasser/Trade"); // Importer Trade-klassen
 
 describe("Trade - getType", () => { // Test suite for getType-metoden
-  it("skal returnere korrekt type for en købshandel", () => { // Test for købshandel
+  it("skal returnere korrekt type for købshandel", () => { // Test for købshandel
     const data = { // Mock data
       portfolio_name: "Portefølje",
       stock_name: "DSV",
@@ -16,7 +16,7 @@ describe("Trade - getType", () => { // Test suite for getType-metoden
     expect(trade.getType()).to.equal("Køb"); // Forventer at getType returnerer "Køb"
   });
 
-  it("skal returnere korrekt type for en salgshandel", () => { // Test for salgshandel
+  it("skal returnere korrekt type for salgshandel", () => { // Test for salgshandel
     const data = { // Mock data
       portfolio_name: "Portefølje",
       stock_name: "Carlsberg",
