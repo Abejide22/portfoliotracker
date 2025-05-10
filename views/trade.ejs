@@ -19,7 +19,6 @@
   <!-- Side Navigation -->
   <%- include('partials/sidebar') %>
 
-      
   <br>
       <div id="stockBox_id">
         <input placeholder="Search stocks on CSE..." autofocus id="searchStocks_input_id">
@@ -32,69 +31,69 @@
           <hr id="aktieNavnLinje_id">
           <div id="myChart"></div>
         </div>
+
         <div id="StockPurchaseInfo_id">
-        
-            <input id="NumberOfStocks_id" name="antalAktier" type="number" max="99999" min="1" placeholder="1" required />
-            <span id="totalPrice_id">0.00 DKK</span>
-            <select name="porteføljeSelect" id="vælgPortefølje_id" required>
-              <option value="">Vælg portefølje</option>
-              <!-- Dynamisk indhold her -->
-              </select>
-              
-              <select name="kontoSelect" id="vælgKonto_id" required>
-                <option value="">Vælg konto</option>
-                <!-- Dynamisk indhold her -->
-                </select>
+          <input id="NumberOfStocks_id" name="antalAktier" type="number" max="99999" min="1" placeholder="1" required />
+          <span id="totalPrice_id">0.00 DKK</span>
+          <select name="porteføljeSelect" id="vælgPortefølje_id" required>
+            <option value="">Vælg portefølje</option>
+          </select>
+          
+          <select name="kontoSelect" id="vælgKonto_id" required>
+            <option value="">Vælg konto</option>
+          </select>
                 
-                <input type="hidden" name="aktieTickerValgt" id="aktieTickerValgt" />
-                <input type="hidden" name="totalPris" id="totalPrisInput" />
-                <button id="BuyStockButton_id" onclick="købAktie_tjekForhold()">Purchase</button>
-                <button id="SellStockButton_id" onclick="sælgAktie_tjekForhold()">Sell</button>
-            
-            </div>
-          </div>      
-        </body>
-
-
-<script>
-let stockName = "";
-  let aktieData = ""; // Variabel der skal indeholde aktie data der kommer fra api
-  let aktieTickerValgt = ""; // Variabel der skal gemme tickeren på aktien der er blevet valgt
-  let aktieNavnValgt = ""; // Variabel der skal gemme navn på aktien der er blevet valgt
-
-
-function lavListeMedPorteføljer(){
-  const portfolios = <%- JSON.stringify(portfolios) %>;
-
-  // LAVER ELEMENTER TIL PORTEFØLJE DROPDOWN /
-
-  for(let i = 0; i < portfolios.length; i++){
-    const porteføljeDropdown = document.getElementById("vælgPortefølje_id");
-    const nyOption = document.createElement('option');
+          <input type="hidden" name="aktieTickerValgt" id="aktieTickerValgt"/>
+          <input type="hidden" name="totalPris" id="totalPrisInput"/>
+          <button id="BuyStockButton_id" onclick="købAktie_tjekForhold()">Purchase</button>
+          <button id="SellStockButton_id" onclick="sælgAktie_tjekForhold()">Sell</button>
+        
+        </div>
+      </div>      
+    </body>
     
-    nyOption.textContent = portfolios[i].name;
+    <script>
+    let stockName = "";
+    let aktieData = ""; // Variabel der skal indeholde aktie data der kommer fra api
+    let aktieTickerValgt = ""; // Variabel der skal gemme tickeren på aktien der er blevet valgt
+    let aktieNavnValgt = ""; // Variabel der skal gemme navn på aktien der er blevet valgt
     
-    porteføljeDropdown.appendChild(nyOption);
-  } 
-}
-lavListeMedPorteføljer();
 
+    // LAV PORTEFØLJE DROPDOWN
 
-function lavListeMedAccounts(){
-  
-  const accounts = <%- JSON.stringify(accounts) %>;
-  console.log(accounts);
-
-  for(let i = 0; i < accounts.length; i++){
-    const accountsDropdown = document.getElementById("vælgKonto_id");
-    const nyOption = document.createElement('option');
+    function lavListeMedPorteføljer()
+    {
+      const portfolios = <%- JSON.stringify(portfolios) %>; // Importere portfolios arrayet
+      
+      // Laver elementer til portefølje dropdown
+      
+      for(let i = 0; i < portfolios.length; i++)
+      {
+        const porteføljeDropdown = document.getElementById("vælgPortefølje_id");
+        const nyOption = document.createElement('option');
+        
+        nyOption.textContent = portfolios[i].name;
+        porteføljeDropdown.appendChild(nyOption);
+      } 
+    }
+    lavListeMedPorteføljer(); // kør funktion automatisk
     
-    nyOption.textContent = accounts[i].name;
+    // LAV KONTO DROPDOWN
     
-    accountsDropdown.appendChild(nyOption);
-  }
-}
-lavListeMedAccounts(); 
+    function lavListeMedAccounts(){
+      const accounts = <%- JSON.stringify(accounts) %>;
+      
+      for(let i = 0; i < accounts.length; i++)
+      {
+        // laver elementer til konto dropdown
+        const accountsDropdown = document.getElementById("vælgKonto_id");
+        const nyOption = document.createElement('option');
+        
+        nyOption.textContent = accounts[i].name;
+        accountsDropdown.appendChild(nyOption);
+      }
+    }
+    lavListeMedAccounts(); 
 
 function købAktie_tjekForhold() {
   porteføljeSelect = document.getElementById("vælgPortefølje_id");

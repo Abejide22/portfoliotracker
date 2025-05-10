@@ -1,22 +1,24 @@
-const express = require("express");
-const router = express.Router();
-const { pool, poolConnect, sql } = require("../database/database");
-const Trade = require("../klasser/Trade");
+const express = require("express"); // Henter express frameworket
+const router = express.Router(); // Opretter en router til at håndtere ruter
+const { pool, poolConnect, sql } = require("../database/database"); // Importerer databaseforbindelsen
+const Trade = require("../klasser/Trade"); // Importerer Trade-klassen
 const { getDataByKey } = require("../api_test.js");
 const fs = require("fs");
 const request = require("request");
 const yahooFinance = require("yahoo-finance2").default; // Tilføjet for at kunne hente aktiekurser
 
-router.use(express.urlencoded({ extended: true }));
+router.use(express.urlencoded({ extended: true })); // Gør det muligt at læse data fra formularer
 
-// Routes
+// Portfolio - Routes
 
-// Portfolio-route
+// Add Portfolio-route
 
 router.get("/addportfolio", async (req, res) => {
+  // Her tjekkes om brugeren er logget ind, hvis ikke sendes brugeren til login siden. Derefter hentes brugerens id fra sessionen
   if (!req.session.userId) return res.redirect("/login");
   const userId = req.session.userId;
 
+// Her hentes brugerens konti fra databasen, så den kan vælges når der oprettes en portefølje
   try {
     await poolConnect;
     const result = await pool
@@ -25,6 +27,7 @@ router.get("/addportfolio", async (req, res) => {
       .query("SELECT * FROM Accounts WHERE user_id = @userId");
     const accounts = result.recordset;
 
+// Her renderes addportfolios.ejs filen og konti sendes med som data
     res.render("addportfolios", { userId, accounts });
   } catch (err) {
     console.error("Fejl ved hentning af konti:", err);
@@ -32,13 +35,18 @@ router.get("/addportfolio", async (req, res) => {
   }
 });
 
+
+// Create Portfolio-route
+
 router.post("/create-portfolio", async (req, res) => {
+  // Her læses data fra formularen. Derefter hentes brugerens id fra sessionen
   const { portfolioName, accountId } = req.body;
   const userId = req.session.userId;
 
+  // Her forbindes der til databsen og oprettes en ny portefølje i databasen
   try {
     await poolConnect;
-
+    
     await pool
       .request()
       .input("user_id", sql.Int, userId)
@@ -48,6 +56,7 @@ router.post("/create-portfolio", async (req, res) => {
           VALUES (@user_id, @account_id, @name, GETDATE());
         `);
 
+    // Her sendes brugeren tilbage til portfolios siden
     res.redirect("/portfolios");
   } catch (err) {
     console.error("Fejl ved oprettelse af portefølje:", err);
@@ -233,33 +242,38 @@ router.get("/portfolios", async (req, res) => {
 // Portfolio Transaction - route
 
 router.get("/portfoliotransactions", async (req, res) => {
+// Her tjekkes om brugeren er logget ind, hvis ikke sendes brugeren til login siden.
   const userId = req.session.userId;
   if (!userId) return res.redirect("/login");
 
   try {
     await poolConnect;
-
-    const result = await pool.request().input("user_id", sql.Int, userId)
+// Her forbindes der til databasen og der hentes alle handler til brugerens porteføljer
+    const result = await pool
+      .request()
+      .input("user_id", sql.Int, userId)
       .query(`
-        SELECT 
-          ISNULL(T.sell_date, T.created_at) AS dato,
-          T.buy_price, T.sell_price,
-          T.quantity_bought, T.quantity_sold,
-          P.name AS portfolio_name, 
-          S.name AS stock_name
-        FROM Trades T
-        LEFT JOIN Stocks S ON T.stock_id = S.id
-        JOIN Portfolios P ON T.portfolio_id = P.id
-        WHERE P.user_id = @user_id
-        ORDER BY dato DESC
+      SELECT 
+  ISNULL(Trades.sell_date, Trades.created_at) AS dato,
+  Trades.buy_price,
+  Trades.sell_price,
+  Trades.quantity_bought,
+  Trades.quantity_sold,
+  Portfolios.name AS portfolio_name,
+  Stocks.name AS stock_name
+FROM Trades
+LEFT JOIN Stocks ON Trades.stock_id = Stocks.id
+JOIN Portfolios ON Trades.portfolio_id = Portfolios.id
+WHERE Portfolios.user_id = @user_id
+ORDER BY dato DESC;
       `);
 
     // Her bruger vi for-løkke
     const trades = [];
     for (let i = 0; i < result.recordset.length; i++) {
-      const række = result.recordset[i];
-      const tradeObjekt = new Trade(række); // laver objekt ud fra Trade-klassen
-      trades.push(tradeObjekt); // læg det i listen
+      const række = result.recordset[i]; // henter én række fra databasen
+      const tradeObjekt = new Trade(række); // laver objekt ud fra rækken
+      trades.push(tradeObjekt); // lægger objektet i listen
     }
 
     // send objekterne videre til .ejs-filen
