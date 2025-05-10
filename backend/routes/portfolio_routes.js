@@ -113,7 +113,7 @@ router.get("/portfolios", async (req, res) => {
             };
           }
           stocksAggregated[stock.name].samletAntal += stock.quantity;
-          stocksAggregated[stock.name].samletKøbspris += stock.price * stock.quantity;
+          stocksAggregated[stock.name].samletKøbspris += stock.price;
         }
       });
 
