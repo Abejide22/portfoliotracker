@@ -13,23 +13,23 @@
 </html>
 
 <body>
-  <!-- Top Bar -->
-  <%- include('partials/topbar') %>
+  <!-- Top bar -->
+  <%- include('partials/topbar') %> <!-- Top navigation bar med logo og logout knap -->
 
-  <!-- Side Navigation -->
-  <%- include('partials/sidebar') %>
+  <!-- Side navigation -->
+  <%- include('partials/sidebar') %> <!-- Side navigation bar med links til siderne -->
 
   <br>
-      <div id="stockBox_id">
-        <input placeholder="Search stocks on CSE..." autofocus id="searchStocks_input_id">
+      <div id="stockBox_id"> <!-- Container til aktier -->
+        <input placeholder="Search stocks on CSE..." autofocus id="searchStocks_input_id"> <!-- input felt til at søge efter aktier -->
         <div id="stockListBox_id"></div>
       </div>
       
-      <div id="ViewBuystockBox_id">
+      <div id="ViewBuystockBox_id"> <!-- container indeholder den pågældende aktie -->
         <div id="viewStock_id">
           <span id="aktieNavn_id"></span>
           <hr id="aktieNavnLinje_id">
-          <div id="myChart"></div>
+          <div id="aktieGraf"></div>
         </div>
 
         <div id="StockPurchaseInfo_id">
@@ -405,15 +405,13 @@ function displayStock(event){
 
   let aktieDataPriser = aktieData.closes;
   let aktieDataDatoer = aktieData.dates;
-
-
-// Generér forkortet version igen
-let aktieDataPriser_forkortet = aktieDataPriser.map(num => parseFloat(num.toFixed(2)));
-
-
+  
+  // Generér forkortet version igen
+  
+  let aktieDataPriser_forkortet = aktieDataPriser.map(num => parseFloat(num.toFixed(2)));
   aktieDataDatoer.reverse(); aktieDataPriser.reverse(); // Rerverser så dato og priser udskrives i rigtig række følge fra ældste dato til nyeste dato
 
-  document.getElementById("myChart").innerHTML = "";
+  document.getElementById("aktieGraf").innerHTML = "";
 
   const xValues = aktieDataDatoer;
   const options = {
@@ -432,7 +430,7 @@ let aktieDataPriser_forkortet = aktieDataPriser.map(num => parseFloat(num.toFixe
       categories: xValues,
       labels: {
         style: {
-          colors: '#fff' // Tekstfarve på x-aksen
+          colors: '#fff' // tekstfarve på x-aksen
         }
       },
       title: {   // Titel på x-aksen
@@ -479,7 +477,7 @@ let aktieDataPriser_forkortet = aktieDataPriser.map(num => parseFloat(num.toFixe
       {
         show: true, // sæt til false hvis du vil skjule alle gitterlinjer
         borderColor: 'gray', // farven på linjerne
-        strokeDashArray: 4, // gør dem stiplede (0 = fuldt optrukket)
+        strokeDashArray: 4, // gør dem stiplede
         xaxis:
         {
           lines: {
@@ -494,7 +492,7 @@ let aktieDataPriser_forkortet = aktieDataPriser.map(num => parseFloat(num.toFixe
           }
         }
       };
-      const chart = new ApexCharts(document.querySelector("#myChart"), options);
+      const chart = new ApexCharts(document.querySelector("#aktieGraf"), options);
       chart.render();
     };
     
@@ -502,12 +500,13 @@ let aktieDataPriser_forkortet = aktieDataPriser.map(num => parseFloat(num.toFixe
     const logoutForm = document.querySelector('form[action="/logout"]'); // Finder logout-formularen 
     if (logoutForm) // Tjekker om logoutForm eksisterer
     {
-      logoutForm.addEventListener("submit", function (event) {
+      logoutForm.addEventListener("submit", function (event)
+      {
         const confirmed = confirm("Er du sikker på, at du vil logge ud?");
         if (!confirmed)
         {
           event.preventDefault(); // Stopper formularen
-          }
-        });
+        }
+      });
     }
 </script>
