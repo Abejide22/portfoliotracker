@@ -153,15 +153,15 @@ if (tilfældigAktieResultat.length === 0) {
 
     // Send data til dashboardet
     res.render("dashboard", {
-      userId,
-      totalValue,
-      totalUnrealizedValue,
-      top5Stocks,
-      top5ProfitableStocks,
+      userId, // brugerens id
+      totalValue, // total værdi
+      totalUnrealizedValue, // total urealiseret værdi
+      top5Stocks, // de 5 mest værdifulde aktier
+      top5ProfitableStocks, // vis de 5 mest profitable aktier
       tilfældigAktieResultat, // navn på aktie der er blevet valgt
       priserOgDatoer, // priser og datoer på valgt aktie
       tilfældigAktieKøbsdato,  // dato for hvornår aktien er blevet købt
-      aktieDataRealiseretResultat // boi dette er bare en episk test
+      aktieDataRealiseretResultat, // total realiseret aktie-køb
     });
   } catch (err) {
     console.error("Fejl ved hentning af data til dashboard:", err);

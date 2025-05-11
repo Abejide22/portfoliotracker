@@ -113,4 +113,4 @@ class dashboardKlasser {
   }
 }
 
-module.exports = dashboardKlasser;
+module.exports = dashboardKlasser; // Eksporter klassen, så den kan bruges i andre filer
