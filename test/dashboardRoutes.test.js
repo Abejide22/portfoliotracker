@@ -13,7 +13,7 @@ describe("getTop5Stocks", () => {
       { stock_name: "Pandora", portfolio_name: "Smykker", quantity_bought: 1, quantity_sold: 0, current_price: 300 },
     ];
 
-    // Opret en instans af dashboard_Klasser
+    // Opret en instans af dashboardKlasser
     const dashboard = new dashboard_Klasser(trades, 0);
 
     // Kalder metoden
@@ -32,7 +32,7 @@ describe("getTop5Stocks", () => {
       { stock_name: "DSV", portfolio_name: "Transport", quantity_bought: 0, quantity_sold: 0, current_price: 1500 },
     ];
 
-    // Opret en instans af dashboard_Klasser
+    // Opret en instans af dashboardKlasser
     const dashboard = new dashboard_Klasser(trades, 0);
 
     // Kalder metoden
