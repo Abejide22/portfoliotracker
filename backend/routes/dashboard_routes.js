@@ -1,15 +1,17 @@
-const express = require("express");
-const router = express.Router();
-const { pool, poolConnect, sql } = require("../database/database");
-const dashboardKlasser = require("../klasser/dashboard_klasser");
-const yahooFinance = require('yahoo-finance2').default;
+const express = require("express"); // Henter express frameworket
+const router = express.Router(); // Opretter en router
+const { pool, poolConnect, sql } = require("../database/database"); // Importerer databaseforbindelsen
+const dashboard_Klasser = require("../klasser/dashboard_klasser"); // Importerer dashboard-klassen
+const yahooFinance = require('yahoo-finance2').default; // Importerer Yahoo Finance API
 
 router.get("/dashboard", async (req, res) => {
+
+  // Tjek om brugeren er logget ind
   if (!req.session.userId) return res.redirect("/login");
   const userId = req.session.userId;
 
   try {
-    await poolConnect;
+    await poolConnect; // Opretter forbindelse til databasen
 
     // Hent brugerens kontante beholdning fra Accounts-tabellen
     const accountsResult = await pool.request()
@@ -55,7 +57,6 @@ router.get("/dashboard", async (req, res) => {
     // ----------------------------------------------------------------------------------
 
     // Hent alle portfolio ID'er for brugeren
-    // Hent alle portfolio ID'er for brugeren
 const fåBrugerensPortfolioIder = await pool.request()
   .input("user_id", sql.Int, userId)
   .query(`SELECT id FROM dbo.Portfolios WHERE user_id = @user_id`);
@@ -64,28 +65,28 @@ const brugerensPortfolioId = fåBrugerensPortfolioIder.recordset.map(row => row.
 
 let aktieDataRealiseretResultat = 0; // Standardværdi, hvis der ingen data er
 
-if (brugerensPortfolioId.length > 0) {
-  // Lav en kommasepareret liste til sql IN-udtryk
-  const portfolioIds = brugerensPortfolioId.join(",");
+    if (brugerensPortfolioId.length > 0) {
+      // Lav en kommasepareret liste til sql IN-udtryk
+      const portfolioIds = brugerensPortfolioId.join(",");
 
-  // Hent summen af buy_price for de fundne portfolio id'er
-  const aktieDataRealiseretBuy = await pool.request()
-    .query(`SELECT ISNULL(SUM(buy_price), 0) AS total FROM Trades WHERE portfolio_id IN (${portfolioIds}) AND quantity_sold != 0`);
+      // Hent summen af buy_price for de fundne portfolio id'er
+      const aktieDataRealiseretBuy = await pool.request()
+        .query(`SELECT ISNULL(SUM(buy_price), 0) AS total FROM Trades WHERE portfolio_id IN (${portfolioIds}) AND quantity_sold != 0`);
 
-  const aktieDataRealiseretSell = await pool.request()
-    .query(`SELECT ISNULL(SUM(sell_price), 0) AS total FROM Trades WHERE portfolio_id IN (${portfolioIds})`);
+      const aktieDataRealiseretSell = await pool.request()
+        .query(`SELECT ISNULL(SUM(sell_price), 0) AS total FROM Trades WHERE portfolio_id IN (${portfolioIds})`);
 
-  const totalBuy = aktieDataRealiseretBuy.recordset[0].total || 0;
-  const totalSell = aktieDataRealiseretSell.recordset[0].total || 0;
+      const totalBuy = aktieDataRealiseretBuy.recordset[0].total || 0;
+      const totalSell = aktieDataRealiseretSell.recordset[0].total || 0;
 
-  aktieDataRealiseretResultat = totalSell - totalBuy;
-} else {
-  console.log("Ingen portfolier fundet for brugeren.");
-}
+      aktieDataRealiseretResultat = totalSell - totalBuy;
+    } else {
+      console.log("Ingen portfolier fundet for brugeren.");
+    }
 
-console.log("Total realiseret aktie-køb:", aktieDataRealiseretResultat);
+    console.log("Total realiseret aktie-køb:", aktieDataRealiseretResultat);
 
-// resten af din kode fortsætter uanset om der var portfolier eller ej
+    // resten af din kode fortsætter uanset om der var portfolier eller ej
 
 
 
@@ -97,57 +98,59 @@ console.log("Total realiseret aktie-køb:", aktieDataRealiseretResultat);
     //
     // -----------------------------------------------------------------------------------
 
-  const tilfældigAktie = await pool.request()
-  .input("userId", sql.Int, userId)
-  .query(`
+    // Vælger en tilfældig aktie fra brugerens beholdning
+    const tilfældigAktie = await pool.request()
+      .input("userId", sql.Int, userId)
+      .query(`
     SELECT TOP 1 name, created_at
     FROM Stocks
     WHERE user_id = @userId
     ORDER BY NEWID();
   `);
 
-const tilfældigAktieResultat = tilfældigAktie.recordset;
+    const tilfældigAktieResultat = tilfældigAktie.recordset;
 
-let tilfældigAktieKøbsdato = 0; // variabel til at gemme købsdatoen
+    let tilfældigAktieKøbsdato = 0; // variabel til at gemme købsdatoen
 
-let priserOgDatoer = []; // objekt der skal indeholde datoer og priser
+    let priserOgDatoer = []; // objekt der skal indeholde datoer og priser
 
-if (tilfældigAktieResultat.length === 0) {
-  console.log("Ingen aktier fundet for brugeren.");
-} else {
-  tilfældigAktieKøbsdato = tilfældigAktieResultat[0].created_at;
-  console.log(tilfældigAktieKøbsdato);
+    if (tilfældigAktieResultat.length === 0) {
+      console.log("Ingen aktier fundet for brugeren.");
+    } else {
+      tilfældigAktieKøbsdato = tilfældigAktieResultat[0].created_at;
+      console.log(tilfældigAktieKøbsdato);
 
-  try {
-    const aktie = tilfældigAktieResultat[0];
-    const aktieSymbol = aktie.name;
+      try {
+        const aktie = tilfældigAktieResultat[0];
+        const aktieSymbol = aktie.name;
 
-    const dagsDato = new Date();
-    const sidsteMåned = new Date();
-    sidsteMåned.setMonth(dagsDato.getMonth() - 1);
+        const dagsDato = new Date();
+        const sidsteMåned = new Date();
+        sidsteMåned.setMonth(dagsDato.getMonth() - 1);
 
-    const forespørgsel = {
-      period1: sidsteMåned,
-      period2: dagsDato,
-      interval: '1d'
-    };
+        const forespørgsel = {
+          period1: sidsteMåned,
+          period2: dagsDato,
+          interval: '1d'
+        };
 
-    const historiskeData = await yahooFinance.historical(aktieSymbol, forespørgsel);
+        // Hent historiske data for aktien
+        const historiskeData = await yahooFinance.historical(aktieSymbol, forespørgsel);
 
-    priserOgDatoer = historiskeData.map(dag => ({
-      dato: dag.date.toISOString().split('T')[0],
-      pris: dag.close
-    }));
+        priserOgDatoer = historiskeData.map(dag => ({
+          dato: dag.date.toISOString().split('T')[0],
+          pris: dag.close
+        }));
 
-    console.log("Aktiedata for den seneste måned:", priserOgDatoer);
-  } catch (error) {
-    console.error("Fejl under hentning af aktiedata:", error);
-  }
-}
+        console.log("Aktiedata for den seneste måned:", priserOgDatoer);
+      } catch (error) {
+        console.error("Fejl under hentning af aktiedata:", error);
+      }
+    }
 
-// Programmet fortsætter her uanset om der fandtes en aktie eller ej
+    // Programmet fortsætter her uanset om der fandtes en aktie eller ej
 
-    
+
 
 
 

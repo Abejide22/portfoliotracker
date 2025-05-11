@@ -126,7 +126,7 @@ router.post("/trade", async (req, res) => {
       if(kontoBalance > totalPris)
         {
 
-        // Tjekker om aktien allerede findes i Stocks-tabellen
+        // Tjekker om brugeren allerede ejer aktien på porteføljen
         const existingStockResult = await pool
           .request()
           .input("user_id", sql.Int, userId)
@@ -156,6 +156,8 @@ router.post("/trade", async (req, res) => {
 
           stockId = existingStock.id;
         } else {
+
+          // Hvis aktien ikke findes, indsætter vi den i Stocks-tabellen
           await pool
             .request()
             .input("user_id", sql.Int, userId)
@@ -169,7 +171,7 @@ router.post("/trade", async (req, res) => {
               VALUES (@user_id, @portfolio_id, @name, @type, @quantity, @price, GETDATE());
             `);
 
-          // retrieve new stock ID
+          // Her finder vi aktie ID'et for den nyoprettede aktie
           const stockResult = await pool
             .request()
             .input("user_id", sql.Int, userId)
@@ -183,7 +185,7 @@ router.post("/trade", async (req, res) => {
           stockId = stockResult.recordset[0].id;
         }
 
-        // Indsæt også en transaktion i Trades-tabellen
+        // Gemmer aktien i trades tabellen som et køb
         await pool
         .request()
         .input("portfolio_id", sql.Int, portfolioId)
@@ -258,7 +260,7 @@ router.post("/trade/sell", async (req, res) => {
     const portfolioId = portfolioResult.recordset[0].id;
 
 
-    // 2. Find aktien brugeren ejer
+    // Find aktien brugeren forsøger at sælge fra Stocks-tabellen
     const stockResult = await pool
       .request()
       .input("user_id", sql.Int, userId)
@@ -269,21 +271,24 @@ router.post("/trade/sell", async (req, res) => {
         WHERE user_id = @user_id AND portfolio_id = @portfolio_id AND name = @name AND quantity > 0
         ORDER BY created_at DESC
       `);
-
+// Tjekker om aktien findes
     if (!stockResult.recordset.length) {
       return res.status(400).send("Du ejer ikke denne aktie i den valgte portefølje.");
     }
 
+// Gemmer aktien
     const stock = stockResult.recordset[0];
 
+    // Tjekker om brugeren ejer nok aktier til at sælge
     if (stock.quantity < antalAktier) {
       return res.status(400).send("Du ejer ikke nok aktier til at sælge.");
     }
 
+    // Beregner ny beholdning og gennemsnitlig købspris
     const nyBeholdning = stock.quantity - antalAktier;
     const averageBuyPrice = parseFloat((stock.price / stock.quantity).toFixed(2));
 
-    // 3. Indsæt salget i Trades-tabellen
+    // Her sætter vi slaget ind i Trades-tabellen
     await pool
       .request()
       .input("portfolio_id", sql.Int, portfolioId)
@@ -297,15 +302,16 @@ router.post("/trade/sell", async (req, res) => {
         VALUES (@portfolio_id, @stock_id, @buy_price, @sell_price, @quantity_bought, @quantity_sold, GETDATE(), GETDATE());
       `);
 
-    // 4. Tjek og håndter beholdning
+    // Hvis brugeren har solgt alle aktier så tjek om aktien har handler i Trades-tabellen
     if (nyBeholdning === 0) {
       const checkTrades = await pool
         .request()
         .input("stock_id", sql.Int, stock.id)
         .query(`SELECT COUNT(*) AS antal FROM Trades WHERE stock_id = @stock_id`);
-
+    
       const harTrades = checkTrades.recordset[0].antal > 0;
 
+      // Hvis aktien ikke har handler i Trades-tabellen, så slet den fra Stocks-tabellen ellers opdater den
       if (!harTrades) {
         await pool
           .request()
@@ -318,6 +324,8 @@ router.post("/trade/sell", async (req, res) => {
           .query(`UPDATE Stocks SET quantity = 0 WHERE id = @id`);
       }
     } else {
+
+      // Hvis stocks-tabellen stadig har aktier, så opdaterer vi den
       const nyPris = parseFloat((averageBuyPrice * nyBeholdning).toFixed(2));
 
       await pool
@@ -328,14 +336,15 @@ router.post("/trade/sell", async (req, res) => {
         .query(`UPDATE Stocks SET quantity = @quantity, price = @price WHERE id = @id`);
     }
 
-    // 5. Opdater konto
+    // Opdater saldoen på kontoen
     await pool
       .request()
       .input("name", sql.NVarChar, kontoSelect)
       .input("amount", sql.Decimal(10, 2), totalPris)
       .query(`UPDATE Accounts SET balance = balance + @amount WHERE name = @name;`);
 
-    // 6. Find konto ID og opret transaktion
+
+    // Find konto ID'et for den valgte konto
     const kontoResult = await pool
       .request()
       .input("name", sql.NVarChar, kontoSelect)
@@ -343,6 +352,7 @@ router.post("/trade/sell", async (req, res) => {
 
     const kontoId = kontoResult.recordset[0].id;
 
+    // Her indsætter vi salget i Transactions-tabellen
     await pool
       .request()
       .input("account_id", sql.Int, kontoId)
@@ -353,7 +363,7 @@ router.post("/trade/sell", async (req, res) => {
         INSERT INTO Transactions (account_id, amount, description, transaction_type, created_at)
         VALUES (@account_id, @amount, @description, @transaction_type, GETDATE());
       `);
-
+    
     res.status(200).json({ message: "Salg gennemført" });
 
   } catch (err) {
