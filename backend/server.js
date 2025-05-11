@@ -16,8 +16,8 @@ app.set("views", path.join(__dirname, "../views")); // Fortæller hvor ejs filer
 
 app.use(session({
   secret: 'Løverne', // En hemmelig nøgle til at kryptere sessionen.
-  resave: false,
-  saveUninitialized: false
+  resave: false, // Om sessionen skal gemmes igen, selvom den ikke er ændret.
+  saveUninitialized: false // Sikrer at der ikke oprettes en session for en bruger, der ikke er logget ind.
 }));
 
 app.use("/", routes); // Bruger ruterne fra all_routes.js

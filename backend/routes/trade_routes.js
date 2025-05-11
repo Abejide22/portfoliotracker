@@ -462,14 +462,14 @@ router.get("/trade", async (req, res) => {
     ];
     const nuværendePriser = [];
     
-    for (let i = 0; i < tickers.length; i++) {
+    for (let i = 0; i < tickers.length; i++) { // Loop der køre igennem alle aktierne i tickers arrayet
       try {
       // Henter den seneste markedspris
       const quote = await yahooFinance.quote(tickers[i]);
 
-      nuværendePriser.push({
+      nuværendePriser.push({ // Her gemmer vi aktie data i nuværendePriser arrayet
         symbol: tickers[i],
-        price: quote?.regularMarketPrice ?? 'Ingen data',
+        price: quote?.regularMarketPrice ?? 'Ingen data', // Hvis ingen data, så skriv ingen data
       });
     } 
     catch (err)
@@ -495,10 +495,8 @@ router.get("/trade", async (req, res) => {
           {
             errorBesked = 'Serverfejl';
           }
-
-    nuværendePriser.push({
-      symbol: tickers[i],
-      price: errorBesked,
+          
+          nuværendePriser.push({symbol: tickers[i], price: errorBesked,
     });
   }
 }
