@@ -46,8 +46,6 @@ router.get("/dashboard", async (req, res) => {
     console.log("Total Unrealized Profit:", totalUnrealizedValue);
     const top5Stocks = dashboard.getTop5Stocks();
     const totalValue = dashboard.getTotalValue();
-    const totalRealizedValue = dashboard.getTotalRealizedValue();
-    console.log(totalRealizedValue);
     const top5ProfitableStocks = dashboard.getTop5ProfitableStocks();
 
 
@@ -159,7 +157,6 @@ if (tilfældigAktieResultat.length === 0) {
       userId,
       totalValue,
       totalUnrealizedValue,
-      totalRealizedValue,
       top5Stocks,
       top5ProfitableStocks,
       tilfældigAktieResultat, // navn på aktie der er blevet valgt

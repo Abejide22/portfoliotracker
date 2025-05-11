@@ -46,7 +46,7 @@ class dashboardKlasser {
     return totalCash; // Returner den samlede kontante beholdning
   }
 
-  // Beregn den totale urealiserede profit
+  // Beregn den totale urealiserede profit - virker ikke korrekt. 
   getTotalUnrealizedProfit() {
     let totalCost = 0; // Samlet købspris for alle aktier
     let totalCurrentValue = 0; // Samlet nuværende værdi for alle aktier
@@ -110,33 +110,6 @@ class dashboardKlasser {
     }, 0);
 
     return this.totalCash + totalStocksValue; // Samlet værdi = kontanter + aktier
-  }
-
-  // Beregn den totale realiserede værdi (fortjeneste/tab på solgte aktier)
-  getTotalRealizedValue() {
-    let totalRealizedValue = 0;
-
-    this.trades.forEach(trade => {
-      if (trade.quantity_sold > 0) {
-        // Log værdierne for fejlfinding
-        console.log("Trade data:", {
-          stockName: trade.stock_name,
-          quantitySold: trade.quantity_sold,
-          sellPrice: trade.sell_price,
-          buyPrice: trade.price,
-        });
-
-        // Tjek for valide værdier
-        if (trade.sell_price > 0 && trade.price > 0 && trade.quantity_sold > 0) {
-          const profitOrLoss = (trade.sell_price - trade.price) * trade.quantity_sold; // Fortjeneste/tab for denne aktie
-          totalRealizedValue += profitOrLoss;
-        } else {
-          console.error("Ugyldige værdier i trade:", trade);
-        }
-      }
-    });
-
-    return totalRealizedValue; // Returner den samlede realiserede værdi
   }
 }
 
