@@ -242,7 +242,7 @@ router.get("/portfolios", async (req, res) => {
 });
 
 // Portfolio Transaction - route
-router.get("/portfoliotransactions", async (req, res) => {
+router.get("/portfolioTransactions", async (req, res) => {
   // Her tjekkes om brugeren er logget ind, hvis ikke sendes brugeren til login siden.
   const userId = req.session.userId;
   if (!userId) return res.redirect("/login");
