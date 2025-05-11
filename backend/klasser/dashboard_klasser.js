@@ -4,6 +4,29 @@ class dashboard_Klasser {
     this.totalCash = totalCash; // Gem kontantbeholdning som en egenskab
   }
 
+  // Beregn de 5 mest værdifulde aktier
+  getTop5Stocks() {
+    const stocksWithValue = this.trades
+      .filter(trade => (trade.quantity_bought - trade.quantity_sold) > 0) // Kun urealiserede aktier
+      .map(trade => {
+        const value = trade.current_price; // Beregn værdien af aktien
+        return {
+          stockName: trade.stock_name,
+          portfolioName: trade.portfolio_name,
+          value: parseFloat(value.toFixed(2)), // Formatér til 2 decimaler som tal
+        };
+      });
+
+    const top5Stocks = stocksWithValue.length > 0
+      ? stocksWithValue
+          .filter(stock => stock.value > 0) // Fjern aktier med 0 værdi
+          .sort((a, b) => b.value - a.value) // Sorter i faldende rækkefølge
+          .slice(0, 5) // Vælg de 5 største
+      : []; // Hvis der ikke er nogen aktier, returner en tom liste
+
+    return top5Stocks;
+  }
+
   // Beregn den samlede kontante beholdning
   getTotalCash(accounts) {
     if (!accounts || accounts.length === 0) {
@@ -50,29 +73,6 @@ class dashboard_Klasser {
     const unrealizedProfit = totalCurrentValue - totalCost;
 
     return unrealizedProfit; // Returner resultatet
-  }
-
-  // Beregn de 5 mest værdifulde aktier
-  getTop5Stocks() {
-    const stocksWithValue = this.trades
-      .filter(trade => (trade.quantity_bought - trade.quantity_sold) > 0) // Kun urealiserede aktier
-      .map(trade => {
-        const value = trade.current_price; // Beregn værdien af aktien
-        return {
-          stockName: trade.stock_name,
-          portfolioName: trade.portfolio_name,
-          value: parseFloat(value.toFixed(2)), // Formatér til 2 decimaler som tal
-        };
-      });
-
-    const top5Stocks = stocksWithValue.length > 0
-      ? stocksWithValue
-          .filter(stock => stock.value > 0) // Fjern aktier med 0 værdi
-          .sort((a, b) => b.value - a.value) // Sorter i faldende rækkefølge
-          .slice(0, 5) // Vælg de 5 største
-      : []; // Hvis der ikke er nogen aktier, returner en tom liste
-
-    return top5Stocks;
   }
 
   // Beregn de 5 mest profitable aktier
