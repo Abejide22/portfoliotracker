@@ -58,14 +58,13 @@ router.get("/dashboard", async (req, res) => {
     // ----------------------------------------------------------------------------------
 
     // Hent alle portfolio ID'er for brugeren
-    // Hent alle portfolio ID'er for brugeren
-const fåBrugerensPortfolioIder = await pool.request()
-  .input("user_id", sql.Int, userId)
-  .query(`SELECT id FROM dbo.Portfolios WHERE user_id = @user_id`);
-
-const brugerensPortfolioId = fåBrugerensPortfolioIder.recordset.map(row => row.id);
-
-let aktieDataRealiseretResultat = 0; // Standardværdi, hvis der ingen data er
+    const fåBrugerensPortfolioIder = await pool.request()
+    .input("user_id", sql.Int, userId)
+    .query(`SELECT id FROM dbo.Portfolios WHERE user_id = @user_id`);
+    
+    const brugerensPortfolioId = fåBrugerensPortfolioIder.recordset.map(row => row.id);
+    
+    let aktieDataRealiseretResultat = 0; // Standardværdi, hvis der ingen data er
 
 if (brugerensPortfolioId.length > 0) {
   // Lav en kommasepareret liste til sql IN-udtryk
