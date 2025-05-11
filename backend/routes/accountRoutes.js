@@ -1,7 +1,6 @@
 const express = require("express"); // Importerer express
 const router = express.Router(); // importerer router fra express
 const { pool, poolConnect, sql } = require("../database/database");
-const fs = require("fs");
 const request = require("request");
 
 router.use(express.urlencoded({ extended: true }));
