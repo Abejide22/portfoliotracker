@@ -4,16 +4,16 @@
 //
 // -------------------------------------------------------------------------------------- //
 
-const express = require("express");
-const router = express.Router();
-const { pool, poolConnect, sql } = require("../database/database");
+const express = require("express"); // Henter express frameworket
+const router = express.Router(); //
+const { pool, poolConnect, sql } = require("../database/database"); // Importerer databaseforbindelsen
 const fs = require("fs");
 const request = require("request");
 
 
 // Routes
 
-const yahooFinance = require("yahoo-finance2").default;
+const yahooFinance = require("yahoo-finance2").default; // Importer Yahoo Finance API
 
 
 let totalPris = 0; // Total pris på aktierne der skal købes
@@ -125,7 +125,8 @@ router.post("/trade", async (req, res) => {
       // Tjekker om der er penge nok på kontoen til at købe aktien
       if(kontoBalance > totalPris)
         {
-        // Check if stock already exists
+
+        // Tjekker om aktien allerede findes i Stocks-tabellen
         const existingStockResult = await pool
           .request()
           .input("user_id", sql.Int, userId)
@@ -138,11 +139,13 @@ router.post("/trade", async (req, res) => {
 
         let stockId;
 
+        // Hvis aktien allerede findes, opdaterer vi den
         if (existingStockResult.recordset.length > 0) {
           const existingStock = existingStockResult.recordset[0];
           const updatedQuantity = existingStock.quantity + antalAktier;
           const updatedPrice = parseFloat(existingStock.price) + parseFloat(totalPris);
 
+          // Opdaterer aktien i Stocks-tabellen
           await pool.request()
             .input("id", sql.Int, existingStock.id)
             .input("quantity", sql.Int, updatedQuantity)

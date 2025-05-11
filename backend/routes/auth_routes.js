@@ -17,7 +17,7 @@ router.get("/signup", (req, res) => {
 
 
 router.post("/signup", async (req, res) => {
-  
+
   // Henter data fra formularen på signup siden og hvis password og confirmPassword ikke matcher så sendes der en fejlbesked tilbage til signup siden
   const { username, email, password, confirmPassword } = req.body;
   if (password !== confirmPassword) {
@@ -48,8 +48,11 @@ router.post("/signup", async (req, res) => {
       .query(
         `INSERT INTO Users (username, email, password) OUTPUT INSERTED.id VALUES (@username, @email, @password)`
       );
+
+    // variablen gemmer id på den nye bruger
     const newUserId = insertResult.recordset[0].id;
-    res.redirect(`/dashboard?userId=${newUserId}`);
+
+    res.redirect(`/dashboard?userId=${newUserId}`); // Sender brugeren til dashboard siden med den nye brugers id
   } catch (err) {
     console.error("Fejl ved brugeroprettelse:", err);
     res.render("signup", { error: "Noget gik galt." });
@@ -58,14 +61,20 @@ router.post("/signup", async (req, res) => {
 
 // Login-route
 
+// Denne route renderer index siden hvor login ligger og sender en fejlbesked hvis der er en fejl
 router.get("/login", (req, res) => {
   res.render("index", { error: undefined });
 });
 
 router.post("/login", async (req, res) => {
+
+  // Henter data fra formularen på login siden
   const { username, password } = req.body;
+
   try {
-    await poolConnect;
+    await poolConnect; // Opretter forbindelse til databasen
+
+    // Tjekker om brugernavnet og passwordet er korrekt
     const result = await pool
       .request()
       .input("username", sql.NVarChar, username)
@@ -74,8 +83,9 @@ router.post("/login", async (req, res) => {
     if (!user || user.password !== password) {
       return res.render("index", { error: "Forkert brugernavn eller kodeord" });
     }
-    req.session.userId = user.id;
-    res.redirect("/dashboard");
+
+    req.session.userId = user.id; // Gemmer brugerens id i sessionen
+    res.redirect("/dashboard"); // Sender brugeren til dashboard siden
   } catch (err) {
     console.error("Login-fejl:", err);
     res.status(500).send("Noget gik galt under login.");
@@ -84,12 +94,16 @@ router.post("/login", async (req, res) => {
 
 // Logout-route
 
+// Her logger vi brugeren ud ved at slette sessionen
 router.post("/logout", (req, res) => {
+
+  // Sletter sessionen og sender brugeren til login siden
   req.session.destroy((err) => {
     if (err) {
       console.error("Fejl ved logud:", err);
       return res.status(500).send("Noget gik galt ved logud.");
     }
+    // Hvis logud lykkes så sender vi brugeren til login siden
     res.redirect("/login");
   });
 });
