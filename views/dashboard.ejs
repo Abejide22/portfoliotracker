@@ -22,13 +22,13 @@
     <h2>Dashboard</h2>
     <div id="container_værdier_id">
       <div id="totalVærdi_box_id">
-        <span>Total værdi</span>
+        <span>Total value</span>
         <hr>
         <span>&nbsp;<%= totalValue %> DKK</span> <!-- Viser den samlede værdi -->
       </div>
 
       <div id="totalRealiseretVærdi_box_id">
-        <span>Total realiseret værdi</span>
+        <span>Total realized value</span>
         <hr>
         <span>
           <% if (aktieDataRealiseretResultat >= 0) { %>
@@ -42,7 +42,7 @@
       </div>
 
       <div id="totalUrealiseretVærdi_box_id">
-        <span>Total urealiseret værdi</span>
+        <span>Total unrealized værdi</span>
         <hr>
         <span>
           <% if (totalUnrealizedValue >= 0) { %>
@@ -59,7 +59,7 @@
 
   <!-- Graf over samlet værdi -->
   <div id="samletVærdi_boks_id">
-    <span id="tilfældigAktie_id">Tilfældig valgt aktie du ejer</span>
+    <span id="tilfældigAktie_id">Randomly selected stock you own</span>
     <div id="chart"></div>
 
   </div>
@@ -67,7 +67,7 @@
   <!-- Top 5 værdipapirer -->
   <div id="top5_boks_id">
     <div id="top5Værdipapirer_tværsAfPorteføljer_id">
-      <span>Top 5 værdipapirer baseret på værdi</span>
+      <span>Top 5 stocks based on value</span>
       <table>
         <tr>
           <th>Name</th>
@@ -84,9 +84,9 @@
       </table>
     </div>
     <div id="top5Værdipapirer_urealiseret_id">
-      <span>Top 5 værdipapirer baseret på profit</span>
+      <span>Top 5 securities based on profit</span>
       <% if (top5ProfitableStocks.length === 0) { %>
-        <p>Ingen aktier har profit endnu</p>
+        <p>No stocks have profit yet</p>
       <% } else { %>
         <table>
           <tr>
