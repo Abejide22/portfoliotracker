@@ -1,5 +1,5 @@
 const { expect } = require("chai");
-const dashboard_Klasser = require("../backend/klasser/dashboard_klasser");
+const dashboardKlasser = require("../backend/klasser/dashboardKlasser");
 
 describe("getTop5Stocks", () => {
   it("skal returnere de 5 mest værdifulde aktier - selv hvis der er flere end 5 aktier", () => {
@@ -14,7 +14,7 @@ describe("getTop5Stocks", () => {
     ];
 
     // Opret en instans af dashboardKlasser
-    const dashboard = new dashboard_Klasser(trades, 0);
+    const dashboard = new dashboardKlasser(trades, 0);
 
     // Kalder metoden
     const result = dashboard.getTop5Stocks();
@@ -33,7 +33,7 @@ describe("getTop5Stocks", () => {
     ];
 
     // Opret en instans af dashboardKlasser
-    const dashboard = new dashboard_Klasser(trades, 0);
+    const dashboard = new dashboardKlasser(trades, 0);
 
     // Kalder metoden
     const result = dashboard.getTop5Stocks();
@@ -49,8 +49,8 @@ describe("getTop5Stocks", () => {
       { stock_name: "Tryg", portfolio_name: "Forsikring", quantity_bought: 1, quantity_sold: 0, current_price: 700 },
     ];
 
-    // Opret en instans af dashboard_Klasser
-    const dashboard = new dashboard_Klasser(trades, 0);
+    // Opret en instans af dashboardKlasser
+    const dashboard = new dashboardKlasser(trades, 0);
 
     // Kalder metoden
     const result = dashboard.getTop5Stocks();
