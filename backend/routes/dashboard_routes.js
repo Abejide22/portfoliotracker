@@ -42,14 +42,11 @@ router.get("/dashboard", async (req, res) => {
     const trades = tradesResult.recordset;
 
     // Brug dashboard_klasser
-    const dashboard = new dashboard_Klasser(trades, totalCash);
+    const dashboard = new dashboardKlasser(trades, totalCash);
 
     const totalUnrealizedValue = dashboard.getTotalUnrealizedProfit();
-    console.log("Total Unrealized Profit:", totalUnrealizedValue);
     const top5Stocks = dashboard.getTop5Stocks();
     const totalValue = dashboard.getTotalValue();
-    const totalRealizedValue = dashboard.getTotalRealizedValue();
-    console.log(totalRealizedValue);
     const top5ProfitableStocks = dashboard.getTop5ProfitableStocks();
 
 
@@ -60,13 +57,13 @@ router.get("/dashboard", async (req, res) => {
     // ----------------------------------------------------------------------------------
 
     // Hent alle portfolio ID'er for brugeren
-    const fåBrugerensPortfolioIder = await pool.request()
-      .input("user_id", sql.Int, userId)
-      .query(`SELECT id FROM dbo.Portfolios WHERE user_id = @user_id`);
+const fåBrugerensPortfolioIder = await pool.request()
+  .input("user_id", sql.Int, userId)
+  .query(`SELECT id FROM dbo.Portfolios WHERE user_id = @user_id`);
 
-    const brugerensPortfolioId = fåBrugerensPortfolioIder.recordset.map(row => row.id);
+const brugerensPortfolioId = fåBrugerensPortfolioIder.recordset.map(row => row.id);
 
-    let aktieDataRealiseretResultat = 0; // Standardværdi, hvis der ingen data er
+let aktieDataRealiseretResultat = 0; // Standardværdi, hvis der ingen data er
 
     if (brugerensPortfolioId.length > 0) {
       // Lav en kommasepareret liste til sql IN-udtryk
@@ -162,7 +159,6 @@ router.get("/dashboard", async (req, res) => {
       userId,
       totalValue,
       totalUnrealizedValue,
-      totalRealizedValue,
       top5Stocks,
       top5ProfitableStocks,
       tilfældigAktieResultat, // navn på aktie der er blevet valgt

@@ -10,12 +10,12 @@
 
 <body>
     <div class="container">
-        <h1>Opret ny Portefølje</h1>
+        <h1>Create new Portfolio</h1>
         <form action="/create-portfolio" method="POST" class="form-box">
-            <label for="portfolioName">Portefølje Navn:</label>
+            <label for="portfolioName">Portfolio name:</label>
             <input type="text" id="portfolioName" name="portfolioName" required>
 
-            <label for="accountId">Vælg Konto:</label>
+            <label for="accountId">Choose account:</label>
             <select id="accountId" name="accountId" required>
                 <% accounts.forEach(account => { %>
                     <option value="<%= account.id %>">
@@ -24,7 +24,7 @@
                 <% }) %>
             </select>
 
-            <button type="submit" class="primary-btn">Opret Portefølje</button>
+            <button type="submit" class="primary-btn">Create portfolio</button>
         </form>
     </div>
 </body>

@@ -1,7 +1,29 @@
-class dashboard_Klasser {
+class dashboardKlasser {
   constructor(trades, totalCash) {
     this.trades = trades; // Gem trades som en egenskab i klassen
     this.totalCash = totalCash; // Gem kontantbeholdning som en egenskab
+  }
+
+  getTop5Stocks() {
+    const stocksWithValue = this.trades
+      .filter(trade => (trade.quantity_bought - trade.quantity_sold) > 0) // Kun urealiserede aktier
+      .map(trade => {
+        const value = trade.current_price; // Beregn værdien af aktien
+        return {
+          stockName: trade.stock_name,
+          portfolioName: trade.portfolio_name,
+          value: parseFloat(value.toFixed(2)), // Formatér til 2 decimaler som tal
+        };
+      });
+
+    const top5Stocks = stocksWithValue.length > 0
+      ? stocksWithValue
+          .filter(stock => stock.value > 0) // Fjern aktier med 0 værdi
+          .sort((a, b) => b.value - a.value) // Sorter i faldende rækkefølge
+          .slice(0, 5) // Vælg de 5 største
+      : []; // Hvis der ikke er nogen aktier, returner en tom liste
+
+    return top5Stocks;
   }
 
   // Beregn den samlede kontante beholdning
@@ -24,7 +46,7 @@ class dashboard_Klasser {
     return totalCash; // Returner den samlede kontante beholdning
   }
 
-  // Beregn den totale urealiserede profit
+  // Beregn den totale urealiserede profit - virker ikke korrekt. 
   getTotalUnrealizedProfit() {
     let totalCost = 0; // Samlet købspris for alle aktier
     let totalCurrentValue = 0; // Samlet nuværende værdi for alle aktier
@@ -50,29 +72,6 @@ class dashboard_Klasser {
     const unrealizedProfit = totalCurrentValue - totalCost;
 
     return unrealizedProfit; // Returner resultatet
-  }
-
-  // Beregn de 5 mest værdifulde aktier
-  getTop5Stocks() {
-    const stocksWithValue = this.trades
-      .filter(trade => (trade.quantity_bought - trade.quantity_sold) > 0) // Kun urealiserede aktier
-      .map(trade => {
-        const value = trade.current_price; // Beregn værdien af aktien
-        return {
-          stockName: trade.stock_name,
-          portfolioName: trade.portfolio_name,
-          value: parseFloat(value.toFixed(2)), // Formatér til 2 decimaler som tal
-        };
-      });
-
-    const top5Stocks = stocksWithValue.length > 0
-      ? stocksWithValue
-          .filter(stock => stock.value > 0) // Fjern aktier med 0 værdi
-          .sort((a, b) => b.value - a.value) // Sorter i faldende rækkefølge
-          .slice(0, 5) // Vælg de 5 største
-      : []; // Hvis der ikke er nogen aktier, returner en tom liste
-
-    return top5Stocks;
   }
 
   // Beregn de 5 mest profitable aktier
@@ -112,33 +111,6 @@ class dashboard_Klasser {
 
     return this.totalCash + totalStocksValue; // Samlet værdi = kontanter + aktier
   }
-
-  // Beregn den totale realiserede værdi (fortjeneste/tab på solgte aktier)
-  getTotalRealizedValue() {
-    let totalRealizedValue = 0;
-
-    this.trades.forEach(trade => {
-      if (trade.quantity_sold > 0) {
-        // Log værdierne for fejlfinding
-        console.log("Trade data:", {
-          stockName: trade.stock_name,
-          quantitySold: trade.quantity_sold,
-          sellPrice: trade.sell_price,
-          buyPrice: trade.price,
-        });
-
-        // Tjek for valide værdier
-        if (trade.sell_price > 0 && trade.price > 0 && trade.quantity_sold > 0) {
-          const profitOrLoss = (trade.sell_price - trade.price) * trade.quantity_sold; // Fortjeneste/tab for denne aktie
-          totalRealizedValue += profitOrLoss;
-        } else {
-          console.error("Ugyldige værdier i trade:", trade);
-        }
-      }
-    });
-
-    return totalRealizedValue; // Returner den samlede realiserede værdi
-  }
 }
 
-module.exports = dashboard_Klasser;
+module.exports = dashboardKlasser;
