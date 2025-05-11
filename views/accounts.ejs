@@ -22,7 +22,7 @@
   <div id="mainContent">
     <!-- Kontooversigt -->
     <div id="accountsContainer">
-      <h2>Kontooversigt</h2>
+      <h2>Account summary</h2>
       <% if (accounts.length === 0) { %>
         <div class="account">
           <h3>Ingen konti oprettet endnu.</h3>
@@ -31,20 +31,20 @@
         <% } else { %>
           <% accounts.forEach(account=> { %>
             <div class="account">
-              <h3>Konto Navn: <%= account.name %>
+              <h3>Account name: <%= account.name %>
               </h3>
               <hr>
-              <p>Valuta: <%= account.currency %>
+              <p>Currency: <%= account.currency %>
               </p>
-              <p>Saldo: <%= account.balance %>
+              <p>Total: <%= account.balance %>
                   <%= account.currency %>
               </p>
-              <p>Oprettet: <%= account.created_at.toISOString().split('T')[0] %>
+              <p>Created: <%= account.created_at.toISOString().split('T')[0] %>
               </p>
               <p>Bank: <%= account.bank %>
               </p>
               <% if (account.closed_at) { %>
-                <p style="color:red;">Kontoen er lukket den <%= account.closed_at.toISOString().split("T")[0] %>
+                <p style="color:red;">The account is closed <%= account.closed_at.toISOString().split("T")[0] %>
                 </p>
                 <% } %>
                   <% if (!account.closed_at) { %>
@@ -53,28 +53,28 @@
                       <input type="hidden" name="accountId" value="<%= account.id %>">
                     
                       <input type="number" name="amount" placeholder="Beløb" required style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">
-                      <button type="submit" class="deposit-account" style="border-top-right-radius: 5px; border-bottom-right-radius: 5px;">Indbetal</button>
+                      <button type="submit" class="deposit-account" style="border-top-right-radius: 5px; border-bottom-right-radius: 5px;">Deposit</button>
                     </form>
                     <!-- Udbetalingsformular. -->
                     <form action="/withdraw" method="POST" style="display:inline;">
                       <input type="hidden" name="accountId" value="<%= account.id %>">
                       <input type="number" name="amount" placeholder="Beløb" step="0.01" required style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">
-                      <button type="submit" class="withdraw-account" style="border-top-right-radius: 5px; border-bottom-right-radius: 5px;">Udbetal</button>
+                      <button type="submit" class="withdraw-account" style="border-top-right-radius: 5px; border-bottom-right-radius: 5px;">Payout</button>
                     </form>
                     <% } %>
                       <form action="/close-account" method="POST" style="display:inline;">
                         <input type="hidden" name="accountId" value="<%= account.id %>">
-                        <button type="submit" class="close-account" style="border-radius: 5px;">Luk Konto</button>
+                        <button type="submit" class="close-account" style="border-radius: 5px; padding-left: 9px; padding-right: 9px;">Close account</button>
                       </form>
                       <form action="/reopen-account" method="POST" style="display:inline;">
                         <input type="hidden" name="accountId" value="<%= account.id %>">
-                        <button type="submit" class="reopen-account" style="border-radius: 5px;">Genåbn Konto</button>
+                        <button type="submit" class="reopen-account" style="border-radius: 5px; padding-left: 9px; padding-right: 9px;">Reopen account</button>
                       </form>
                       <!-- Se transaktioner-knap -->
                       <form action="/transactions" method="GET" style="display:inline;">
                         <input type="hidden" name="accountId" value="<%= account.id %>">
                         <br><br>
-                        <button type="submit" style="border-radius: 5px;">Se transaktioner</button>
+                        <button type="submit" style="border-radius: 5px;">See transactions</button>
                       </form>
             </div>
             <% }) %>
@@ -83,21 +83,21 @@
 
     <!-- Opret ny konto -->
     <div id="createAccountContainer">
-      <h2>Opret ny konto</h2>
+      <h2>Create new account</h2>
       <form action="/create-account" method="POST">
         <input type="hidden" name="userId" value="<%= userId %>">
-        <label>Kontonavn:</label>
+        <label>Account name:</label>
         <input type="text" name="name" required>
-        <label>Valuta:</label>
+        <label>Currency:</label>
         <select name="currency" required>
-          <option value="">Vælg valuta</option>
+          <option value="">Choose currency</option>
           <option value="DKK">DKK</option>
           <option value="USD">USD</option>
           <option value="EUR">EUR</option>
         </select>
-        <label>Banknavn:</label>
+        <label>Bankname:</label>
         <input type="text" name="bank" required>
-        <button type="submit">Opret Konto</button>
+        <button type="submit">Create account</button>
       </form>
     </div>
   </div>
@@ -106,7 +106,7 @@
   
     if (logoutForm) {
       logoutForm.addEventListener("submit", function (event) { // Denne del af kdoen fortæller browseren, at den skal vente på, at brugeren trykker på knappen
-        const confirmed = confirm("Er du sikker på, at du vil logge ud?"); // Viser en bekræftelsesdialog
+        const confirmed = confirm("Are you sure you want to logout?"); // Viser en bekræftelsesdialog
         if (!confirmed) {
           event.preventDefault(); // Forhindrer formularen i at blive sendt, hvis brugeren klikker på "Annuller"
         }

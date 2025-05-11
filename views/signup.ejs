@@ -4,31 +4,31 @@
 <head>
   <meta charset="UTF-8"> 
   <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Gør siden responsiv på forskellige enheder -->
-  <title>Opret Konto</title> <!-- Titel-->
+  <title>Create account</title> <!-- Titel-->
   <link rel="stylesheet" href="signup_style.css"> <!-- Linker til en ekstern CSS-fil for at style signup-siden -->
 </head>
 
 <body>
   <div class="wrapper"> <!-- En wrapper-container til signup-formularen -->
-    <h2>Opret Konto</h2> <!-- Overskrift for signup-sektionen -->
+    <h2>Create account</h2> <!-- Overskrift for signup-sektionen -->
     <form action="/signup" method="POST"> <!-- Formular, der sender data til serveren via POST-metoden -->
       <div class="input-box"> <!-- En container til brugernavn-feltet -->
-        <input type="text" name="username" placeholder="Vælg dit brugernavn" required> <!-- Inputfelt til brugernavn, kræver en værdi -->
+        <input type="text" name="username" placeholder="Choose username" required> <!-- Inputfelt til brugernavn, kræver en værdi -->
       </div>
       <div class="input-box"> <!-- En container til email-feltet -->
-        <input type="text" name="email" placeholder="Skriv din email" required> <!-- Inputfelt til email, kræver en værdi -->
+        <input type="text" name="email" placeholder="Write your email" required> <!-- Inputfelt til email, kræver en værdi -->
       </div>
       <div class="input-box"> <!-- En container til kodeord-feltet -->
-        <input type="password" name="password" placeholder="Opret kodeord" required> <!-- Inputfelt til kodeord, kræver en værdi -->
+        <input type="password" name="password" placeholder="Create password" required> <!-- Inputfelt til kodeord, kræver en værdi -->
       </div>
       <div class="input-box"> <!-- En container til bekræftelse af kodeord -->
-        <input type="password" name="confirmPassword" placeholder="Bekræft dit kodeord" required> <!-- Inputfelt til bekræftelse af kodeord, kræver en værdi -->
+        <input type="password" name="confirmPassword" placeholder="Confirm password" required> <!-- Inputfelt til bekræftelse af kodeord, kræver en værdi -->
       </div>
       <div class="input-box button"> <!-- En container til bekræft-knappen -->
-        <input type="submit" value="Bekræft"> <!-- Bekræft-knap, der sender formularen -->
+        <input type="submit" value="Confirm"> <!-- Bekræft-knap, der sender formularen -->
       </div>
       <div class="text"> <!-- En container til linket til login-siden -->
-        <h3>Har du allerede en konto? <a href="/index">Login her</a></h3> <!-- Link til login-siden -->
+        <h3>Do you already have an account? <a href="/index">Login here</a></h3> <!-- Link til login-siden -->
       </div>
     </form>
   </div>

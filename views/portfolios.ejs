@@ -22,7 +22,7 @@
                 <div class="header">
                     <h2>Portfolios</h2>
                     <a href="/addportfolio" class="primary-btn" style="text-decoration: none; color: white;">
-                        <span class="material-symbols-outlined">add</span> Tilføj Portefølje
+                        <span class="material-symbols-outlined">add</span> Add portfolio
                     </a>
 
                     <a href="/portfoliotransactions" class="secondary-btn" style="text-decoration: none; color: white;">
@@ -34,7 +34,7 @@
                 <div class="grid-3">
                     <div class="stacked">
                         <div class="card">
-                            <h3>Total værdi i DKK</h3>
+                            <h3>Total value in DKK</h3>
                             <h2>
                                 <% if (typeof totalSamletForventetVærdi==="number" ) { %>
                                     <%= totalSamletForventetVærdi.toFixed(2) %>
@@ -48,7 +48,7 @@
                     </div>
 
                     <div class="card">
-                        <h3>Fordeling af værdi i porteføljer</h3>
+                        <h3>Distribution of value in portfolios</h3>
                         <div style="display:flex; justify-content:center;">
                             <div id="chart"></div>
                         </div>
@@ -59,10 +59,10 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Portefølje Navn</th>
-                                <th>Samlet erhvervelsespris</th>
-                                <th>Samlet forventet værdi</th>
-                                <th>Urealiseret gevinst</th>
+                                <th>Portfolio name</th>
+                                <th>Total acquisition price</th>
+                                <th>Total expected value</th>
+                                <th>Unrealized gain</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -74,8 +74,7 @@
                                             <%= portfolio.name %>
                                         </a>
                                         <button onclick="toggleStocks(<%= portfolio.id %>)"
-                                            style="margin-left: 10px; padding: 2px 8px; background-color: #6a0dad; color: white; border: none; border-radius: 3px; cursor: pointer;">Vis
-                                            aktier</button>
+                                            style="margin-left: 10px; padding: 2px 8px; background-color: #6a0dad; color: white; border: none; border-radius: 3px; cursor: pointer;">Show stocks</button>
                                     </td>
 
                                     <td>
@@ -115,12 +114,12 @@
                                                     style="margin: 10px 0 20px 20px; width: calc(100% - 20px);">
                                                     <thead>
                                                         <tr>
-                                                            <th>Aktie ID</th>
-                                                            <th>Samlet antal aktier</th>
-                                                            <th>Samlet erhvervelsespris</th>
+                                                            <th>Stock ID</th>
+                                                            <th>Total number of stocks</th>
+                                                            <th>Total acquisition price</th>
                                                             <th>GAK</th>
-                                                            <th>Forventet værdi</th>
-                                                            <th>Urealiseret gevinst/tab</th>
+                                                            <th>Expected value</th>
+                                                            <th>Unrealized gain/loss</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>

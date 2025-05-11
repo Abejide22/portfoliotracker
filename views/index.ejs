@@ -11,21 +11,21 @@
      </div>
 
       <div class="wrapper"> <!-- En wrapper-container til login-formularen -->
-         <h2>Log ind</h2> <!-- Overskrift for login-sektionen -->
+         <h2>Login</h2> <!-- Overskrift for login-sektionen -->
          <form action="/login" method="POST"> <!-- Formular, der sender data til serveren via POST-metoden -->
             <div class="field"> <!-- En container til brugernavn-feltet -->
-               <label>Brugernavn</label> <!-- Label for brugernavn-input -->
+               <label>Username</label> <!-- Label for brugernavn-input -->
                <input type="text" name="username" required> <!-- Inputfelt til brugernavn, kræver en værdi -->
             </div>
             <div class="field"> <!-- En container til kodeord-feltet -->
-               <label>Kodeord</label> <!-- Label for kodeord-input -->
+               <label>Password</label> <!-- Label for kodeord-input -->
                <input type="password" name="password" required> <!-- Inputfelt til kodeord, kræver en værdi -->
             </div>
             <div class="field"> <!-- En container til login-knappen -->
                <input type="submit" value="Login"> <!-- Login-knap, der sender formularen -->
             </div>
             <div class="signup-link"> <!-- En container til linket til oprettelse af konto -->
-               Ikke oprettet endnu? <a href="signup">Opret konto</a> <!-- Link til signup-siden -->
+               No account yet? <a href="signup">Create account</a> <!-- Link til signup-siden -->
             </div>
          </form>
       </div>
