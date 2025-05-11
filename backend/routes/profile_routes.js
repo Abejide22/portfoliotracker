@@ -17,7 +17,7 @@ async function updatePassword(pool, userId, newPassword, confirmPassword) {
       .input("password", sql.NVarChar, newPassword) // tilføjer inputparameteren password
       .query("UPDATE Users SET password = @password WHERE id = @userId"); // opdaterer password i SQL-databasen
 
-    return {success: true, message: "Adgangskoden er opdateret!"}; // returnerer succesbesked
+    return {success: true, message: "The password has been updated!"}; // returnerer succesbesked
   } catch (err) { // hvis der opstår en fejl
     console.error("Fejl ved opdatering af adgangskode:", err); // logger fejlen
     return {success: false, error: "Noget gik galt."}; // returnerer fejlbesked

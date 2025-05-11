@@ -41,12 +41,12 @@
 
       if (newPassword.length < 4) {
         messageElement.style.color = 'red';
-        messageElement.textContent = 'Adgangskoden skal være mindst 4 tegn lang.';
+        messageElement.textContent = 'The password must be at least 4 characters long.';
         return; // Stop processen, hvis adgangskoden er for kort
       }
       if (newPassword !== confirmPassword) {
         messageElement.style.color = 'red';
-        messageElement.textContent = 'Adgangskoderne matcher ikke.';
+        messageElement.textContent = 'The passwords do not match.';
         return; // Stop processen, hvis adgangskoderne ikke matcher
       }
 
