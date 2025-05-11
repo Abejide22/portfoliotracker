@@ -1,5 +1,5 @@
 const { expect } = require("chai"); // Importer chai for at kunne bruge expect
-const { updatePassword } = require("../backend/routes/profile_routes"); // Importer funktionen
+const { updatePassword } = require("../backend/routes/profileRoutes"); // Importer funktionen
 
 describe("updatePassword", () => {
   let mockPool;

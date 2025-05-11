@@ -1,8 +1,8 @@
 const express = require("express"); // Henter express frameworket
 const router = express.Router(); // Opretter en router til at håndtere ruter
-const { pool, poolConnect, sql } = require("../database/database"); // Importerer databaseforbindelsen
-const tradeKlasse = require("../klasser/tradeKlasse"); // Importerer Trade-klassen
-const { getDataByKey } = require("../api_test.js");
+const { pool, poolConnect, sql } = require("../database/database.js"); // Importerer databaseforbindelsen
+const tradeKlasse = require("../klasser/tradeKlasse.js"); // Importerer Trade-klassen
+const { getDataByKey } = require("../apiTest.js");
 const fs = require("fs");
 const request = require("request");
 const yahooFinance = require("yahoo-finance2").default; // Tilføjet for at kunne hente aktiekurser

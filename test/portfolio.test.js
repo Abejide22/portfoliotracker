@@ -1,5 +1,5 @@
 const {expect} = require("chai"); // import chai for at kunne bruge expect
-const portfolioRoutes = require("../backend/routes/portfolio_routes"); // import portfolio_routes
+const portfolioRoutes = require("../backend/routes/portfolioRoutes"); // import portfolio_routes
 const {pool} = require("../backend/database/database"); // import databaseforbindelse
 
 describe("POST /create-portfolio", () => { // laver en test suite for /create-portfolio
