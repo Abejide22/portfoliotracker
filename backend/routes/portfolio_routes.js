@@ -13,7 +13,7 @@ router.use(express.urlencoded({extended: true})); // Gør det muligt at læse da
 
 // Add Portfolio-route
 
-router.get("/addportfolio", async (req, res) => {
+router.get("/addPortfolio", async (req, res) => {
   // Her tjekkes om brugeren er logget ind, hvis ikke sendes brugeren til login siden. Derefter hentes brugerens id fra sessionen
   if (!req.session.userId) return res.redirect("/login");
   const userId = req.session.userId;
