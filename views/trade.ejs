@@ -375,9 +375,6 @@ aktieInputFelt.addEventListener('input', () => {
 
 
 
-
-
-
 // søg efterr aktier //
 let userInput_SearchStocks = "";
 
@@ -407,9 +404,8 @@ function displayStock(event){
   document.getElementById("aktieNavnLinje_id").style.display = "block";
 
   let aktieDataPriser = aktieData.closes;
-let aktieDataDatoer = aktieData.dates;
+  let aktieDataDatoer = aktieData.dates;
 
-// Opdater sidste værdi
 
 // Generér forkortet version igen
 let aktieDataPriser_forkortet = aktieDataPriser.map(num => parseFloat(num.toFixed(2)));
@@ -420,52 +416,48 @@ let aktieDataPriser_forkortet = aktieDataPriser.map(num => parseFloat(num.toFixe
   document.getElementById("myChart").innerHTML = "";
 
   const xValues = aktieDataDatoer;
-const options = {
-      chart: {
-        type: 'line',
-        height: 350,
-        fontFamily: 'normalSkrift'
-      },
-      colors: ['blue'], // Graflinje farve
+  const options = {
+    chart: {
+      type: 'line',
+      height: 350,
+      fontFamily: 'normalSkrift'
+    },
+    colors: ['blue'], // Graflinje farve
       
-      series: [{
-        name: 'Aktiekurs',
-        data: aktieDataPriser_forkortet
-      }],
-      xaxis: {
-        categories: xValues,
-        labels: {
-          style: {
-            colors: '#fff' // Tekstfarve på x-aksen
-          }
-        },
-        title: {
-         
+    series: [{
+      name: 'Aktiekurs',
+      data: aktieDataPriser_forkortet // 
+    }],
+    xaxis: {
+      categories: xValues,
+      labels: {
+        style: {
+          colors: '#fff' // Tekstfarve på x-aksen
+        }
+      },
+      title: {   // Titel på x-aksen
           style: {
             color: 'lightgray'
           }
         }
       },
-      yaxis: {
+      yaxis: { 
         labels: {
           style: {
             colors: 'lightgray' // Tekstfarve på y-aksen
           }
         },
-        title: {
+        title: { // Titel på y-aksen
           text: 'Kurs (DKK)',
           style: {
             color: 'lightgray'
           }
         }
       },
-    
-
-      stroke: {
-    curve: 'smooth',
-    width: 2.5  // Ændrer linjens tykkelse
-  },
-
+      stroke: { // Ændrer linjens tykkelse og mellemrum
+        curve: 'smooth',
+        width: 2.5  // Ændrer linjens tykkelse
+      },
       tooltip: {
         theme: 'dark',
         style: {
@@ -477,47 +469,45 @@ const options = {
           show: true,
           fillColors: ['blue']
         },
-  y: {
-    formatter: function (value) {
-      return value + " DKK";
-    }
-  }
-},
-
-grid: {
-  show: true, // sæt til false hvis du vil skjule alle gitterlinjer
-  borderColor: 'gray', // farven på linjerne
-  strokeDashArray: 4, // gør dem stiplede (0 = fuldt optrukket)
-  xaxis: {
-    lines: {
-      show: false // fjerner vertikale linjer
-    }
-  },
-  yaxis: {
-    lines: {
-      show: true // viser horisontale linjer
-    }
-  }
-}
+        y: {
+          formatter: function (value) { // Formatterer tooltip til at vise værdi med 2 decimaler og tilføjer DKK
+            return value + " DKK";
+          }
+        }
+      },
+      grid:
+      {
+        show: true, // sæt til false hvis du vil skjule alle gitterlinjer
+        borderColor: 'gray', // farven på linjerne
+        strokeDashArray: 4, // gør dem stiplede (0 = fuldt optrukket)
+        xaxis:
+        {
+          lines: {
+            show: false // fjerner vertikale linjer
+          }
+        },
+        yaxis:
+        {
+          lines: {
+            show: true // viser horisontale linjer
+            }
+          }
+        }
+      };
+      const chart = new ApexCharts(document.querySelector("#myChart"), options);
+      chart.render();
     };
-    const chart = new ApexCharts(document.querySelector("#myChart"), options);
-    chart.render();
-
-  
-};
-
-
-
-
-
-// Logout confirmation
-const logoutForm = document.querySelector('form[action="/logout"]');
-if (logoutForm) {
-  logoutForm.addEventListener("submit", function (event) {
-    const confirmed = confirm("Er du sikker på, at du vil logge ud?");
-    if (!confirmed) {
-      event.preventDefault(); // Stopper formularen
+    
+    // Logout confirmation
+    const logoutForm = document.querySelector('form[action="/logout"]'); // Finder logout-formularen 
+    if (logoutForm) // Tjekker om logoutForm eksisterer
+    {
+      logoutForm.addEventListener("submit", function (event) {
+        const confirmed = confirm("Er du sikker på, at du vil logge ud?");
+        if (!confirmed)
+        {
+          event.preventDefault(); // Stopper formularen
+          }
+        });
     }
-  });
-}
 </script>
