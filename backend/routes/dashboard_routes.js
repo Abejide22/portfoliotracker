@@ -6,6 +6,7 @@ const yahooFinance = require('yahoo-finance2').default; // Importerer Yahoo Fina
 
 router.get("/dashboard", async (req, res) => {
 
+  // Tjekker om brugeren har en aktiv session – bruges til at sikre adgangsbeskyttelse
   // Tjek om brugeren er logget ind
   if (!req.session.userId) return res.redirect("/login");
   const userId = req.session.userId;

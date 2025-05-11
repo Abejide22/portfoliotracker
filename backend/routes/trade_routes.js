@@ -20,7 +20,9 @@ let totalPris = 0; // Total pris på aktierne der skal købes
 
 // POST: modtager stockName fra fetch og returnerer data i JSON
 router.post("/trade", async (req, res) => {
-  
+  // Sessionkontrol: beskytter dataadgang
+  if (!req.session.userId) return res.status(401).json({ error: "Ikke logget ind" }); // Sessionkontrol: beskytter dataadgang
+
   const stockName = req.body.stockName; // Får navn på aktie fra trade.ejs siden
   
   if (!stockName) // Tjekker om stockname har en værdi
@@ -66,9 +68,7 @@ router.post("/trade", async (req, res) => {
     console.error("Fejl ved Yahoo Finance API-kald:", err);
     res.status(500).json({ error: "Fejl ved hentning af data." });
   }
-  
-
-  });
+});
 
 
 
@@ -79,6 +79,8 @@ router.post("/trade", async (req, res) => {
   // ------------------------------------------------------------------------------------//
 
   router.post("/trade/buy", async (req, res) => {
+    // Sessionkontrol: beskytter køb/salg
+    if (!req.session.userId) return res.redirect("/login"); // Sessionkontrol: beskytter køb/salg
     // Her modtager vi data fra formularen på trade.ejs og derefter bliver brugerens ID hentet fra sessionen og gemt i en variabel
     const { porteføljeSelect, aktieTickerValgt, kontoSelect, antalAktier, totalPris } = req.body;
     const userId = req.session.userId;
@@ -229,7 +231,8 @@ router.post("/trade", async (req, res) => {
 //
 // ------------------------------------------------------------------------------------//
 router.post("/trade/sell", async (req, res) => {
-
+  // Sessionkontrol: beskytter køb/salg
+  if (!req.session.userId) return res.redirect("/login"); // Sessionkontrol: beskytter køb/salg
   // Her modtager vi data fra formularen på trade.ejs og derefter bliver brugerens ID hentet fra sessionen og gemt i en variabel
   const { porteføljeSelect, aktieTickerValgt, kontoSelect, antalAktier, totalPris } = req.body;
   const userId = req.session.userId;

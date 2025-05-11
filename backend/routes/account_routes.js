@@ -28,6 +28,7 @@ router.get("/accounts", async (req, res) => { // Hentning af konti
   });
 
   router.post("/create-account", async (req, res) => { // Oprettelse af konto
+    if (!req.session.userId) return res.redirect("/login"); // Sessionkontrol: kræver login
     const {name,currency,bank} = req.body; // Henter data fra formularen (det brugeren indtaster)
     const userId = req.session.userId; // Henter brugerens id fra sessionen
     try { // Opretter forbindelse til databasen og indsætter dataen vedr. kontoen
@@ -50,6 +51,7 @@ router.get("/accounts", async (req, res) => { // Hentning af konti
 
   router.post("/deposit", async (req, res) => { // Indbetaling af penge på konto
     const { accountId, amount } = req.body; // Henter data (antal penge) fra formularen (det brugeren indtaster)
+    if (!req.session.userId) return res.redirect("/login"); // Sessionkontrol: kræver login
     const userId = req.session.userId; 
     try { // Opretter forbindelse til databasen og opdaterer balancen på kontoen samt indsætter transaktionen i Transactions tabellen
       await poolConnect;
@@ -70,6 +72,7 @@ router.get("/accounts", async (req, res) => { // Hentning af konti
 
   router.post("/withdraw", async (req, res) => { // udbetaling af penge fra konto
     const {accountId,amount} = req.body; // Henter data (antal penge) fra formularen (det brugeren indtaster)
+    if (!req.session.userId) return res.redirect("/login"); // Sessionkontrol: kræver login
     const userId = req.session.userId;
     try { // Opretter forbindelse til databasen og opdaterer dataen vedr. kontoen
       await poolConnect;
@@ -90,6 +93,7 @@ router.get("/accounts", async (req, res) => { // Hentning af konti
 
   router.post("/close-account", async (req, res) => { // Lukker kontoen
     const {accountId} = req.body;
+    if (!req.session.userId) return res.redirect("/login"); // Sessionkontrol: kræver login
     const userId = req.session.userId;
     try { // Opretter forbindelse til databasen og sætter lukketidspunktet for kontoen
       await poolConnect;
@@ -106,6 +110,7 @@ router.get("/accounts", async (req, res) => { // Hentning af konti
 
   router.post("/reopen-account", async (req, res) => { // Genåbner kontoen
     const {accountId} = req.body; 
+    if (!req.session.userId) return res.redirect("/login"); // Sessionkontrol: kræver login
     const userId = req.session.userId;
     try { // Opretter forbindelse til databasen og sætter lukketidspunktet for kontoen til NULL
       await poolConnect;

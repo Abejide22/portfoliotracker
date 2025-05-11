@@ -33,7 +33,9 @@ router.get("/profile", (req, res) => {
 
 // POST: Opdater adgangskode via form
 router.post("/profile/update-password", async (req, res) => {
-  const { userId, newPassword, confirmPassword } = req.body; // Hent brugerens id og adgangskoder fra formularen
+  if (!req.session.userId) return res.redirect("/login"); // Sessionkontrol: kun loggede brugere kan opdatere adgangskode
+  const userId = req.session.userId; // Brugerens ID hentes direkte fra session
+  const { newPassword, confirmPassword } = req.body; // Hent adgangskoder fra formularen
 
   // Brug funktionen updatePassword
   const result = await updatePassword(pool, userId, newPassword, confirmPassword);
@@ -47,7 +49,9 @@ router.post("/profile/update-password", async (req, res) => {
 
 // PUT: Opdater adgangskode via JSON API
 router.put("/profile/update-password", async (req, res) => {
-  const {userId, newPassword, confirmPassword} = req.body;
+  if (!req.session.userId) return res.status(401).json({ error: "Not authenticated" }); // Sessionkontrol for API-kald
+  const userId = req.session.userId; // Brugerens ID hentes direkte fra session
+  const { newPassword, confirmPassword } = req.body;
 
   // Brug funktionen updatePassword
   const result = await updatePassword(pool, userId, newPassword, confirmPassword);

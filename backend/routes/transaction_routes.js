@@ -11,6 +11,7 @@ router.use(express.urlencoded({ extended: true })); // Bruges til at læse data 
 // Transaction-route
 
 router.get("/transactions", async (req, res) => {
+  if (!req.session.userId) return res.redirect("/login"); // Sessionkontrol: kræver login
 
   // Henter kontoID fra forespørgslen
   const accountId = parseInt(req.query.accountId);
@@ -39,6 +40,9 @@ router.get("/transactions", async (req, res) => {
     // Kontooplysningerne gemmes
     const account = accountResult.recordset[0];
 
+    if (account.user_id !== req.session.userId) {
+      return res.status(403).send("Du har ikke adgang til denne konto."); // Bruger forsøger at tilgå andens konto
+    }
 
     let runningBalance = account.balance - transactions.reduce((sum, t) => sum + t.amount, 0); // Vi starter med den nuværende saldo og trækker transaktionerne fra. På den måde får vi den rigtige saldo efter hver transaktion. Dette gøres ved at bruge reduce til at summere alle transaktionerne og trække dem fra den nuværende saldo.
     const transactionsWithBalance = transactions.map((trans) => {

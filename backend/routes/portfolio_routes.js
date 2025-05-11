@@ -39,6 +39,9 @@ router.get("/addportfolio", async (req, res) => {
 // Create Portfolio-route
 
 router.post("/create-portfolio", async (req, res) => {
+  // Sessionkontrol: hvis brugeren ikke er logget ind, sendes de til login-siden
+  if (!req.session.userId) return res.redirect("/login");
+
   // Her læses data fra formularen. Derefter hentes brugerens id fra sessionen
   const { portfolioName, accountId } = req.body;
   const userId = req.session.userId;
@@ -67,6 +70,9 @@ router.post("/create-portfolio", async (req, res) => {
 // Denne route håndterer visningen af brugerens porteføljer og tilhørende aktier.
 // Her henter vi porteføljer, beregner deres værdi, og forbereder data til visning og diagrammer.
 router.get("/portfolios", async (req, res) => {
+  // Sessionkontrol: hvis brugeren ikke er logget ind, sendes de til login-siden
+  if (!req.session.userId) return res.redirect("/login");
+
   const userId = req.session.userId; // Henter brugerens ID fra sessionen
 
   try {
@@ -243,7 +249,7 @@ router.get("/portfolios", async (req, res) => {
 
 // Portfolio Transaction - route
 router.get("/portfoliotransactions", async (req, res) => {
-  // Her tjekkes om brugeren er logget ind, hvis ikke sendes brugeren til login siden.
+  // Sessionkontrol: hvis brugeren ikke er logget ind, sendes de til login-siden
   const userId = req.session.userId;
   if (!userId) return res.redirect("/login");
 

@@ -52,7 +52,9 @@ router.post("/signup", async (req, res) => {
     // variablen gemmer id på den nye bruger
     const newUserId = insertResult.recordset[0].id;
 
-    res.redirect(`/dashboard?userId=${newUserId}`); // Sender brugeren til dashboard siden med den nye brugers id
+    // Gemmer brugerens id i sessionen efter signup
+    req.session.userId = newUserId;
+    res.redirect("/dashboard");
   } catch (err) {
     console.error("Fejl ved brugeroprettelse:", err);
     res.render("signup", { error: "Noget gik galt." });
