@@ -1,5 +1,5 @@
 // Her definerer vi klassen Trade, som repræsenterer en handel med aktier.
-class Trade {
+class tradeKlasse {
   
   // Konstruktøren tager et objekt som parameter, der indeholder oplysninger om handlen.
     constructor(data) {
@@ -29,5 +29,5 @@ class Trade {
   }
   
 // Exporterer Trade klassen, så den kan bruges i andre filer
-  module.exports = Trade;
+  module.exports = tradeKlasse;
 

@@ -1,7 +1,7 @@
 const express = require("express"); // Henter express frameworket
 const router = express.Router(); // Opretter en router til at håndtere ruter
 const { pool, poolConnect, sql } = require("../database/database"); // Importerer databaseforbindelsen
-const Trade = require("../klasser/Trade"); // Importerer Trade-klassen
+const tradeKlasse = require("../klasser/tradeKlasse"); // Importerer Trade-klassen
 const { getDataByKey } = require("../api_test.js");
 const fs = require("fs");
 const request = require("request");
@@ -272,7 +272,7 @@ router.get("/portfoliotransactions", async (req, res) => {
     const trades = [];
     for (let i = 0; i < result.recordset.length; i++) { // Gennemgår alle rækker i resultatet
       const række = result.recordset[i]; // henter én række fra databasen
-      const tradeObjekt = new Trade(række); // laver objekt ud fra rækken
+      const tradeObjekt = new tradeKlasse(række); // laver objekt ud fra rækken
       trades.push(tradeObjekt); // lægger objektet i listen
     }
 
