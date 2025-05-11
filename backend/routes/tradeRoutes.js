@@ -101,8 +101,8 @@ router.post("/trade", async (req, res) => {
           FROM Portfolios 
           WHERE name = @portfolio_name AND user_id = @user_id
         `);
-  
-      // Tjekker om porteføljen findes
+        
+        // Tjekker om porteføljen findes
       if (!portfolioResult.recordset || portfolioResult.recordset.length === 0) {
         return res.status(400).send("Portefølje findes ikke.");
       }
@@ -118,16 +118,15 @@ router.post("/trade", async (req, res) => {
 
       // Tjekker om kontoen findes
       if (!kontoResult.recordset || kontoResult.recordset.length === 0) {
-        return res.status(400).send("Konto findes ikke");
+        return res.status(400).send("Konto findes ikke"); // 
       }
       const kontoBalance = kontoResult.recordset[0].balance;
 
       // Tjekker om der er penge nok på kontoen til at købe aktien
       if(kontoBalance > totalPris)
         {
-
-        // Tjekker om brugeren allerede ejer aktien på porteføljen
-        const existingStockResult = await pool
+          // Tjekker om brugeren allerede ejer aktien på porteføljen
+          const existingStockResult = await pool
           .request()
           .input("user_id", sql.Int, userId)
           .input("portfolio_id", sql.Int, portfolioId)
@@ -136,14 +135,14 @@ router.post("/trade", async (req, res) => {
             SELECT id, quantity, price FROM Stocks
             WHERE user_id = @user_id AND portfolio_id = @portfolio_id AND name = @name
           `);
+          
+          let stockId;
 
-        let stockId;
-
-        // Hvis aktien allerede findes, opdaterer vi den
-        if (existingStockResult.recordset.length > 0) {
-          const existingStock = existingStockResult.recordset[0];
-          const updatedQuantity = existingStock.quantity + antalAktier;
-          const updatedPrice = parseFloat(existingStock.price) + parseFloat(totalPris);
+          // Hvis aktien allerede findes, opdaterer vi den
+          if (existingStockResult.recordset.length > 0) {
+            const existingStock = existingStockResult.recordset[0];
+            const updatedQuantity = existingStock.quantity + antalAktier;
+            const updatedPrice = parseFloat(existingStock.price) + parseFloat(totalPris);
 
           // Opdaterer aktien i Stocks-tabellen
           await pool.request()
@@ -155,8 +154,8 @@ router.post("/trade", async (req, res) => {
             `);
 
           stockId = existingStock.id;
-        } else {
-
+        }
+        else {
           // Hvis aktien ikke findes, indsætter vi den i Stocks-tabellen
           await pool
             .request()
@@ -175,7 +174,7 @@ router.post("/trade", async (req, res) => {
           const stockResult = await pool
             .request()
             .input("user_id", sql.Int, userId)
-            .input("portfolio_id", sql.Int, portfolioId)
+            .input("portfolio_id", sql.Int, portfolioId) 
             .input("name", sql.NVarChar, aktieTickerValgt)
             .query(`
               SELECT id FROM Stocks 
@@ -198,313 +197,261 @@ router.post("/trade", async (req, res) => {
           INSERT INTO Trades (portfolio_id, stock_id, buy_price, sell_price, quantity_bought, quantity_sold, created_at)
           VALUES (@portfolio_id, @stock_id, @buy_price, @sell_price, @quantity_bought, @quantity_sold, GETDATE());
         `);
-
+        
         // Opdater saldoen på kontoen
-      await pool
-      .request()
-      .input("name", sql.NVarChar, kontoSelect)
-      .input("amount", sql.Decimal(10, 2), totalPris)
-      .query(`UPDATE Accounts SET balance = balance - @amount WHERE name = @name;`);
-      
-      res.redirect("/portfolios"); // Redirect til porteføljeoversigt
-
-      }
-// Hvis der ikke er penge nok på kontoen, vis en fejlbesked
-      if(kontoBalance < totalPris){
-        let IkkeNokPenge = true;
-        res.render("trade", { IkkeNokPenge });
-      }
-
-
-    } catch (err) {
-      console.error("Fejl ved køb af aktie:", err);
-      res.status(500).send("Fejl ved køb.");
-    }
-  });
-  
-
-// ------------------------------------------------------------------------------------//
-// 
-// FORETAG SALG AF AKTIE
-//
-// ------------------------------------------------------------------------------------//
-router.post("/trade/sell", async (req, res) => {
-
-  // Her modtager vi data fra formularen på trade.ejs og derefter bliver brugerens ID hentet fra sessionen og gemt i en variabel
-  const { porteføljeSelect, aktieTickerValgt, kontoSelect, antalAktier, totalPris } = req.body;
-  const userId = req.session.userId;
-
-// Tjekker om alle nødvendige oplysninger er givet, hvis ikke returnerer vi en fejl
-  if (!userId || !aktieTickerValgt || !antalAktier || !totalPris || !porteføljeSelect || !kontoSelect) {
-    return res.status(400).send("Mangler oplysninger for at kunne sælge");
-  }
-
-
-  try {
-    await poolConnect; // Opretter forbindelse til databasen
-
-    // Tjekker om aktien findes i Stocks-tabellen og finder portefølje ID
-    const portfolioResult = await pool
-      .request()
-      .input("portfolio_name", sql.NVarChar, porteføljeSelect)
-      .input("user_id", sql.Int, userId)
-      .query(`
-        SELECT id FROM Portfolios WHERE name = @portfolio_name AND user_id = @user_id
-      `);
-// Tjekker om porteføljen findes
-    if (!portfolioResult.recordset.length) {
-      return res.status(400).send("Portefølje findes ikke.");
-    }
-    
-// Gemmer portefølje ID
-    const portfolioId = portfolioResult.recordset[0].id;
-
-
-    // Find aktien brugeren forsøger at sælge fra Stocks-tabellen
-    const stockResult = await pool
-      .request()
-      .input("user_id", sql.Int, userId)
-      .input("portfolio_id", sql.Int, portfolioId)
-      .input("name", sql.NVarChar, aktieTickerValgt)
-      .query(`
-        SELECT TOP 1 id, quantity, price FROM Stocks 
-        WHERE user_id = @user_id AND portfolio_id = @portfolio_id AND name = @name AND quantity > 0
-        ORDER BY created_at DESC
-      `);
-// Tjekker om aktien findes
-    if (!stockResult.recordset.length) {
-      return res.status(400).send("Du ejer ikke denne aktie i den valgte portefølje.");
-    }
-
-// Gemmer aktien
-    const stock = stockResult.recordset[0];
-
-    // Tjekker om brugeren ejer nok aktier til at sælge
-    if (stock.quantity < antalAktier) {
-      return res.status(400).send("Du ejer ikke nok aktier til at sælge.");
-    }
-
-    // Beregner ny beholdning og gennemsnitlig købspris
-    const nyBeholdning = stock.quantity - antalAktier;
-    const averageBuyPrice = parseFloat((stock.price / stock.quantity).toFixed(2));
-
-    // Her sætter vi slaget ind i Trades-tabellen
-    await pool
-      .request()
-      .input("portfolio_id", sql.Int, portfolioId)
-      .input("stock_id", sql.Int, stock.id)
-      .input("buy_price", sql.Decimal(18, 2), averageBuyPrice)
-      .input("sell_price", sql.Decimal(18, 2), totalPris / antalAktier)
-      .input("quantity_bought", sql.Int, 0)
-      .input("quantity_sold", sql.Int, antalAktier)
-      .query(`
-        INSERT INTO Trades (portfolio_id, stock_id, buy_price, sell_price, quantity_bought, quantity_sold, sell_date, created_at)
-        VALUES (@portfolio_id, @stock_id, @buy_price, @sell_price, @quantity_bought, @quantity_sold, GETDATE(), GETDATE());
-      `);
-
-    // Hvis brugeren har solgt alle aktier så tjek om aktien har handler i Trades-tabellen
-    if (nyBeholdning === 0) {
-      const checkTrades = await pool
-        .request()
-        .input("stock_id", sql.Int, stock.id)
-        .query(`SELECT COUNT(*) AS antal FROM Trades WHERE stock_id = @stock_id`);
-    
-      const harTrades = checkTrades.recordset[0].antal > 0;
-
-      // Hvis aktien ikke har handler i Trades-tabellen, så slet den fra Stocks-tabellen ellers opdater den
-      if (!harTrades) {
         await pool
-          .request()
-          .input("id", sql.Int, stock.id)
-          .query(`DELETE FROM Stocks WHERE id = @id`);
-      } else {
-        await pool
-          .request()
-          .input("id", sql.Int, stock.id)
-          .query(`UPDATE Stocks SET quantity = 0 WHERE id = @id`);
-      }
-    } else {
-
-      // Hvis stocks-tabellen stadig har aktier, så opdaterer vi den
-      const nyPris = parseFloat((averageBuyPrice * nyBeholdning).toFixed(2));
-
-      await pool
         .request()
-        .input("quantity", sql.Int, nyBeholdning)
-        .input("price", sql.Decimal(10, 2), nyPris)
-        .input("id", sql.Int, stock.id)
-        .query(`UPDATE Stocks SET quantity = @quantity, price = @price WHERE id = @id`);
-    }
-
-    // Opdater saldoen på kontoen
-    await pool
-      .request()
-      .input("name", sql.NVarChar, kontoSelect)
-      .input("amount", sql.Decimal(10, 2), totalPris)
-      .query(`UPDATE Accounts SET balance = balance + @amount WHERE name = @name;`);
-
-
-    // Find konto ID'et for den valgte konto
-    const kontoResult = await pool
-      .request()
-      .input("name", sql.NVarChar, kontoSelect)
-      .query(`SELECT id FROM Accounts WHERE name = @name`);
-
-    const kontoId = kontoResult.recordset[0].id;
-
-    // Her indsætter vi salget i Transactions-tabellen
-    await pool
-      .request()
-      .input("account_id", sql.Int, kontoId)
-      .input("amount", sql.Decimal(18, 2), totalPris)
-      .input("description", sql.NVarChar, `Salg af ${antalAktier} x ${aktieTickerValgt}`)
-      .input("transaction_type", sql.NVarChar, "credit")
-      .query(`
-        INSERT INTO Transactions (account_id, amount, description, transaction_type, created_at)
-        VALUES (@account_id, @amount, @description, @transaction_type, GETDATE());
-      `);
-    
-    res.status(200).json({ message: "Salg gennemført" });
-
-  } catch (err) {
-    console.error("Fejl ved salg af aktie:", err);
-    res.status(500).send("Fejl ved salg.");
-  }
-});
-
-
-// GET: viser trade.ejs og initialiserer siden
-router.get("/trade", async (req, res) => {
-    if (!req.session.userId) {
-      return res.redirect("/login");
-    }
-  
-    const userId = req.session.userId;
-    const stockName = req.query.stockName;
-  
-    let dates = null;
-    let closes = null;
-    let portfolios = [];
-    let accounts = [];
-  
-    // Henter data om brugerens porteføkjer
-    try {
-      await poolConnect;
-      const portfolioResult = await pool
-        .request()
-        .input("userId", sql.Int, userId)
-        .query("SELECT name FROM Portfolios WHERE user_id = @userId"); // Henter data fra portføljer hvor bruger id matcher med det bruger id der er logget ind med
-      portfolios = portfolioResult.recordset;
-    } catch (err) {
-      console.error("Fejl ved hentning af porteføljer:", err);
-    }
-  
-    // Henter data om brugerens kontoer
-    try {
-      await poolConnect;
-      const accountsResult = await pool
-        .request()
-        .input("userId", sql.Int, userId)
-        .query("SELECT name FROM Accounts WHERE user_id = @userId");
-      accounts = accountsResult.recordset;
-    } catch (err) {
-      console.error("Fejl ved hentning af accounts", err);
-    }
-  
-  
-
-
-    // SEND NUVÆRENDE PRIS FOR AKTIE DATA FOR ALLE AKTIER
-
-    const tickers = [
-      "ALMB.CO",
-      "AMBU-B.CO",
-      "MAERSK-A.CO",
-      "MAERSK-B.CO",
-      "AQP.CO",
-      "ATLA-DKK.CO",
-      "BO.CO",
-      "BAVA.CO",
-      "AOJ-B.CO",
-      "CARL-A.CO",
-      "CARL-B.CO",
-      // "CHR.CO",
-      "COLO-B.CO",
-      "DANSKE.CO",
-      "DEMANT.CO",
-      "DFDS.CO",
-      "DNORD.CO",
-      "DSV.CO",
-      "FLS.CO",
-      "GMAB.CO",
-      "GN.CO",
-      "HLUN-B.CO",
-      // "HYDRCT.CO",
-      "ISS.CO",
-      "JYSK.CO",
-      "NETC.CO",
-      "NKT.CO",
-      "NORTHM.CO",
-      "NSIS-B.CO",
-      "NOVO-B.CO",
-      "NTG.CO",
-      "ORSTED.CO",  // Kun én forekomst
-      "PNDORA.CO",
-      "RBREW.CO",
-      "ROCK-B.CO",
-      "SPNO.CO",
-      "STG.CO",
-      "STRAP.CO",
-      "SPKSJF.CO",
-      // "SIM.CO",
-      "TRYG.CO",
-      "VWS.CO"
-    ];
-    const nuværendePriser = [];
-    
-    for (let i = 0; i < tickers.length; i++) { // Loop der køre igennem alle aktierne i tickers arrayet
-      try {
-      // Henter den seneste markedspris
-      const quote = await yahooFinance.quote(tickers[i]);
-
-      nuværendePriser.push({ // Her gemmer vi aktie data i nuværendePriser arrayet
-        symbol: tickers[i],
-        price: quote?.regularMarketPrice ?? 'Ingen data', // Hvis ingen data, så skriv ingen data
-      });
-    } 
-    catch (err)
-    {
-      // Udtræk statuskode hvis tilgængelig
-      let statusKode = err?.statusCode || null;
-
-      console.error(`Fejl ved hentning af data for ${tickers[i]}`, {
-        message: err.message,
-        statusKode,
-      });
-
-      let errorBesked = 'Fejl';
-      if (statusKode === 404)
-        {
-          errorBesked = 'Ticker ikke fundet';
+        .input("name", sql.NVarChar, kontoSelect)
+        .input("amount", sql.Decimal(10, 2), totalPris)
+        .query(`UPDATE Accounts SET balance = balance - @amount WHERE name = @name;`);
+        
+        res.redirect("/portfolios"); // Redirect til porteføljeoversigt
         }
-        else if (statusKode === 429)
+
+        // Hvis der ikke er penge nok på kontoen, vis en fejlbesked
+        if(kontoBalance < totalPris)
           {
-            errorBesked = 'Klientside – for mange forespørgsler';
+            let IkkeNokPenge = true;
+            res.render("trade", { IkkeNokPenge });
           }
-        else if (statusKode === 500)
-          {
-            errorBesked = 'Serverfejl';
+        }
+        catch (err)
+        {
+          console.error("Fejl ved køb af aktie:", err);
+          res.status(500).send("Fejl ved køb.");
+        }
+      });
+
+      // ------------------------------------------------------------------------------------//
+      // 
+      // FORETAG SALG AF AKTIE
+      //
+      // ------------------------------------------------------------------------------------//
+      router.post("/trade/sell", async (req, res) => {
+        // Her modtager vi data fra formularen på trade.ejs og derefter bliver brugerens ID hentet fra sessionen og gemt i en variabel
+        const { porteføljeSelect, aktieTickerValgt, kontoSelect, antalAktier, totalPris } = req.body;
+        const userId = req.session.userId;
+        
+        // Tjekker om alle nødvendige oplysninger er givet, hvis ikke returnerer vi en fejl
+        if (!userId || !aktieTickerValgt || !antalAktier || !totalPris || !porteføljeSelect || !kontoSelect) {
+          return res.status(400).send("Mangler oplysninger for at kunne sælge");
+        }
+        
+        try {
+          await poolConnect; // Opretter forbindelse til databasen
+
+          // Tjekker om aktien findes i Stocks-tabellen og finder portefølje ID
+          const portfolioResult = await pool
+          .request()
+          .input("portfolio_name", sql.NVarChar, porteføljeSelect)
+          .input("user_id", sql.Int, userId)
+          .query(`SELECT id FROM Portfolios WHERE name = @portfolio_name AND user_id = @user_id`);
+          
+          // Tjekker om porteføljen findes
+          if (!portfolioResult.recordset.length) {
+            return res.status(400).send("Portefølje findes ikke.");
           }
           
-          nuværendePriser.push({symbol: tickers[i], price: errorBesked,
-    });
-  }
-}
+          // Gemmer portefølje ID
+          const portfolioId = portfolioResult.recordset[0].id;
+          
+          // Find aktien brugeren forsøger at sælge fra Stocks-tabellen
+          const stockResult = await pool
+          .request()
+          .input("user_id", sql.Int, userId)
+          .input("portfolio_id", sql.Int, portfolioId)
+          .input("name", sql.NVarChar, aktieTickerValgt)
+          .query(`SELECT TOP 1 id, quantity, price FROM Stocks 
+            WHERE user_id = @user_id AND portfolio_id = @portfolio_id AND name = @name AND quantity > 0
+            ORDER BY created_at DESC`);
+            
+            // Tjekker om aktien findes
+            if (!stockResult.recordset.length)
+              {
+                return res.status(400).send("Du ejer ikke denne aktie i den valgte portefølje.");
+              }
+              
+              // Gemmer aktien
+              const stock = stockResult.recordset[0];
+              
+              // Tjekker om brugeren ejer nok aktier til at sælge
+              if (stock.quantity < antalAktier) {
+                return res.status(400).send("Du ejer ikke nok aktier til at sælge.");
+              }
+              
+              // Beregner ny beholdning og gennemsnitlig købspris
+              const nyBeholdning = stock.quantity - antalAktier;
+              const averageBuyPrice = parseFloat((stock.price / stock.quantity).toFixed(2));
+              
+              
+              // Her sætter vi slaget ind i Trades-tabellen
+              await pool
+              .request()
+              .input("portfolio_id", sql.Int, portfolioId)
+              .input("stock_id", sql.Int, stock.id)
+              .input("buy_price", sql.Decimal(18, 2), averageBuyPrice)
+              .input("sell_price", sql.Decimal(18, 2), totalPris / antalAktier)
+              .input("quantity_bought", sql.Int, 0)
+              .input("quantity_sold", sql.Int, antalAktier)
+              .query(`INSERT INTO Trades (portfolio_id, stock_id, buy_price, sell_price, quantity_bought, quantity_sold, sell_date, created_at)
+                VALUES (@portfolio_id, @stock_id, @buy_price, @sell_price, @quantity_bought, @quantity_sold, GETDATE(), GETDATE());`);
 
-      
-      res.render("trade", { userId, dates, closes, portfolios, accounts, nuværendePriser });
+                // Hvis brugeren har solgt alle aktier så tjek om aktien har handler i Trades-tabellen
+                if (nyBeholdning === 0)
+                  {
+                    const checkTrades = await pool
+                    .request()
+                    .input("stock_id", sql.Int, stock.id)
+                    .query(`SELECT COUNT(*) AS antal FROM Trades WHERE stock_id = @stock_id`);
+                    
+                    const harTrades = checkTrades.recordset[0].antal > 0;
 
+                    // Hvis aktien ikke har handler i Trades-tabellen, så slet den fra Stocks-tabellen ellers opdater den
+                     
+                    if (!harTrades) {
+                      await pool
+                      .request()
+                      .input("id", sql.Int, stock.id)
+                      .query(`DELETE FROM Stocks WHERE id = @id`);
+                    }
+                    else {
+                      await pool
+                      .request()
+                      .input("id", sql.Int, stock.id)
+                      .query(`UPDATE Stocks SET quantity = 0 WHERE id = @id`);
+                    }
+                  }
+                  else {
+                    // Hvis stocks-tabellen stadig har aktier, så opdaterer vi den
+                    const nyPris = parseFloat((averageBuyPrice * nyBeholdning).toFixed(2));
+                    
+                    await pool
+                    .request()
+                    .input("quantity", sql.Int, nyBeholdning)
+                    .input("price", sql.Decimal(10, 2), nyPris)
+                    .input("id", sql.Int, stock.id)
+                    .query(`UPDATE Stocks SET quantity = @quantity, price = @price WHERE id = @id`);
+                  }
+                  
+                  // Opdater saldoen på kontoen
+                  await pool
+                  .request()
+                  .input("name", sql.NVarChar, kontoSelect)
+                  .input("amount", sql.Decimal(10, 2), totalPris)
+                  .query(`UPDATE Accounts SET balance = balance + @amount WHERE name = @name;`);
+                  
+                  
+                  // Find konto ID'et for den valgte konto
+                  const kontoResult = await pool
+                  .request()
+                  .input("name", sql.NVarChar, kontoSelect)
+                  .query(`SELECT id FROM Accounts WHERE name = @name`);
+                  
+                  const kontoId = kontoResult.recordset[0].id;
 
-  });
+                  // Her indsætter vi salget i Transactions-tabellen
+                  await pool
+                  .request()
+                  .input("account_id", sql.Int, kontoId)
+                  .input("amount", sql.Decimal(18, 2), totalPris)
+                  .input("description", sql.NVarChar, `Salg af ${antalAktier} x ${aktieTickerValgt}`)
+                  .input("transaction_type", sql.NVarChar, "credit")
+                  .query(`INSERT INTO Transactions (account_id, amount, description, transaction_type, created_at)
+                    VALUES (@account_id, @amount, @description, @transaction_type, GETDATE());
+                    `);
+                    res.status(200).json({ message: "Salg gennemført" });
+                  
+                  }
+                  catch (err) 
+                  {
+                    console.error("Fejl ved salg af aktie:", err);
+                    res.status(500).send("Fejl ved salg.");
+                  }
+                });
+                
+                
+      // GET viser trade.ejs og initialiserer siden
+      router.get("/trade", async (req, res) => {
+        if (!req.session.userId)
+          {
+            return res.redirect("/login");
+          }
+          const userId = req.session.userId;
+          const stockName = req.query.stockName;
+                  
+          let dates = null;
+          let closes = null;
+          let portfolios = [];
+          let accounts = [];
+                  
+          // Henter data om brugerens porteføkjer
+          try {
+            await poolConnect;
+            const portfolioResult = await pool
+            .request()
+            .input("userId", sql.Int, userId)
+            .query("SELECT name FROM Portfolios WHERE user_id = @userId"); // Henter data fra portføljer hvor bruger id matcher med det bruger id der er logget ind med
+            portfolios = portfolioResult.recordset;
+          } 
+          catch (err)
+          {
+            console.error("Fejl ved hentning af porteføljer:", err);
+          }
+                  
+          // Henter data om brugerens kontoer
+          try {
+            await poolConnect;
+            const accountsResult = await pool
+            .request()
+            .input("userId", sql.Int, userId)
+            .query("SELECT name FROM Accounts WHERE user_id = @userId");
+            accounts = accountsResult.recordset;
+          }
+          catch (err) {
+            console.error("Fejl ved hentning af accounts", err);
+          }
 
-module.exports = router;
+          // SEND NUVÆRENDE PRIS FOR AKTIE DATA FOR ALLE AKTIER
+          const tickers = ["ALMB.CO","AMBU-B.CO","MAERSK-A.CO","MAERSK-B.CO","AQP.CO","ATLA-DKK.CO","BO.CO","BAVA.CO","AOJ-B.CO",
+            "CARL-A.CO","CARL-B.CO","COLO-B.CO","DANSKE.CO","DEMANT.CO","DFDS.CO","DNORD.CO","DSV.CO","FLS.CO","GMAB.CO","GN.CO",
+            "HLUN-B.CO","ISS.CO","JYSK.CO","NETC.CO","NKT.CO","NORTHM.CO","NSIS-B.CO","NOVO-B.CO","NTG.CO","ORSTED.CO","PNDORA.CO",
+            "RBREW.CO","ROCK-B.CO","SPNO.CO","STG.CO","STRAP.CO","SPKSJF.CO","TRYG.CO","VWS.CO"];
+    
+            const nuværendePriser = [];
+            for (let i = 0; i < tickers.length; i++) { // Loop der køre igennem alle aktierne i tickers arrayet
+              try {
+                // Henter den seneste markedspris
+                const quote = await yahooFinance.quote(tickers[i]);
+
+                nuværendePriser.push({ // Her gemmer vi aktie data i nuværendePriser arrayet
+                symbol: tickers[i],
+                price: quote?.regularMarketPrice ?? 'Ingen data', // Hvis ingen data, så skriv ingen data
+                });
+              }
+              catch (err)
+              {
+                // Udtræk statuskode hvis tilgængelig
+                let statusKode = err?.statusCode || null;
+                console.error(`Fejl ved hentning af data for ${tickers[i]}`, {
+                message: err.message,
+                statusKode,});
+                        
+                let errorBesked = 'Fejl';
+                if (statusKode === 404)
+                {
+                  errorBesked = 'Ticker ikke fundet';
+                }
+                else if (statusKode === 429)
+                {
+                  errorBesked = 'Klientside – for mange forespørgsler';
+                }
+                else if (statusKode === 500)
+                {
+                  errorBesked = 'Serverfejl';
+                }
+                nuværendePriser.push({symbol: tickers[i], price: errorBesked,});
+              }
+            }
+            res.render("trade", { userId, dates, closes, portfolios, accounts, nuværendePriser });
+          });
+          module.exports = router;
