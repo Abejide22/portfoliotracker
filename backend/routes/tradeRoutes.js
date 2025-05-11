@@ -222,6 +222,7 @@ router.post("/trade", async (req, res) => {
         }
       });
 
+
       // ------------------------------------------------------------------------------------//
       // 
       // FORETAG SALG AF AKTIE
@@ -281,10 +282,10 @@ router.post("/trade", async (req, res) => {
               
               // Beregner ny beholdning og gennemsnitlig købspris
               const nyBeholdning = stock.quantity - antalAktier;
-              const averageBuyPrice = parseFloat((stock.price / stock.quantity).toFixed(2));
+              const averageBuyPrice = parseFloat((stock.price / stock.quantity).toFixed(2)); // Gennemsnitlig købspris med 2 decimaler
               
               
-              // Her sætter vi slaget ind i Trades-tabellen
+              // Her sætter vi slaget ind i trades-tabellen
               await pool
               .request()
               .input("portfolio_id", sql.Int, portfolioId)
@@ -449,7 +450,7 @@ router.post("/trade", async (req, res) => {
                 {
                   errorBesked = 'Serverfejl';
                 }
-                nuværendePriser.push({symbol: tickers[i], price: errorBesked,});
+                nuværendePriser.push({symbol: tickers[i], price: errorBesked,}); // indsætter værdierne for ticker og pris i nuværendePriser arrayet
               }
             }
             res.render("trade", { userId, dates, closes, portfolios, accounts, nuværendePriser });
