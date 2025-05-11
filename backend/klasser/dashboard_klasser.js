@@ -1,10 +1,9 @@
-class dashboard_Klasser {
+class dashboardKlasser {
   constructor(trades, totalCash) {
     this.trades = trades; // Gem trades som en egenskab i klassen
     this.totalCash = totalCash; // Gem kontantbeholdning som en egenskab
   }
 
-  // Beregn de 5 mest værdifulde aktier
   getTop5Stocks() {
     const stocksWithValue = this.trades
       .filter(trade => (trade.quantity_bought - trade.quantity_sold) > 0) // Kun urealiserede aktier
@@ -141,4 +140,4 @@ class dashboard_Klasser {
   }
 }
 
-module.exports = dashboard_Klasser;
+module.exports = dashboardKlasser;
