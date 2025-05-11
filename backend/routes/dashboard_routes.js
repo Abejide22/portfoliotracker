@@ -1,7 +1,7 @@
 const express = require("express"); // Henter express frameworket
 const router = express.Router(); // Opretter en router
 const { pool, poolConnect, sql } = require("../database/database"); // Importerer databaseforbindelsen
-const dashboard_Klasser = require("../klasser/dashboard_klasser"); // Importerer dashboard-klassen
+const dashboardKlasser = require("../klasser/dashboardklasser"); // Importerer dashboard-klassen
 const yahooFinance = require('yahoo-finance2').default; // Importerer Yahoo Finance API
 
 router.get("/dashboard", async (req, res) => {
