@@ -7,7 +7,7 @@ router.use(express.urlencoded({extended: true})); // Middleware til at parse URL
 // Funktion til at opdatere adgangskoden
 async function updatePassword(pool, userId, newPassword, confirmPassword) {
   if (newPassword !== confirmPassword) {  // hvis adgangskoderne ikke matcher
-    return {success: false, error: "Adgangskoderne matcher ikke."}; // returnerer fejlbesked
+    return {success: false, error: "Passwords does not match."}; // returnerer fejlbesked
   }
 
   try { // prøver følgende kode
