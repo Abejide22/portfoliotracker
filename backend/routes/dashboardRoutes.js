@@ -112,7 +112,7 @@ let aktieDataRealiseretResultat = 0; // Standardværdi, hvis der ingen data er
 
     let tilfældigAktieKøbsdato = 0; // variabel til at gemme købsdatoen
 
-    let priserOgDatoer = []; // objekt der skal indeholde datoer og priser
+    let priserOgDatoer = []; // array der skal indeholde datoer og priser
 
     if (tilfældigAktieResultat.length === 0) {
       console.log("Ingen aktier fundet for brugeren.");
@@ -120,7 +120,7 @@ let aktieDataRealiseretResultat = 0; // Standardværdi, hvis der ingen data er
       tilfældigAktieKøbsdato = tilfældigAktieResultat[0].created_at;
       console.log(tilfældigAktieKøbsdato);
 
-      try {
+      try { // henter historiske data for den tilfældige aktie
         const aktie = tilfældigAktieResultat[0];
         const aktieSymbol = aktie.name;
 

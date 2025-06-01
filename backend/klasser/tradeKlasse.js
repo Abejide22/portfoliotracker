@@ -24,7 +24,7 @@ class tradeKlasse {
         if (!this.date) return "Ukendt";
         const dato = new Date(this.date);
         if (isNaN(dato)) return "Ukendt";
-        return dato.toISOString().split("T")[0];
+        return dato.toISOString().split("T")[0]; // splitter ISO-format og tager kun datoen
       }
   }
   

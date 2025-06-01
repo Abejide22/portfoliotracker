@@ -47,7 +47,7 @@ router.post("/signup", async (req, res) => {
       .input("password", sql.NVarChar, password)
       .query(
         `INSERT INTO Users (username, email, password) OUTPUT INSERTED.id VALUES (@username, @email, @password)`
-      );
+      ); // OUTPUT INSERTED.id henter id'et på den nye bruger, der bliver oprettet
 
     // variablen gemmer id på den nye bruger
     const newUserId = insertResult.recordset[0].id;

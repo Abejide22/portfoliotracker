@@ -7,7 +7,7 @@ class dashboardKlasser {
   getTop5Stocks() {
     const stocksWithValue = this.trades
       .filter(trade => (trade.quantity_bought - trade.quantity_sold) > 0) // Kun urealiserede aktier
-      .map(trade => {
+      .map(trade => { // omdanner trades til et format med aktienavn, porteføljenavn og værdi
         const value = trade.current_price; // Beregn værdien af aktien
         return {
           stockName: trade.stock_name,
