@@ -120,7 +120,7 @@ let aktieDataRealiseretResultat = 0; // Standardværdi, hvis der ingen data er
       tilfældigAktieKøbsdato = tilfældigAktieResultat[0].created_at;
       console.log(tilfældigAktieKøbsdato);
 
-      try { // henter historiske data for den tilfældige aktie
+      try {
         const aktie = tilfældigAktieResultat[0];
         const aktieSymbol = aktie.name;
 
