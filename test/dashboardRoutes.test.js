@@ -1,5 +1,5 @@
 const { expect } = require("chai");
-const dashboardKlasser = require("../backend/klasser/dashboardKlasser");
+const dashboardKlasser = require("../backend/klasser/dashboardklasser");
 
 describe("getTop5Stocks", () => {
   it("skal returnere de 5 mest værdifulde aktier - selv hvis der er flere end 5 aktier", () => {
