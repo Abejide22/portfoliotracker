@@ -25,3 +25,4 @@ app.use("/", routes); // Bruger ruterne fra all_routes.js
 app.listen(PORT, () => {
   console.log(`Serveren kører på http://localhost:${PORT}`); // Starter selve serveren 
 });
+22
